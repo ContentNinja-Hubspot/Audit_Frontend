@@ -19,6 +19,7 @@ export const ReportProvider = ({ children }) => {
   const [salesGraphData, setSalesGraphData] = useState(null);
   const [scores, setScores] = useState(null);
   const [graphData, setGraphData] = useState(null);
+  const [latestReportId, setLatestReportId] = useState(null);
 
   // Set the default hub when user is ready
   useEffect(() => {
@@ -37,11 +38,15 @@ export const ReportProvider = ({ children }) => {
     const fetchReportAndGraph = async () => {
       if (selectedHub?.latest_report_id && token) {
         try {
+          setLatestReportId(selectedHub.latest_report_id);
           const report = await fetchAuditDataByID(
             token,
             selectedHub.latest_report_id
           );
-          const salesData = await fetchSalesReportData(token);
+          const salesData = await fetchSalesReportData(
+            token,
+            selectedHub.latest_report_id
+          );
           setLatestReportData(report);
           setSalesReportData(salesData);
 
@@ -54,7 +59,10 @@ export const ReportProvider = ({ children }) => {
             selectedHub.latest_report_id
           );
           setSalesGraphData(salesGraph.data);
-          const scores = await fetchAllScores(token);
+          const scores = await fetchAllScores(
+            token,
+            selectedHub.latest_report_id
+          );
           setScores(scores);
           setGraphData(graph);
         } catch (error) {
@@ -83,6 +91,7 @@ export const ReportProvider = ({ children }) => {
         setScores,
         salesGraphData,
         setSalesGraphData,
+        latestReportId,
       }}
     >
       {children}

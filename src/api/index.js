@@ -356,7 +356,7 @@ export const fetchAllReports = async (token) => {
   }
 };
 
-export const fetchSalesReportData = async (token) => {
+export const fetchSalesReportData = async (token, reportId) => {
   try {
     const response = await fetch(`${BASE_URL}/getsalesreport`, {
       method: "POST",
@@ -364,6 +364,9 @@ export const fetchSalesReportData = async (token) => {
         "Content-Type": "application/json",
         state: token,
       },
+      body: JSON.stringify({
+        report_id: reportId,
+      }),
     });
 
     if (!response.ok) {
@@ -406,7 +409,7 @@ export const checkSalesReportStatus = async (token, hubId) => {
   }
 };
 
-export const fetchAllScores = async (token) => {
+export const fetchAllScores = async (token, reportId) => {
   try {
     const response = await fetch(`${BASE_URL}/getallscores`, {
       method: "POST",
@@ -414,6 +417,9 @@ export const fetchAllScores = async (token) => {
         "Content-Type": "application/json",
         state: token,
       },
+      body: JSON.stringify({
+        report_id: reportId,
+      }),
     });
 
     if (!response.ok) {
@@ -428,7 +434,7 @@ export const fetchAllScores = async (token) => {
   }
 };
 
-export const fetchSalesActionData = async (token) => {
+export const fetchSalesActionData = async (token, reportId) => {
   try {
     const response = await fetch(`${BASE_URL}/fetchsalesactiondata`, {
       method: "POST",
@@ -436,6 +442,9 @@ export const fetchSalesActionData = async (token) => {
         "Content-Type": "application/json",
         state: token,
       },
+      body: JSON.stringify({
+        report_id: reportId,
+      }),
     });
 
     if (!response.ok) {
@@ -458,9 +467,9 @@ export const fetchSalesGraphData = async (token, reportId) => {
         "Content-Type": "application/json",
         state: token,
       },
-      // body: JSON.stringify({
-      //   report_id: reportId,
-      // }),
+      body: JSON.stringify({
+        report_id: reportId,
+      }),
     });
 
     const data = await response.json();

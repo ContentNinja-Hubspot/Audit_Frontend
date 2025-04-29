@@ -4,6 +4,7 @@ import { fetchSalesActionData } from "../../api/";
 import { sendBulkEmailToReps } from "../../api/";
 import { useUser } from "../../context/UserContext";
 import { useNotify } from "../../context/NotificationContext";
+import { useAudit } from "../../context/ReportContext";
 
 const mapApiToMetrics = (apiItem) => {
   const nameFromEmail = (email) => {
@@ -36,13 +37,14 @@ const BulkActionTable = () => {
   const [showModal, setShowModal] = useState(false);
   const { token } = useUser();
   const { error, success } = useNotify();
+  const { latestReportId } = useAudit();
 
   const ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN; // ideally from env
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetchSalesActionData(token);
+        const response = await fetchSalesActionData(token, latestReportId);
         const apiData = response.data || [];
         setActionData(apiData); // Store the raw API data if needed
         const formatted = apiData.map(mapApiToMetrics);

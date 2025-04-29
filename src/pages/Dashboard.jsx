@@ -74,7 +74,10 @@ const Dashboard = () => {
         );
         setReportProgress(100);
         setGraphData(graphResult);
-        const allScores = await fetchAllScores(token, hubID);
+        const allScores = await fetchAllScores(
+          token,
+          data.report_details.report_id
+        );
         setScores(allScores);
         setLatestReportData(response);
         setReportGenerated(true);
@@ -106,9 +109,9 @@ const Dashboard = () => {
         salesData?.progress == 100 &&
         salesData?.status === "Completed"
       ) {
-        const salesData = await fetchSalesReportData(token);
+        const salesData = await fetchSalesReportData(token, reportId);
         setSalesReportData(salesData);
-        const allScores = await fetchAllScores(token, hubID);
+        const allScores = await fetchAllScores(token, reportId);
         setScores(allScores);
         const salesGraphResult = await fetchSalesGraphData(token, reportId);
         setSalesGraphData(salesGraphResult.data);
