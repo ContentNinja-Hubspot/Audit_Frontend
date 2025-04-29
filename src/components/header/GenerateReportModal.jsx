@@ -2,10 +2,12 @@ import React from "react";
 import { generateNewReport } from "../../api";
 import { useUser } from "../../context/UserContext";
 import Cookies from "js-cookie";
+import { useNotify } from "../../context/NotificationContext";
 
 const GenerateReportModal = ({ show, onClose, selectedHub }) => {
   if (!show) return null;
   const { token } = useUser();
+  const { success } = useNotify();
 
   const triggerNewReportGeneration = async () => {
     try {
@@ -15,7 +17,6 @@ const GenerateReportModal = ({ show, onClose, selectedHub }) => {
         throw new Error("Failed to retrieve new token");
       }
 
-      document.cookie = `state=${result.token}; path=/; secure; SameSite=Strict`;
       Cookies.set("state", result?.token, {
         path: "/",
         sameSite: "Lax",
@@ -23,8 +24,11 @@ const GenerateReportModal = ({ show, onClose, selectedHub }) => {
         expires: 1,
       });
 
-      onClose();
-      window.location.reload();
+      success("New report generation triggered!");
+      setTimeout(() => {
+        onClose();
+        window.location.reload();
+      }, 3000);
     } catch (error) {
       console.error("Error generating report:", error);
     }
