@@ -20,7 +20,7 @@ const GenerateReportModal = ({ show, onClose, selectedHub }) => {
       Cookies.set("state", result?.token, {
         path: "/",
         sameSite: "Lax",
-        secure: true,
+        secure: window.location.protocol === "https:", // only secure if on HTTPS
         expires: 1,
       });
 
