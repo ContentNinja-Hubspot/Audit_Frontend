@@ -10,6 +10,7 @@ import { useUser } from "../../context/UserContext";
 const SalesPerformance = ({
   sales_performance_metrics = [],
   isGeneratingGraph,
+  companyAverages,
   graphData,
   total_reps,
 }) => {
@@ -22,15 +23,13 @@ const SalesPerformance = ({
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
   const [lastActivityDate, setLastActivityDate] = useState("N/A");
 
+  console.log("sales metrics", sales_performance_metrics);
   const [firstRowSelectedItem, setfirstRowSelectedItem] =
     useState("dealClosure");
   const [secondRowSelectedItem, setSecondRowSelectedItem] =
     useState("dealstagnationrate");
   const [thirdRowSelectedItem, setThirdRowSelectedItem] =
     useState("meetingRate");
-  const [firstDatapoint, setFirstDatapoint] = useState("dealClosure");
-  const [secondDatapoint, setSecondDatapoint] = useState("dealstagnationrate");
-  const [thirdDatapoint, setThirdDatapoint] = useState("meetingRate");
 
   const toggleSection = () => setIsMissingDataExpanded((prev) => !prev);
 
@@ -135,34 +134,40 @@ const SalesPerformance = ({
             rate: (metrics.deal_closure_rate?.percent || 0).toFixed(1),
             userShare: metrics.deal_closure_rate?.user_share || 0,
             total: metrics.deal_closure_rate?.total || 0,
+            count: metrics.deal_closure_rate?.count ?? "-", // <-- ADD count here
           },
           revenueImpact: {
             rate: (metrics.revenue_impact?.percent || 0).toFixed(1),
             userShare: metrics.revenue_impact?.user_share || 0,
             total: metrics.revenue_impact?.total || 0,
+            count: metrics.revenue_impact?.count ?? "-", // <-- ADD
           },
           revenueWinRate: {
             rate: (metrics.revenue_win_rate?.percent || 0).toFixed(1),
             userShare: metrics.revenue_win_rate?.user_share || 0,
             total: metrics.revenue_win_rate?.total || 0,
+            count: metrics.revenue_win_rate?.count ?? "-", // <-- ADD
           },
         },
         efficiencyAnalysis: {
-          lastLogin: lastActivityDate, // No last login in the API response
+          lastLogin: lastActivityDate,
           dealstagnationrate: {
             rate: (metrics.deal_stagnation_rate?.percent || 0).toFixed(1),
             userShare: metrics.deal_stagnation_rate?.user_share || 0,
             total: metrics.deal_stagnation_rate?.total || 0,
+            count: metrics.deal_stagnation_rate?.count ?? "-", // <-- ADD
           },
           callRate: {
             rate: (metrics.connected_call_rate?.percent || 0).toFixed(1),
             userShare: metrics.connected_call_rate?.user_share || 0,
             total: metrics.connected_call_rate?.total || 0,
+            count: metrics.connected_call_rate?.count ?? "-", // <-- ADD
           },
           taskCompletion: {
             rate: (metrics.task_completion_rate?.percent || 0).toFixed(1),
             userShare: metrics.task_completion_rate?.user_share || 0,
             total: metrics.task_completion_rate?.total || 0,
+            count: metrics.task_completion_rate?.count ?? "-", // <-- ADD
           },
         },
         usageAnalysis: {
@@ -172,6 +177,11 @@ const SalesPerformance = ({
                 ? metrics.meetings_than_company_average?.percent_30_days
                 : metrics.meetings_than_company_average?.percent_7_days
               )?.toFixed(1) || 0,
+            count:
+              (selectedDays === 30
+                ? metrics.meetings_than_company_average?.user_metric_30_days
+                : metrics.meetings_than_company_average?.user_metric_7_days) ??
+              "-", // <-- ADD
           },
           actionstaken: {
             rate:
@@ -179,6 +189,11 @@ const SalesPerformance = ({
                 ? metrics.actions_than_company_average?.percent_30_days
                 : metrics.actions_than_company_average?.percent_7_days
               )?.toFixed(1) || 0,
+            count:
+              (selectedDays === 30
+                ? metrics.actions_than_company_average?.user_metric_30_days
+                : metrics.actions_than_company_average?.user_metric_7_days) ??
+              "-", // <-- ADD
           },
           contactsowned: {
             rate:
@@ -186,6 +201,11 @@ const SalesPerformance = ({
                 ? metrics.contacts_than_company_average?.percent_30_days
                 : metrics.contacts_than_company_average?.percent_7_days
               )?.toFixed(1) || 0,
+            count:
+              (selectedDays === 30
+                ? metrics.contacts_than_company_average?.user_metric_30_days
+                : metrics.contacts_than_company_average?.user_metric_7_days) ??
+              "-", // <-- ADD
           },
           dealsowned: {
             rate:
@@ -193,6 +213,11 @@ const SalesPerformance = ({
                 ? metrics.deals_than_company_average?.percent_30_days
                 : metrics.deals_than_company_average?.percent_7_days
               )?.toFixed(1) || 0,
+            count:
+              (selectedDays === 30
+                ? metrics.deals_than_company_average?.user_metric_30_days
+                : metrics.deals_than_company_average?.user_metric_7_days) ??
+              "-", // <-- ADD
           },
         },
       };
@@ -295,6 +320,7 @@ const SalesPerformance = ({
           parseFloat(usage.meetingRate?.rate) > 0 ? "More" : "Less"
         } Meetings than the company average: (No of meeting Company wide - Rep’s Meetings)/ No of meeting Company wide`,
         suffix: "%",
+        countLabel: "meetings taken",
       },
       {
         key: "actionstaken",
@@ -305,6 +331,7 @@ const SalesPerformance = ({
           parseFloat(usage.actionstaken?.rate) > 0 ? "More" : "Less"
         } Actions taken than the company average: (Company-wide Actions - Rep’s Actions)/ Company-wide Actions (includes tasks, meetings, calls, emails)`,
         suffix: "%",
+        countLabel: "actions taken",
       },
       {
         key: "contactsowned",
@@ -315,6 +342,7 @@ const SalesPerformance = ({
           parseFloat(usage.contactsowned?.rate) > 0 ? "More" : "Less"
         } Contacts owned than the company average: (Company Contacts - Rep Contacts)/ Company Contacts`,
         suffix: "%",
+        countLabel: "contacts owned",
       },
       {
         key: "dealsowned",
@@ -325,6 +353,7 @@ const SalesPerformance = ({
           parseFloat(usage.dealsowned?.rate) > 0 ? "More" : "Less"
         } Deals owned than the company average: (Company Deals - Rep Deals)/ Company Deals`,
         suffix: "%",
+        countLabel: "deals owned",
       },
     ];
   };
@@ -445,6 +474,36 @@ const SalesPerformance = ({
     return improvements;
   };
 
+  const getCompanyAverage = (metricKey) => {
+    if (!companyAverages) return "";
+
+    const avgMap = {
+      dealClosure: companyAverages.deal_win_rate_avg,
+      dealstagnationrate: companyAverages.deal_stagnation_avg,
+      taskCompletion: companyAverages.task_completion_rate_avg,
+      callRate: companyAverages.connected_call_rate_avg,
+      meetingRate:
+        selectedDays === 30
+          ? companyAverages.meetings_avg_last_30_days
+          : companyAverages.meetings_avg_last_7_days,
+      actionstaken:
+        selectedDays === 30
+          ? companyAverages.actions_avg_last_30_days
+          : companyAverages.actions_avg_last_7_days,
+      contactsowned:
+        selectedDays === 30
+          ? companyAverages.contacts_avg_last_30_days
+          : companyAverages.contacts_avg_last_7_days,
+      dealsowned:
+        selectedDays === 30
+          ? companyAverages.deals_avg_last_30_days
+          : companyAverages.deals_avg_last_7_days,
+    };
+
+    const avgValue = avgMap[metricKey];
+    return avgValue !== undefined ? `company avg: ${avgValue}` : "";
+  };
+
   return (
     <div className="bg-white rounded-lg">
       {/* Header */}
@@ -524,6 +583,7 @@ const SalesPerformance = ({
                   / {userData.impactAnalysis[key]?.total?.toLocaleString()}
                 </span>
               </p>
+              {/* <p className="text-xs text-gray-500">{getCompanyAverage(key)}</p> */}
             </div>
             <img
               className="absolute bottom-4 right-4 h-4"
@@ -628,10 +688,10 @@ const SalesPerformance = ({
         Usage Analysis
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 mx-10">
-        {getUsageMetrics().map(({ key, label, info, suffix }) => (
+        {getUsageMetrics().map(({ key, label, info, suffix, countLabel }) => (
           <div
             key={key}
-            className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
+            className={`relative px-3 pt-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
               thirdRowSelectedItem === key
                 ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
                 : "bg-white"
@@ -657,6 +717,15 @@ const SalesPerformance = ({
                 {userData.usageAnalysis[key]?.rate}
                 {suffix}
               </p>
+
+              <div className="text-xs text-left text-gray-500">
+                <p>
+                  {" "}
+                  {countLabel} : {userData.usageAnalysis[key]?.count}{" "}
+                </p>
+                <p> {getCompanyAverage(key)}</p>
+              </div>
+
               {/* <p className="text-sm text-gray-500">
                 {item?.count.toLocaleString()}{" "}
                 <span className="text-gray-400">
@@ -702,7 +771,7 @@ const SalesPerformance = ({
         </ul>
       </div>
 
-      <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-10 min-w-60">
+      <div className="mt-6 pb-4 flex flex-col sm:flex-row items-center justify-center gap-10 min-w-60">
         <button
           onClick={() => setShowModal(true)}
           className="shadow-none min-w-60 bg-white text-gray-800 border border-gray-800"

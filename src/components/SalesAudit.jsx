@@ -14,8 +14,11 @@ const SalesAudit = ({
   const [selectedItem, setSelectedItem] = useState("sales_performance");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
 
-  const { inference_sales_usage, inference_sales_performance } =
-    salesReportData;
+  const {
+    inference_sales_usage,
+    inference_sales_performance,
+    company_averages,
+  } = salesReportData;
 
   const total_reps = inference_sales_performance?.length || 0;
 
@@ -23,13 +26,13 @@ const SalesAudit = ({
     {
       label: "sales_performance",
       title: "Sales Performance Scorecard",
-      score: salesPerformancescore,
+      score: Math.round(salesPerformancescore),
       risk: "High Risk",
     },
     {
       label: "usage_scorecard",
       title: "Usage Scorecard",
-      score: salesUsageScore,
+      score: Math.round(salesUsageScore),
       risk: "Moderate Risk",
     },
   ];
@@ -97,6 +100,7 @@ const SalesAudit = ({
             isGeneratingGraph={false}
             total_reps={total_reps}
             graphData={graph_sales_performance}
+            companyAverages={company_averages}
           />
         )}
       </div>

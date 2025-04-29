@@ -49,12 +49,12 @@ const ReportGenerate = ({ progress }) => {
         <p className="text-center text-sm">
           We’re a small team working hard to build value-driven products for the
           HubSpot ecosystem. If you face any challenges, please{" "}
-          <a href="#" className="text-blue-500 hover:underline">
+          <a
+            href="https://boundary.agency/contact/"
+            target="_blank"
+            className="text-blue-500 hover:underline"
+          >
             drop us a note
-          </a>{" "}
-          or{" "}
-          <a href="#" className="text-blue-500 hover:underline">
-            restart the process here
           </a>
           .
         </p>

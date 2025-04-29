@@ -5,13 +5,22 @@ const AuditScore = ({
   overallScore,
   salesReportProgress,
 }) => {
-  const finalScore = overallScore || 0;
-  const rawDifference = overall_audit_score?.global_average_difference || 0;
+  const finalScore = overallScore ? Number(overallScore.toFixed(1)) : 0;
+  const rawDifference =
+    73 - (overallScore ? Number(overallScore.toFixed(1)) : 0);
   const difference = Math.abs(rawDifference);
   const status = rawDifference < 0 ? "behind" : "ahead";
 
   const progressPercent = `${Math.min(finalScore, 100)}%`;
   const reportGenerated = salesReportProgress === 100;
+
+  const getProgressColor = (score) => {
+    if (score < 30) return "bg-red-500";
+    if (score < 60) return "bg-orange-400";
+    return "bg-green-500";
+  };
+
+  const progressColorClass = getProgressColor(finalScore);
 
   return (
     <div className="mb-6 px-4 md:pr-10 md:px-0 lg:px-10">
@@ -46,14 +55,15 @@ const AuditScore = ({
 
             <div className="h-2 bg-gray-200 rounded-full w-full mb-2">
               <div
-                className="h-2 bg-green-500 rounded-full transition-all duration-300 ease-in-out"
+                className={`h-2 ${progressColorClass} rounded-full transition-all duration-300 ease-in-out`}
                 style={{ width: progressPercent }}
               ></div>
             </div>
 
             <p className="text-sm sm:text-md text-gray-700 my-3 text-center">
-              You are <span className="font-bold">{difference}</span> points{" "}
-              {status} the Global Average.
+              You are{" "}
+              <span className="font-bold">{Number(difference.toFixed(1))}</span>{" "}
+              points {status} the Global Average.
             </p>
           </div>
 

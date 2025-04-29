@@ -37,7 +37,7 @@ const ScoreBreakdown = ({
 
     return {
       title: titleMap[key] || key,
-      score: isComingSoon ? "?" : actualScore,
+      score: isComingSoon ? "?" : Math.round(actualScore),
       description: isComingSoon
         ? isSales
           ? `Complete your Sales report to unlock this score.`
