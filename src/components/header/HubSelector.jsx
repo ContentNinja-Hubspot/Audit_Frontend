@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUser } from "../../context/UserContext";
 import { useAudit } from "../../context/ReportContext";
+import { useNotify } from "../../context/NotificationContext";
 import { addNewAccount } from "../../api";
 import Cookies from "js-cookie";
 
@@ -8,6 +9,7 @@ const HubSelector = () => {
   const { user, token } = useUser();
   const { selectedHub, setSelectedHub, reportGenerated } = useAudit();
   const [showDropdown, setShowDropdown] = useState(false);
+  const { success } = useNotify();
   const dropdownRef = useRef(null);
 
   const mainHubDomain = user?.hub_details?.data?.hub_domain;
@@ -31,7 +33,11 @@ const HubSelector = () => {
       secure: true,
       expires: 1,
     });
-    // window.location.href = result?.redirect_url;
+
+    success("Adding new account...");
+    setTimeout(() => {
+      window.location.href = result?.redirect_url;
+    }, 2000);
   };
 
   useEffect(() => {

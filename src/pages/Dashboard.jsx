@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/SideBar";
 import Header from "../components/header/Header";
 import MainContent from "../components/MainContent";
@@ -34,6 +35,17 @@ const Dashboard = () => {
     salesGraphData,
     setSalesGraphData,
   } = useAudit();
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.has("state")) {
+      params.delete("state");
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location.search, location.pathname, navigate]);
 
   const [loading, setLoading] = useState(true);
   const [reportProgress, setReportProgress] = useState(0);
