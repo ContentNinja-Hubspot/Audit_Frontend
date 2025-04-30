@@ -6,6 +6,7 @@ import { SalesPerformanceEmailModal } from "./SampleEmailModal";
 import { findRiskImage, getBorderColor } from "../../utils";
 import { fetchLastActivityDate } from "../../api";
 import { useUser } from "../../context/UserContext";
+import { useAudit } from "../../context/ReportContext";
 
 const SalesPerformance = ({
   sales_performance_metrics = [],
@@ -32,6 +33,8 @@ const SalesPerformance = ({
     useState("meetingRate");
 
   const toggleSection = () => setIsMissingDataExpanded((prev) => !prev);
+
+  const { latestReportId } = useAudit();
 
   const getInferenceText = (metricKey) => {
     if (!sales_performance_metrics || !Array.isArray(sales_performance_metrics))
@@ -238,7 +241,7 @@ const SalesPerformance = ({
 
   useEffect(() => {
     if (selectedUser) {
-      fetchLastActivityDate(token, selectedUser).then((res) => {
+      fetchLastActivityDate(token, selectedUser, latestReportId).then((res) => {
         const rawDate = res?.data;
         if (rawDate) {
           const formatted = new Date(rawDate).toLocaleDateString("en-GB"); // 28/04/2025

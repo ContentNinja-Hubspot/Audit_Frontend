@@ -5,6 +5,8 @@ import {
   fetchSalesReportData,
   fetchAllScores,
   fetchSalesGraphData,
+  triggerCheckReport,
+  checkSalesReportStatus,
 } from "../api";
 import { useUser } from "./UserContext";
 
@@ -33,45 +35,61 @@ export const ReportProvider = ({ children }) => {
     }
   }, [user]);
 
-  // Fetch report when selectedHub is ready
+  // New logic: check both audit and sales reports are complete before fetching data
   useEffect(() => {
-    const fetchReportAndGraph = async () => {
-      if (selectedHub?.latest_report_id && token) {
-        try {
-          setLatestReportId(selectedHub.latest_report_id);
-          const report = await fetchAuditDataByID(
-            token,
-            selectedHub.latest_report_id
-          );
-          const salesData = await fetchSalesReportData(
-            token,
-            selectedHub.latest_report_id
-          );
-          setLatestReportData(report);
-          setSalesReportData(salesData);
+    const checkAndFetchReports = async () => {
+      if (!selectedHub?.hub_id || !token) return;
 
-          const graph = await fetchGraphData(
-            token,
-            selectedHub.latest_report_id
-          );
-          const salesGraph = await fetchSalesGraphData(
-            token,
-            selectedHub.latest_report_id
-          );
-          setSalesGraphData(salesGraph.data);
-          const scores = await fetchAllScores(
-            token,
-            selectedHub.latest_report_id
-          );
-          setScores(scores);
-          setGraphData(graph);
-        } catch (error) {
-          console.error("Failed to fetch report or graph data:", error);
+      try {
+        // Step 1: Check audit report status
+        const auditStatus = await triggerCheckReport(token, selectedHub.hub_id);
+        const auditComplete =
+          !auditStatus.generate_report &&
+          auditStatus?.report_details?.status === "Completed";
+        const reportId = auditStatus?.report_details?.report_id;
+
+        if (!auditComplete || !reportId) {
+          console.log("Audit report not ready");
+          return;
         }
+
+        setLatestReportId(reportId);
+        setReportGenerated(true);
+
+        // Step 2: Check sales report status
+        const salesStatus = await checkSalesReportStatus(
+          token,
+          selectedHub.hub_id
+        );
+        const salesComplete =
+          salesStatus?.progress === 100 && salesStatus?.status === "Completed";
+
+        if (!salesComplete) {
+          console.log("Sales report not ready");
+          return;
+        }
+
+        // Step 3: Fetch data
+        const [auditData, salesData, graph, salesGraph, scoreData] =
+          await Promise.all([
+            fetchAuditDataByID(token, reportId),
+            fetchSalesReportData(token, reportId),
+            fetchGraphData(token, reportId),
+            fetchSalesGraphData(token, reportId),
+            fetchAllScores(token, reportId),
+          ]);
+
+        setLatestReportData(auditData);
+        setSalesReportData(salesData);
+        setGraphData(graph);
+        setSalesGraphData(salesGraph.data);
+        setScores(scoreData);
+      } catch (err) {
+        console.error("Error during report readiness check:", err);
       }
     };
 
-    fetchReportAndGraph();
+    checkAndFetchReports();
   }, [selectedHub, token]);
 
   return (

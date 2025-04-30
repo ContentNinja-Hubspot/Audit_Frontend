@@ -34,9 +34,12 @@ const Header = () => {
     <header className="text-black p-5 bg-[#f8fafd] fixed top-0 left-0 w-full lg:left-72 lg:w-[calc(100%-18rem)] z-10 flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 lg:gap-6">
       <div className="hidden lg:flex sm:flex-row items-center sm:gap-4 w-full sm:w-auto mx-14 lg:mx-0  justify-between sm:justify-start">
         <h2 className="text-xl md:text-2xl text-center sm:text-left">
-          Hi {user?.hub_details?.data?.hs_user}
+          Hi{" "}
+          {user?.hub_details?.data?.hs_user
+            ? user.hub_details.data.hs_user
+            : "User"}
         </h2>
-        <HubSelector />
+        {user?.hub_details?.data?.hs_user ? <HubSelector /> : ""}
       </div>
 
       <div className="flex flex-row items-center gap-2 lg:gap-4 w-full lg:w-auto sm:ml-0 md:ml-80 lg:ml-0">

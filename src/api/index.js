@@ -480,7 +480,7 @@ export const fetchSalesGraphData = async (token, reportId) => {
   }
 };
 
-export const fetchLastActivityDate = async (token, email) => {
+export const fetchLastActivityDate = async (token, email, reportId) => {
   try {
     const response = await fetch(`${BASE_URL}/getlastactivitydate`, {
       method: "POST",
@@ -490,6 +490,7 @@ export const fetchLastActivityDate = async (token, email) => {
       },
       body: JSON.stringify({
         email: email,
+        report_id: reportId,
       }),
     });
 

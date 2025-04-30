@@ -35,14 +35,26 @@ const ScoreBreakdown = ({
       actualScore = dataAuditScore;
     }
 
+    // Set descriptions based on category
+    let description = "";
+    if (isComingSoon) {
+      description = isSales
+        ? `Complete your Sales report to unlock this score.`
+        : "Coming soon.";
+    } else if (isSales) {
+      description =
+        "Your Sales Score is a combination of two dimensions: Sales Usage and Sales Performance. It shows how consistently your team is using HubSpot and how that usage translates into performance outcomes.";
+    } else if (isDataQuality) {
+      description =
+        "Your Data Quality Score reflects how complete and enriched your contact records are. Incomplete or inconsistent data leads to poor segmentation, inefficient workflows, and inaccurate reporting. This score helps identify the gaps in your database that may be hurting your marketing, sales, and service efforts.";
+    } else {
+      description = `Your ${titleMap[key]} score compared to the global benchmark of ${value.global_benchmark}.`;
+    }
+
     return {
       title: titleMap[key] || key,
       score: isComingSoon ? "?" : Math.round(actualScore),
-      description: isComingSoon
-        ? isSales
-          ? `Complete your Sales report to unlock this score.`
-          : "Coming soon."
-        : `Your ${titleMap[key]} score compared to the global benchmark of ${value.global_benchmark}.`,
+      description,
       comingSoon: isComingSoon,
     };
   });
@@ -172,7 +184,7 @@ const ScoreBreakdown = ({
             </h2>
 
             {/* Dynamic Description */}
-            <p className="mt-3 text-gray-600 text-sm px-2 text-start">
+            <p className="mt-3 text-gray-600 text-sm px-6 text-justify">
               {selectedScore.description}
             </p>
           </div>
