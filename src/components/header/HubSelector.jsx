@@ -30,7 +30,7 @@ const HubSelector = () => {
     Cookies.set("state", result?.state, {
       path: "/",
       sameSite: "Lax",
-      secure: true,
+      secure: window.location.protocol === "https:",
       expires: 1,
     });
 

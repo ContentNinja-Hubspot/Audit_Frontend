@@ -48,7 +48,7 @@ const AuditScore = ({
             <div className="flex justify-between items-center mt-2">
               <p className="text-sm sm:text-base">0</p>
               <p className="text-sm sm:text-base md:text-xl font-bold mb-1">
-                {Math.round(finalScore)} / 100
+                {Number(finalScore.toFixed(1))} / 100
               </p>
               <p className="text-sm sm:text-base">100</p>
             </div>

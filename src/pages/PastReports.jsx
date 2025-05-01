@@ -5,7 +5,6 @@ import { fetchReportList } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import CryptoJS from "crypto-js";
-import { useAudit } from "../context/ReportContext";
 
 const PastReports = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
@@ -128,7 +127,7 @@ const PastReports = () => {
                       {new Date(report.created_at).toLocaleDateString("en-US")}
                     </td>
                     <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {report?.score}
+                      {Number(report?.overall_score.toFixed(1))}
                     </td>
                     <td className="text-sm md:text-md p-2 border border-gray-300">
                       <button

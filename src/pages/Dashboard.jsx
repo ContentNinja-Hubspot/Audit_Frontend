@@ -136,7 +136,7 @@ const Dashboard = () => {
 
       if (salesData?.progress < 100 && salesData?.status !== "Completed") {
         setSalesReportProgress(salesData?.progress || 0);
-        setTimeout(pollSalesReportGeneration, 60000);
+        setTimeout(() => pollSalesReportGeneration(reportId), 60000);
       } else if (
         salesData?.progress == 100 &&
         salesData?.status === "Completed"
