@@ -110,6 +110,7 @@ export const ReportProvider = ({ children }) => {
         salesGraphData,
         setSalesGraphData,
         latestReportId,
+        setLatestReportId,
       }}
     >
       {children}

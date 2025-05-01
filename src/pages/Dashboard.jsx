@@ -38,6 +38,7 @@ const Dashboard = () => {
     setScores,
     salesGraphData,
     setSalesGraphData,
+    setLatestReportId,
   } = useAudit();
 
   const location = useLocation();
@@ -96,6 +97,7 @@ const Dashboard = () => {
         !data.generate_report &&
         data?.report_details?.status === "Completed"
       ) {
+        setLatestReportId(data.report_details.report_id);
         const response = await fetchAuditDataByID(
           token,
           data.report_details.report_id
@@ -120,6 +122,7 @@ const Dashboard = () => {
         triggerReportGeneration(token, hubID);
         setTimeout(pollReportGeneration, 60000);
       }
+      setLatestReportId(data.report_details.report_id);
     } catch (err) {
       console.error("Error in polling:", err);
     }
@@ -235,7 +238,7 @@ const Dashboard = () => {
 
         {!user?.hub_details?.data?.hs_user ? (
           <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] text-center px-4">
-            <div className="bg-yellow-50 border border-yellow-300 text-yellow-800 px-6 py-4 rounded-md shadow-md max-w-lg mx-auto">
+            <div className="bg-inherit border bg-white border-black text-black px-6 py-4 rounded shadow-md max-w-lg mx-auto">
               <p className="text-lg font-medium">
                 Looks like you haven’t added any Hub yet.
               </p>
