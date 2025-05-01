@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(true);
   const [reportProgress, setReportProgress] = useState(0);
-  const [salesReportProgress, setSalesReportProgress] = useState(0);
+  const [salesReportProgress, setSalesReportProgress] = useState(2);
   const [salesReportGenerated, setSalesReportGenerated] = useState(false);
   const [salesScores, setSalesScores] = useState(0);
   const { user } = useUser();
@@ -122,7 +122,9 @@ const Dashboard = () => {
         triggerReportGeneration(token, hubID);
         setTimeout(pollReportGeneration, 60000);
       }
-      setLatestReportId(data.report_details.report_id);
+      if (data?.report_details?.report_id) {
+        setLatestReportId(data.report_details.report_id);
+      }
     } catch (err) {
       console.error("Error in polling:", err);
     }

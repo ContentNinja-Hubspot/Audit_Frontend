@@ -10,6 +10,7 @@ const SalesAudit = ({
   salesPerformancescore,
   salesUsageScore,
   salesGraphData,
+  page,
 }) => {
   const [selectedItem, setSelectedItem] = useState("sales_performance");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
@@ -93,6 +94,7 @@ const SalesAudit = ({
             isGeneratingGraph={false}
             total_reps={total_reps}
             graphData={graph_usage_scorecard}
+            page={page}
           />
         ) : (
           <SalesPerformance
@@ -101,6 +103,7 @@ const SalesAudit = ({
             total_reps={total_reps}
             graphData={graph_sales_performance}
             companyAverages={company_averages}
+            page={page}
           />
         )}
       </div>

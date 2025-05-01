@@ -29,7 +29,7 @@ const mapApiToMetrics = (apiItem) => {
   };
 };
 
-const BulkActionTable = () => {
+const BulkActionTable = ({ page }) => {
   const [data, setData] = useState([]);
   const [actionData, setActionData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -193,13 +193,21 @@ const BulkActionTable = () => {
           >
             See Sample Email
           </button>
-          <button
-            className="shadow-none bg-blue-600 text-white px-4 py-2 disabled:opacity-50"
-            onClick={handleSendEmail}
-            disabled={selectedReps.length === 0}
-          >
-            Send Email to Selected Reps
-          </button>
+          <div className="relative group">
+            <button
+              className="shadow-none bg-blue-600 text-white px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleSendEmail}
+              disabled={page === "past" || selectedReps.length === 0}
+            >
+              Send Email to Selected Reps
+            </button>
+
+            {page === "past" && (
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-10">
+                Action can't be taken on past report
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

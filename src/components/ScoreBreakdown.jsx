@@ -53,7 +53,7 @@ const ScoreBreakdown = ({
 
     return {
       title: titleMap[key] || key,
-      score: isComingSoon ? "?" : Math.round(actualScore),
+      score: isComingSoon ? "?" : Number(actualScore.toFixed(1)),
       description,
       comingSoon: isComingSoon,
     };

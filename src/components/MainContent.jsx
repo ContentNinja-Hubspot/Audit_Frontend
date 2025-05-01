@@ -84,6 +84,7 @@ const MainContent = ({
           salesPerformancescore={sales_performance_score}
           salesUsageScore={usage_score}
           salesGraphData={salesGraphData}
+          page={page}
         />
       )}
     </div>

@@ -277,7 +277,7 @@ const UsageScoreCard = ({
       )}
 
       <div className="mt-12">
-        <BulkActionTable />
+        <BulkActionTable page={page} />
       </div>
     </div>
   );

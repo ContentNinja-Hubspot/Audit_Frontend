@@ -14,6 +14,7 @@ const SalesPerformance = ({
   companyAverages,
   graphData,
   total_reps,
+  page,
 }) => {
   const timeRanges = [7, 30];
   const { token } = useUser();
@@ -781,9 +782,20 @@ const SalesPerformance = ({
         >
           See Sample Email
         </button>
-        <button className="shadow-none">
-          Send Emails with the above points
-        </button>
+        <div className="relative group">
+          <button
+            className="shadow-none disabled:cursor-not-allowed"
+            disabled={page === "past"}
+          >
+            Send Emails with the above points
+          </button>
+
+          {page === "past" && (
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+              Action can't be taken on past report
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="text-center"></div>
