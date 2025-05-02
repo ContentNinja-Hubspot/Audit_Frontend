@@ -46,9 +46,21 @@ const BulkActionTable = ({ page }) => {
       try {
         const response = await fetchSalesActionData(token, latestReportId);
         const apiData = response.data || [];
-        setActionData(apiData); // Store the raw API data if needed
-        const formatted = apiData.map(mapApiToMetrics);
+
+        // Deduplicate by rep_email
+        const uniqueDataMap = {};
+        apiData.forEach((item) => {
+          if (!uniqueDataMap[item.rep_email]) {
+            uniqueDataMap[item.rep_email] = item;
+          }
+        });
+        const uniqueApiData = Object.values(uniqueDataMap);
+
+        setActionData(uniqueApiData); // Store the deduplicated raw API data
+        const formatted = uniqueApiData.map(mapApiToMetrics);
         setData(formatted);
+
+        setActionData(apiData); // Store the raw API data if needed
       } catch (err) {
         console.error("Failed to fetch sales data", err);
       } finally {

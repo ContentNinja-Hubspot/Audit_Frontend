@@ -4,9 +4,10 @@ import SalesPerformanceBarChart from "../utils/SalesPerformanceBarChart";
 import ToggleSection from "../utils/ToggleSection";
 import { SalesPerformanceEmailModal } from "./SampleEmailModal";
 import { findRiskImage, getBorderColor } from "../../utils";
-import { fetchLastActivityDate } from "../../api";
+import { fetchLastActivityDate, sendBulkEmailToReps } from "../../api";
 import { useUser } from "../../context/UserContext";
 import { useAudit } from "../../context/ReportContext";
+import { useNotify } from "../../context/NotificationContext";
 
 const SalesPerformance = ({
   sales_performance_metrics = [],
@@ -18,6 +19,7 @@ const SalesPerformance = ({
 }) => {
   const timeRanges = [7, 30];
   const { token } = useUser();
+  const { success } = useNotify();
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedDays, setSelectedDays] = useState(30);
   const [showModal, setShowModal] = useState(false);
@@ -25,7 +27,6 @@ const SalesPerformance = ({
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
   const [lastActivityDate, setLastActivityDate] = useState("N/A");
 
-  console.log("sales metrics", sales_performance_metrics);
   const [firstRowSelectedItem, setfirstRowSelectedItem] =
     useState("dealClosure");
   const [secondRowSelectedItem, setSecondRowSelectedItem] =
@@ -508,6 +509,59 @@ const SalesPerformance = ({
     return avgValue !== undefined ? `company avg: ${avgValue}` : "";
   };
 
+  const buildUsageActionDataPayload = () => {
+    const userMetrics = sales_performance_metrics.find(
+      (item) => item.rep_email === selectedUser
+    );
+
+    if (!userMetrics) {
+      return null;
+    }
+
+    const m = userMetrics.metrics;
+
+    const safePercent = (val) =>
+      typeof val === "number" ? `${val.toFixed(0)}%` : "N/A";
+
+    const payload = {
+      impact_analytics: {
+        deal_win_rate: safePercent(m.deal_closure_rate?.percent),
+        revenue_win_rate: safePercent(m.revenue_win_rate?.percent),
+        revenue_impact_rate: safePercent(m.revenue_impact?.percent),
+      },
+      moderate_risk: {
+        task_completion_rate: {
+          is_moderate_risk: m.task_completion_rate?.risk === "Moderate Risk",
+          value: safePercent(m.task_completion_rate?.percent),
+        },
+        connected_call_rate: {
+          is_moderate_risk: m.connected_call_rate?.risk === "Moderate Risk",
+          value: safePercent(m.connected_call_rate?.percent),
+        },
+        deal_stagnation_rate: {
+          is_moderate_risk: m.deal_stagnation_rate?.risk === "Moderate Risk",
+          value: safePercent(m.deal_stagnation_rate?.percent),
+        },
+      },
+      high_risk: {
+        task_completion_rate: {
+          is_high_risk: m.task_completion_rate?.risk === "High Risk",
+          value: safePercent(m.task_completion_rate?.percent),
+        },
+        connected_call_rate: {
+          is_high_risk: m.connected_call_rate?.risk === "High Risk",
+          value: safePercent(m.connected_call_rate?.percent),
+        },
+        deal_stagnation_rate: {
+          is_high_risk: m.deal_stagnation_rate?.risk === "High Risk",
+          value: safePercent(m.deal_stagnation_rate?.percent),
+        },
+      },
+    };
+
+    return payload;
+  };
+
   return (
     <div className="bg-white rounded-lg">
       {/* Header */}
@@ -786,6 +840,27 @@ const SalesPerformance = ({
           <button
             className="shadow-none disabled:cursor-not-allowed"
             disabled={page === "past"}
+            onClick={async () => {
+              const payload = buildUsageActionDataPayload();
+              console.log("payload:::", payload);
+
+              if (!payload) {
+                console.error("User metrics not found.");
+                return;
+              }
+
+              try {
+                await sendBulkEmailToReps(token, {
+                  usage_action_data: payload,
+                  objectTOSendEmail: "sales_performance_scorecard",
+                  rep_email: selectedUser,
+                  session_id: latestReportId,
+                });
+                success("Sending Email to Rep");
+              } catch (err) {
+                console.error("Failed to send email", err);
+              }
+            }}
           >
             Send Emails with the above points
           </button>

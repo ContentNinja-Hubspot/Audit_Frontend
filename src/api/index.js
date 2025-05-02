@@ -2,8 +2,6 @@ const BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 export const requestOTP = async (email) => {
   try {
-    console.log("BASE_URL:", import.meta.env.VITE_BACKEND_API_URL);
-
     const response = await fetch(`${BASE_URL}/request`, {
       method: "POST",
       headers: {
@@ -383,7 +381,7 @@ export const fetchSalesReportData = async (token, reportId) => {
   }
 };
 
-export const checkSalesReportStatus = async (token, hubId) => {
+export const checkSalesReportStatus = async (token, hubId, reportId) => {
   try {
     const response = await fetch(`${BASE_URL}/checksalesprogress`, {
       method: "POST",
@@ -393,6 +391,7 @@ export const checkSalesReportStatus = async (token, hubId) => {
       },
       body: JSON.stringify({
         hub_id: hubId,
+        report_id: reportId,
       }),
     });
 
@@ -514,11 +513,9 @@ export const sendBulkEmailToReps = async (token, payload) => {
       },
       body: JSON.stringify(payload),
     });
-
     if (!response.ok) {
       throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
-
     const data = await response.json();
     return data;
   } catch (error) {

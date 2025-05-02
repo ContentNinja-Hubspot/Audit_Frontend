@@ -39,6 +39,9 @@ const Dashboard = () => {
     salesGraphData,
     setSalesGraphData,
     setLatestReportId,
+    checkTriggerReportGeneration,
+    salesReportProgress,
+    setSalesReportProgress,
   } = useAudit();
 
   const location = useLocation();
@@ -54,7 +57,7 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(true);
   const [reportProgress, setReportProgress] = useState(0);
-  const [salesReportProgress, setSalesReportProgress] = useState(2);
+
   const [salesReportGenerated, setSalesReportGenerated] = useState(false);
   const [salesScores, setSalesScores] = useState(0);
   const { user } = useUser();
@@ -117,7 +120,7 @@ const Dashboard = () => {
         setReportGenerated(true);
         // Start polling for sales report
         pollSalesReportGeneration(data.report_details.report_id);
-      } else if (data.generate_report) {
+      } else if (data.generate_report && checkTriggerReportGeneration) {
         setReportProgress(2);
         triggerReportGeneration(token, hubID);
         setTimeout(pollReportGeneration, 60000);
@@ -137,7 +140,7 @@ const Dashboard = () => {
     if (isPollingSales.current || !token || !hubID) return;
     isPollingSales.current = true;
     try {
-      const salesData = await checkSalesReportStatus(token, hubID);
+      const salesData = await checkSalesReportStatus(token, hubID, reportId);
 
       if (salesData?.progress < 100 && salesData?.status !== "Completed") {
         setSalesReportProgress(salesData?.progress || 0);
@@ -171,7 +174,7 @@ const Dashboard = () => {
       try {
         const data = await triggerCheckReport(token, hubID);
 
-        if (data?.generate_report) {
+        if (data?.generate_report && checkTriggerReportGeneration) {
           // Report generation is needed — initiate it
           setReportProgress(2);
           triggerReportGeneration(token, hubID);
@@ -190,7 +193,7 @@ const Dashboard = () => {
             fetchAuditDataByID(token, reportId),
             fetchGraphData(token, reportId),
             fetchAllScores(token, reportId),
-            checkSalesReportStatus(token, hubID),
+            checkSalesReportStatus(token, hubID, reportId),
           ]);
 
           setLatestReportData(report);
@@ -217,10 +220,6 @@ const Dashboard = () => {
 
           setLoading(false);
         } else {
-          console.warn(
-            "Unhandled report status:",
-            data?.report_details?.status
-          );
           setLoading(false);
         }
       } catch (error) {
