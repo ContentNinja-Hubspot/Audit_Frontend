@@ -2,6 +2,7 @@ const BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
 
 export const requestOTP = async (email) => {
   try {
+    console.log("Base URL::", BASE_URL);
     const response = await fetch(`${BASE_URL}/request`, {
       method: "POST",
       headers: {
