@@ -40,6 +40,7 @@ const SalesAudit = ({
 
   const { graph_usage_scorecard, graph_sales_performance } =
     salesGraphData || {};
+  const inactiveDaysGraph = graph_usage_scorecard?.inactive_days;
 
   return (
     <div className="mb-6 px-4 md:pr-10 md:px-0 lg:px-10">
@@ -103,6 +104,7 @@ const SalesAudit = ({
             total_reps={total_reps}
             graphData={graph_sales_performance}
             companyAverages={company_averages}
+            inactiveDaysGraph={inactiveDaysGraph}
             page={page}
           />
         )}

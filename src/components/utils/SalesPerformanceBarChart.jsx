@@ -33,18 +33,30 @@ const metricLabelMap = {
   actionstaken: "Actions Taken",
   contactsowned: "Contacts Owned",
   dealsowned: "Deals Owned",
+  lastLogin: "Days Since Last Login", // Added for lastLogin
 };
 
 const SalesPerformanceBarChart = ({
   salesPerformanceData = [],
   selectedMetric,
+  inactiveDaysGraph,
 }) => {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    if (!salesPerformanceData || !selectedMetric) return;
+    if ((!salesPerformanceData && !inactiveDaysGraph) || !selectedMetric)
+      return;
 
     const getMetricValue = (rep) => {
+      if (selectedMetric === "lastLogin") {
+        // Find the user in the inactiveDaysGraph data and get the number of inactive days
+        const inactiveData = inactiveDaysGraph.find(
+          (user) => user.user_email === rep.rep_email
+        );
+        return inactiveData ? inactiveData.days : 0; // If user not found, return 0
+      }
+
+      // Handle other metrics as before
       switch (selectedMetric) {
         case "dealClosure":
           return rep.deal_closure_rate_rounded ?? 0;
@@ -81,7 +93,13 @@ const SalesPerformanceBarChart = ({
 
     const labels = salesPerformanceData.map((rep) => rep.rep_email);
     const rawValues = salesPerformanceData.map((rep) => getMetricValue(rep));
-    const values = rawValues.map((val) => Math.abs(val)); // Always draw positive bars
+
+    let values = rawValues.map((val) => Math.abs(val)); // Always draw positive bars
+    if (selectedMetric === "lastLogin") {
+      // For lastLogin, use the raw values (number of days) directly, no need for % conversion
+      values = rawValues;
+    }
+
     const colors = rawValues.map((val) =>
       val >= 0 ? "rgba(54, 162, 235, 0.6)" : "rgba(239,68,68,0.6)"
     ); // Blue for positive, Red for negative
@@ -98,19 +116,14 @@ const SalesPerformanceBarChart = ({
         },
       ],
     });
-  }, [salesPerformanceData, selectedMetric]);
+  }, [salesPerformanceData, selectedMetric, inactiveDaysGraph]);
 
   const getChartTitle = (metric) => {
-    if (
-      metric === "revenueWinRate" ||
-      metric === "actionstaken" ||
-      metric === "contactsowned" ||
-      metric === "dealsowned" ||
-      metric === "meetingRate"
-    ) {
-      return "% Difference Compared to Company Average";
+    if (metric === "lastLogin") {
+      return "Days Since Last Login Performance Metrics"; // Special title for lastLogin
     }
-    return "Performance Metrics (%)";
+    // Other titles are based on the metric label
+    return `${metricLabelMap[selectedMetric]} Performance Metrics`;
   };
 
   const options = {
@@ -149,6 +162,9 @@ const SalesPerformanceBarChart = ({
         formatter: (value, context) => {
           const rawValue = context.dataset.rawValues?.[context.dataIndex] || 0;
           if (rawValue === 0) return "";
+          if (selectedMetric === "lastLogin") {
+            return `${Math.abs(rawValue)} Days`; // Show days instead of percentage for lastLogin
+          }
           if (rawValue < 0) {
             return `-${Math.abs(rawValue)}%`;
           }

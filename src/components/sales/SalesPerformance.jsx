@@ -15,6 +15,7 @@ const SalesPerformance = ({
   companyAverages,
   graphData,
   total_reps,
+  inactiveDaysGraph,
   page,
 }) => {
   const timeRanges = [7, 30];
@@ -757,6 +758,7 @@ const SalesPerformance = ({
         <SalesPerformanceBarChart
           salesPerformanceData={graphData}
           selectedMetric={secondRowSelectedItem}
+          inactiveDaysGraph={inactiveDaysGraph}
         />
       </div>
 

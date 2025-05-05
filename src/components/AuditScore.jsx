@@ -9,7 +9,7 @@ const AuditScore = ({
   const rawDifference =
     73 - (overallScore ? Number(overallScore.toFixed(1)) : 0);
   const difference = Math.abs(rawDifference);
-  const status = rawDifference < 0 ? "behind" : "ahead";
+  const status = rawDifference < 0 ? "ahead" : "behind";
 
   const progressPercent = `${Math.min(finalScore, 100)}%`;
   const reportGenerated = salesReportProgress === 100;
