@@ -46,6 +46,7 @@ const Dashboard = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const hasTriggeredReport = useRef(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -122,7 +123,10 @@ const Dashboard = () => {
         pollSalesReportGeneration(data.report_details.report_id);
       } else if (data.generate_report && checkTriggerReportGeneration) {
         setReportProgress(2);
-        triggerReportGeneration(token, hubID);
+        if (!hasTriggeredReport.current) {
+          hasTriggeredReport.current = true;
+          triggerReportGeneration(token, hubID);
+        }
         setTimeout(pollReportGeneration, 60000);
       }
       if (data?.report_details?.report_id) {
@@ -176,8 +180,12 @@ const Dashboard = () => {
 
         if (data?.generate_report && checkTriggerReportGeneration) {
           // Report generation is needed — initiate it
+
           setReportProgress(2);
-          triggerReportGeneration(token, hubID);
+          if (!hasTriggeredReport.current) {
+            hasTriggeredReport.current = true;
+            triggerReportGeneration(token, hubID);
+          }
           pollReportGeneration();
         } else if (
           data?.report_details?.status === "Pending" ||

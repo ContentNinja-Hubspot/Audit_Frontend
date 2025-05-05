@@ -36,7 +36,7 @@ const SalesPerformance = ({
 
   const toggleSection = () => setIsMissingDataExpanded((prev) => !prev);
 
-  const { latestReportId } = useAudit();
+  const { latestReportId, selectedHub } = useAudit();
 
   const getInferenceText = (metricKey) => {
     if (!sales_performance_metrics || !Array.isArray(sales_performance_metrics))
@@ -325,7 +325,7 @@ const SalesPerformance = ({
           parseFloat(usage.meetingRate?.rate) > 0 ? "More" : "Less"
         } Meetings than the company average: (No of meeting Company wide - Rep’s Meetings)/ No of meeting Company wide`,
         suffix: "%",
-        countLabel: "meetings taken",
+        countLabel: "Meetings Taken",
       },
       {
         key: "actionstaken",
@@ -336,7 +336,7 @@ const SalesPerformance = ({
           parseFloat(usage.actionstaken?.rate) > 0 ? "More" : "Less"
         } Actions taken than the company average: (Company-wide Actions - Rep’s Actions)/ Company-wide Actions (includes tasks, meetings, calls, emails)`,
         suffix: "%",
-        countLabel: "actions taken",
+        countLabel: "Actions Taken",
       },
       {
         key: "contactsowned",
@@ -347,7 +347,7 @@ const SalesPerformance = ({
           parseFloat(usage.contactsowned?.rate) > 0 ? "More" : "Less"
         } Contacts owned than the company average: (Company Contacts - Rep Contacts)/ Company Contacts`,
         suffix: "%",
-        countLabel: "contacts owned",
+        countLabel: "Contacts Owned",
       },
       {
         key: "dealsowned",
@@ -358,7 +358,7 @@ const SalesPerformance = ({
           parseFloat(usage.dealsowned?.rate) > 0 ? "More" : "Less"
         } Deals owned than the company average: (Company Deals - Rep Deals)/ Company Deals`,
         suffix: "%",
-        countLabel: "deals owned",
+        countLabel: "Deals Owned",
       },
     ];
   };
@@ -506,10 +506,12 @@ const SalesPerformance = ({
     };
 
     const avgValue = avgMap[metricKey];
-    return avgValue !== undefined ? `company avg: ${avgValue}` : "";
+    return avgValue !== undefined
+      ? `Company Avg: ${Number(avgValue.toFixed(1))}`
+      : "";
   };
 
-  const buildUsageActionDataPayload = () => {
+  const buildSalesPerformancePayload = () => {
     const userMetrics = sales_performance_metrics.find(
       (item) => item.rep_email === selectedUser
     );
@@ -841,8 +843,7 @@ const SalesPerformance = ({
             className="shadow-none disabled:cursor-not-allowed"
             disabled={page === "past"}
             onClick={async () => {
-              const payload = buildUsageActionDataPayload();
-              console.log("payload:::", payload);
+              const payload = buildSalesPerformancePayload();
 
               if (!payload) {
                 console.error("User metrics not found.");
@@ -850,13 +851,14 @@ const SalesPerformance = ({
               }
 
               try {
-                await sendBulkEmailToReps(token, {
-                  usage_action_data: payload,
-                  objectTOSendEmail: "sales_performance_scorecard",
-                  rep_email: selectedUser,
-                  session_id: latestReportId,
-                });
                 success("Sending Email to Rep");
+                await sendBulkEmailToReps(token, {
+                  object_type: "sales_performance_scorecard",
+                  action_data: payload,
+                  reps_email: selectedUser,
+                  hub_id: selectedHub.hub_id,
+                });
+                success("Email sent successfully!");
               } catch (err) {
                 console.error("Failed to send email", err);
               }

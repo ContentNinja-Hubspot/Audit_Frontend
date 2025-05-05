@@ -6,6 +6,7 @@ import Logo1 from "../images/image1.png";
 
 const Sidebar = () => {
   const location = useLocation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024); // Open by default on large screens
 
   useEffect(() => {
@@ -86,16 +87,36 @@ const Sidebar = () => {
             >
               Past Reports
             </Link>
-            {/* <Link
-              className={`px-4 py-2 rounded-md transition text-start ${
-                location.pathname === "/past-reports"
-                  ? "bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] text-black font-semibold"
-                  : "hover:bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] hover:text-black"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              Clean Up Tools
-            </Link> */}
+            {/* Clean Up Tools Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="bg-inherit text-black w-full text-start flex justify-between"
+              >
+                Clean Up Tools
+                <span>{dropdownOpen ? "-" : "+"}</span>
+              </button>
+              {dropdownOpen && (
+                <div className="mt-2 ml-4 flex flex-col space-y-2">
+                  <Link
+                    to=""
+                    className="px-4 py-2 text-start rounded-md transition hover:bg-[#f0f0f0] text-sm"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Remove Association
+                  </Link>
+                  <div
+                    className="relative text-start px-4 py-2 rounded-md text-sm text-gray-500 cursor-not-allowed bg-white/10 backdrop-blur-sm border border-white/20"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Deduplication
+                    <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded-full text-gray-500 backdrop-blur-md">
+                      Coming Soon
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Credits Section */}

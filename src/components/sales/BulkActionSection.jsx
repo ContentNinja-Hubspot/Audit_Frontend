@@ -37,9 +37,7 @@ const BulkActionTable = ({ page }) => {
   const [showModal, setShowModal] = useState(false);
   const { token } = useUser();
   const { error, success } = useNotify();
-  const { latestReportId } = useAudit();
-
-  const ACCESS_TOKEN = import.meta.env.VITE_ACCESS_TOKEN; // ideally from env
+  const { latestReportId, selectedHub } = useAudit();
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,8 +57,6 @@ const BulkActionTable = ({ page }) => {
         setActionData(uniqueApiData); // Store the deduplicated raw API data
         const formatted = uniqueApiData.map(mapApiToMetrics);
         setData(formatted);
-
-        setActionData(apiData); // Store the raw API data if needed
       } catch (err) {
         console.error("Failed to fetch sales data", err);
       } finally {
@@ -94,24 +90,20 @@ const BulkActionTable = ({ page }) => {
     }
 
     try {
-      // const selectedActionData = data
-      //   .filter((rep) => selectedReps.includes(rep.rep_email))
-      //   .map((rep) => ({
-      //     rep_email: rep.rep_email,
-      //     ...rep.metrics,
-      //   }));
+      const sanitizedActionData = actionData.map(
+        ({ session_id, usage_scorecard_action_data_id, ...rest }) => rest
+      );
 
       const payload = {
-        access_token: ACCESS_TOKEN, // ideally from env
-        session_id: "36", // should dynamically set if possible
         object_type: "usage_scorecard",
-        action_data: actionData,
+        action_data: sanitizedActionData,
         reps_email: selectedReps,
+        hub_id: selectedHub.hub_id,
       };
 
+      success("Sending emails to selected reps...");
       await sendBulkEmailToReps(token, payload);
-
-      success("Emails are being sent successfully!");
+      success("Emails sent successfully!");
       setSelectedReps([]);
     } catch (err) {
       console.error("Failed to send bulk email", err);
