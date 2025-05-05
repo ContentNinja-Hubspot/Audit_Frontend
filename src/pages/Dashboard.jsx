@@ -252,8 +252,8 @@ const Dashboard = () => {
                 Looks like you haven’t added any Hub yet.
               </p>
               <p className="mt-2 text-sm">
-                Please select a Hub using the dropdown at the top to view your
-                audit report.
+                Please select a Hub by adding a new portal using the Add New
+                Portal Button.
               </p>
               <button onClick={handleAddNewAccount} className="my-4 p-2">
                 + Add New Portal

@@ -99,7 +99,8 @@ const Sidebar = () => {
               {dropdownOpen && (
                 <div className="mt-2 ml-4 flex flex-col space-y-2">
                   <Link
-                    to=""
+                    to="https://app.hubspot.com/oauth/authorize?client_id=eb2da63c-63b4-4d48-9959-5759609297c9&redirect_uri=https://hsdissociate.boundaryhq.com/hubspot/oauth/callback&scope=crm.schemas.deals.read%20oauth%20tickets%20crm.objects.contacts.write%20crm.schemas.custom.read%20crm.objects.custom.read%20crm.objects.custom.write%20crm.objects.companies.write%20crm.objects.companies.read%20crm.objects.deals.read%20crm.objects.deals.write%20crm.objects.contacts.read"
+                    target="_blank"
                     className="px-4 py-2 text-start rounded-md transition hover:bg-[#f0f0f0] text-sm"
                     onClick={() => setIsOpen(false)}
                   >
