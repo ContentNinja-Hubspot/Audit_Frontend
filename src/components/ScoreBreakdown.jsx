@@ -97,17 +97,19 @@ const ScoreBreakdown = ({
                   className={`relative p-4 rounded-lg text-black border ${findBorderColor(
                     item.score
                   )} transition duration-300 w-[85%] mx-auto
-      ${
-        (selectedScore.title === item.title && !item.comingSoon && !isSales) ||
-        isDataQuality
-          ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef] font-semibold"
-          : "bg-white hover:bg-gray-100"
-      }
-      ${!isClickable ? "cursor-default pointer-events-none" : "cursor-pointer"}
-      `}
+                  ${
+                    selectedScore.title === item.title
+                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef] font-semibold transition-transform"
+                      : "bg-white hover:bg-gray-100"
+                  }
+                  ${
+                    !isClickable
+                      ? "cursor-default pointer-events-none"
+                      : "cursor-pointer"
+                  }`}
                 >
                   {/* Gradient progress bar for Sales */}
-                  {isSales && (
+                  {isSales && salesReportProgress < 100 && (
                     <div
                       className="absolute top-0 left-0 h-full rounded-lg z-0 "
                       style={{

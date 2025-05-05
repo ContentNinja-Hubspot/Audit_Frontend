@@ -589,8 +589,16 @@ const SalesPerformance = ({
             </option>
           ))}
         </select>
+        <div></div>
+      </div>
+
+      {/* Impact Analysis */}
+      <div className="flex justify-between items-end">
+        <div className="text-start mx-10 mt-6 font-semibold text-lg text-black">
+          Impact Analysis
+        </div>
         <select
-          className="border rounded px-3 py-1"
+          className="border rounded px-3 py-1 mr-10"
           value={selectedDays}
           onChange={(e) => setSelectedDays(parseInt(e.target.value))}
         >
@@ -602,10 +610,6 @@ const SalesPerformance = ({
         </select>
       </div>
 
-      {/* Impact Analysis */}
-      <div className="text-start mx-10 mt-6 font-semibold text-lg text-black">
-        Impact Analysis
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-4 mx-10">
         {impactMetrics.map(({ key, label, info, text, suffix }) => (
           <div
@@ -667,8 +671,21 @@ const SalesPerformance = ({
       </div>
 
       {/* Efficiency Analysis */}
-      <div className="text-start mt-6 mx-10 font-semibold text-lg text-black">
-        Efficiency Analysis
+      <div className="flex justify-between items-end">
+        <div className="text-start mt-6 mx-10 font-semibold text-lg text-black">
+          Efficiency Analysis
+        </div>
+        <select
+          className="border rounded px-3 py-1 mr-10"
+          value={selectedDays}
+          onChange={(e) => setSelectedDays(parseInt(e.target.value))}
+        >
+          {timeRanges.map((day) => (
+            <option key={day} value={day}>
+              {day} Days
+            </option>
+          ))}
+        </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 mx-10">
         {efficiencyMetrics.map(({ key, label, info, suffix }) => (
@@ -744,8 +761,22 @@ const SalesPerformance = ({
       </div>
 
       {/* Usage Analysis */}
-      <div className="text-start mt-10 mx-10 font-semibold text-lg text-black">
-        Usage Analysis
+      <div className="flex justify-between items-end">
+        <div className="text-start mt-10 mx-10 font-semibold text-lg text-black">
+          Usage Analysis
+        </div>
+        <select
+          className="border rounded px-3 py-1 mr-10"
+          value={selectedDays}
+          onChange={(e) => setSelectedDays(parseInt(e.target.value))}
+        >
+          {selectedDays}
+          {timeRanges.map((day) => (
+            <option key={day} value={day}>
+              {day} Days
+            </option>
+          ))}
+        </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 mx-10">
         {getUsageMetrics().map(({ key, label, info, suffix, countLabel }) => (
@@ -822,11 +853,11 @@ const SalesPerformance = ({
           {getAreasOfImprovement().length > 0 ? (
             getAreasOfImprovement().map((item, index) => (
               <li key={index} className="mb-2">
-                <strong>✅ {item.label}</strong> - {item.inference}
+                <strong>🎯 {item.label}</strong> - {item.inference}
               </li>
             ))
           ) : (
-            <li>🎯 No high-risk areas detected for this user!</li>
+            <li>✅ No high-risk areas detected for this user!</li>
           )}
         </ul>
       </div>
