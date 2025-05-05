@@ -12,7 +12,6 @@ const PastReports = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const { error } = useNotify();
-
   const { token } = useUser();
 
   useEffect(() => {
@@ -51,6 +50,16 @@ const PastReports = () => {
     ).toString();
     const encodedId = encodeURIComponent(encryptedId);
     navigate(`/past-reports/${encodedId}?hub_domain=${hub_domain}`);
+  };
+
+  const getSafeScore = (score) => {
+    // Ensure the score is a number and is defined
+    return score && !isNaN(score) ? Number(score.toFixed(1)) : "N/A";
+  };
+
+  const formatDate = (date) => {
+    // Ensure the date is valid before formatting
+    return date ? new Date(date).toLocaleDateString("en-US") : "N/A";
   };
 
   if (loading) {
@@ -121,22 +130,22 @@ const PastReports = () => {
                       {indexOfFirstReport + index + 1}
                     </td>
                     <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {report?.hub_domain}
+                      {report?.hub_domain || "N/A"}
                     </td>
                     <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {new Date(report.created_at).toLocaleDateString("en-US")}
+                      {formatDate(report?.created_at)}
                     </td>
                     <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {Number(report?.overall_score.toFixed(1))}
+                      {getSafeScore(report?.overall_score)}
                     </td>
                     <td className="text-sm md:text-md p-2 border border-gray-300">
                       <button
-                        onClick={() => {
+                        onClick={() =>
                           handlePastReportClick(
                             report.hub_domain,
                             report.report_id
-                          );
-                        }}
+                          )
+                        }
                         className="text-sm min-w-min md:text-md h-10 md:h-10 truncate"
                       >
                         View Report
