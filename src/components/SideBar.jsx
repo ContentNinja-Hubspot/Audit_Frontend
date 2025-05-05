@@ -3,11 +3,15 @@ import { FiMenu, FiPlus, FiX } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import boundaryLogo from "../images/boundary.png";
 import Logo1 from "../images/image1.png";
+import { fetchReportList } from "../api";
+import { useUser } from "../context/UserContext";
 
 const Sidebar = () => {
   const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024); // Open by default on large screens
+  const { token } = useUser(); // Assuming you have a user context to get the token
+  const [credits, setCredits] = useState(100); // assuming max is 100
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,6 +25,23 @@ const Sidebar = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await fetchReportList(token);
+        const reports = response.data || [];
+
+        const usedCredits = reports.length * 10;
+        const availableCredits = 100 - usedCredits; // Prevent negative credits
+        setCredits(availableCredits);
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+      }
+    };
+
+    fetchReports();
+  }, [token]);
 
   return (
     <>
@@ -123,7 +144,9 @@ const Sidebar = () => {
           {/* Credits Section */}
           <div className="mt-auto pb-4 text-center rounded-lg items-center justify-center mx-auto flex flex-col">
             <p className="text-lg font-md">Available Credits</p>
-            <p className="text-lg font-semibold tracking-wide mb-3">100/100</p>
+            <p className="text-lg font-semibold tracking-wide mb-3">
+              {credits}/100
+            </p>
             <button
               className="flex items-center justify-center disabled:cursor-not-allowed bg-gray-600"
               disabled
