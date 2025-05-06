@@ -21,6 +21,7 @@ ChartJS.register(
   ChartDataLabels
 );
 
+ChartJS.defaults.font.family = "'Lexend', sans-serif";
 // Metric display names (for better graph labels)
 const metricLabelMap = {
   dealClosure: "Deal Won Percentage",

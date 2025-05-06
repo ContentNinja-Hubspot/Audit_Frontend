@@ -21,6 +21,8 @@ ChartJS.register(
   Legend
 );
 
+ChartJS.defaults.font.family = "'Lexend', sans-serif";
+
 const dummyDataBySource = {
   labels: [
     "Organic Search",

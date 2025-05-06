@@ -529,10 +529,21 @@ const SalesPerformance = ({
     const payload = {
       impact_analytics: {
         deal_win_rate: safePercent(m.deal_closure_rate?.percent),
-        revenue_win_rate: safePercent(m.revenue_win_rate?.percent),
         revenue_impact_rate: safePercent(m.revenue_impact?.percent),
       },
       moderate_risk: {
+        deal_win_rate: {
+          is_moderate_risk: m.deal_closure_rate?.risk === "Moderate Risk",
+          value: safePercent(m.deal_closure_rate?.percent),
+        },
+        revenue_impact: {
+          is_moderate_risk: m.revenue_impact?.risk === "Moderate Risk",
+          value: safePercent(m.revenue_impact?.percent),
+        },
+        deal_stagnation_rate: {
+          is_moderate_risk: m.deal_stagnation_rate?.risk === "Moderate Risk",
+          value: safePercent(m.deal_stagnation_rate?.percent),
+        },
         task_completion_rate: {
           is_moderate_risk: m.task_completion_rate?.risk === "Moderate Risk",
           value: safePercent(m.task_completion_rate?.percent),
@@ -541,12 +552,40 @@ const SalesPerformance = ({
           is_moderate_risk: m.connected_call_rate?.risk === "Moderate Risk",
           value: safePercent(m.connected_call_rate?.percent),
         },
-        deal_stagnation_rate: {
-          is_moderate_risk: m.deal_stagnation_rate?.risk === "Moderate Risk",
-          value: safePercent(m.deal_stagnation_rate?.percent),
+        meetings_than_company_average: {
+          is_moderate_risk:
+            m.meetings_than_company_average?.risk_30_days === "Moderate Risk",
+          value: safePercent(m.meetings_than_company_average?.percent_30_days),
+        },
+        actions_taken_than_company_average: {
+          is_moderate_risk:
+            m.actions_than_company_average?.risk_30_days === "Moderate Risk",
+          value: safePercent(m.actions_than_company_average?.percent_30_days),
+        },
+        contacts_owned_than_company_average: {
+          is_moderate_risk:
+            m.contacts_than_company_average?.risk_30_days === "Moderate Risk",
+          value: safePercent(m.contacts_than_company_average?.percent_30_days),
+        },
+        deals_owned_than_company_average: {
+          is_moderate_risk:
+            m.deals_than_company_average?.risk_30_days === "Moderate Risk",
+          value: safePercent(m.deals_than_company_average?.percent_30_days),
         },
       },
       high_risk: {
+        deal_win_rate: {
+          is_high_risk: m.deal_closure_rate?.risk === "High Risk",
+          value: safePercent(m.deal_closure_rate?.percent),
+        },
+        revenue_impact: {
+          is_high_risk: m.revenue_impact?.risk === "High Risk",
+          value: safePercent(m.revenue_impact?.percent),
+        },
+        deal_stagnation_rate: {
+          is_high_risk: m.deal_stagnation_rate?.risk === "High Risk",
+          value: safePercent(m.deal_stagnation_rate?.percent),
+        },
         task_completion_rate: {
           is_high_risk: m.task_completion_rate?.risk === "High Risk",
           value: safePercent(m.task_completion_rate?.percent),
@@ -555,9 +594,25 @@ const SalesPerformance = ({
           is_high_risk: m.connected_call_rate?.risk === "High Risk",
           value: safePercent(m.connected_call_rate?.percent),
         },
-        deal_stagnation_rate: {
-          is_high_risk: m.deal_stagnation_rate?.risk === "High Risk",
-          value: safePercent(m.deal_stagnation_rate?.percent),
+        meetings_than_company_average: {
+          is_high_risk:
+            m.meetings_than_company_average?.risk_30_days === "High Risk",
+          value: safePercent(m.meetings_than_company_average?.percent_30_days),
+        },
+        actions_taken_than_company_average: {
+          is_high_risk:
+            m.actions_than_company_average?.risk_30_days === "High Risk",
+          value: safePercent(m.actions_than_company_average?.percent_30_days),
+        },
+        contacts_owned_than_company_average: {
+          is_high_risk:
+            m.contacts_than_company_average?.risk_30_days === "High Risk",
+          value: safePercent(m.contacts_than_company_average?.percent_30_days),
+        },
+        deals_owned_than_company_average: {
+          is_high_risk:
+            m.deals_than_company_average?.risk_30_days === "High Risk",
+          value: safePercent(m.deals_than_company_average?.percent_30_days),
         },
       },
     };

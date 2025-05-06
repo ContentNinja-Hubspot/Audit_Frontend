@@ -143,7 +143,7 @@ const UsageScoreCard = ({
                 <p>Sales Adoption (Reps with paid sales seats)</p>
               </div>
               <select
-                className="border rounded px-3 py-1"
+                className="border rounded px-3 py-1 sticky top-0 right-0 z-50"
                 value={days}
                 onChange={(e) => setDays(Number(e.target.value))}
               >

@@ -70,7 +70,11 @@ const Sidebar = () => {
           </button>
 
           {/* Sidebar Header */}
-          <div className="flex items-center justify-start space-x-2 p-3 mt-6 lg:mt-3 mx-auto">
+          <Link
+            to="/dashboard"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center justify-start space-x-2 p-3 mt-6 lg:mt-3 mx-auto"
+          >
             <img
               src={Logo1}
               alt="New Logo"
@@ -81,7 +85,7 @@ const Sidebar = () => {
               alt="Boundary Logo"
               className="h-8 w-auto object-contain"
             />
-          </div>
+          </Link>
 
           {/* Navigation */}
           <nav className="flex flex-col space-y-4 p-4 mt-5">

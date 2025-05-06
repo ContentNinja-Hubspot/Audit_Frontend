@@ -127,7 +127,6 @@ export const SalesPerformanceEmailModal = ({ isOpen, onClose }) => {
           <p className="font-semibold text-start">💰 Impact Analytics:</p>
           <ul className="list-disc list-inside ml-4 text-start">
             <li>Deal Win Rate: [Value]</li>
-            <li>Revenue Win Rate: [Value]</li>
             <li>Revenue Impact Rate: [Value]</li>
           </ul>
 

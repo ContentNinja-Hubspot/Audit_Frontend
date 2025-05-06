@@ -181,7 +181,7 @@ const BulkActionTable = ({ page }) => {
                     key={key}
                     className="p-3 text-center border border-gray-300"
                   >
-                    {rep.metrics[key] ? "✅" : "❌"}
+                    {rep.metrics[key] ? "❌" : "✅"}
                   </td>
                 ))}
               </tr>

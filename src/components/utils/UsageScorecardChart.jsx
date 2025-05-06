@@ -21,6 +21,8 @@ ChartJS.register(
   ChartDataLabels // Register datalabels plugin
 );
 
+ChartJS.defaults.font.family = "'Lexend', sans-serif";
+
 // Prettier labels for the selected metrics
 const metricLabelMap = {
   users_not_loggedin: "Days Not Logged In",
