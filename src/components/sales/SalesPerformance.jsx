@@ -31,7 +31,7 @@ const SalesPerformance = ({
   const [firstRowSelectedItem, setfirstRowSelectedItem] =
     useState("dealClosure");
   const [secondRowSelectedItem, setSecondRowSelectedItem] =
-    useState("dealstagnationrate");
+    useState("lastLogin");
   const [thirdRowSelectedItem, setThirdRowSelectedItem] =
     useState("meetingRate");
 
@@ -598,7 +598,7 @@ const SalesPerformance = ({
         <div className="text-start mx-10 mt-6 font-semibold text-lg text-black">
           Impact Analysis
         </div>
-        <select
+        {/* <select
           className="border rounded px-3 py-1 mr-10"
           value={selectedDays}
           onChange={(e) => setSelectedDays(parseInt(e.target.value))}
@@ -608,7 +608,7 @@ const SalesPerformance = ({
               {day} Days
             </option>
           ))}
-        </select>
+        </select> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mt-4 mx-10">
@@ -676,7 +676,7 @@ const SalesPerformance = ({
         <div className="text-start mt-6 mx-10 font-semibold text-lg text-black">
           Efficiency Analysis
         </div>
-        <select
+        {/* <select
           className="border rounded px-3 py-1 mr-10"
           value={selectedDays}
           onChange={(e) => setSelectedDays(parseInt(e.target.value))}
@@ -686,7 +686,7 @@ const SalesPerformance = ({
               {day} Days
             </option>
           ))}
-        </select>
+        </select> */}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 mx-10">
         {efficiencyMetrics.map(({ key, label, info, suffix }) => (
@@ -727,24 +727,33 @@ const SalesPerformance = ({
               )}
 
               {key !== "lastLogin" ? (
-                <p className="text-sm text-gray-500">
-                  {userData?.efficiencyAnalysis[
-                    key
-                  ]?.userShare?.toLocaleString()}
-                  <span className="text-gray-400">
-                    /{" "}
-                    {userData.efficiencyAnalysis[key]?.total?.toLocaleString()}
-                  </span>
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-gray-500">
+                    {userData?.efficiencyAnalysis[
+                      key
+                    ]?.userShare?.toLocaleString()}
+                    <span className="text-gray-400">
+                      /{" "}
+                      {userData.efficiencyAnalysis[
+                        key
+                      ]?.total?.toLocaleString()}
+                    </span>
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {getCompanyAverage(key)}%
+                  </p>
+                </div>
               ) : (
                 <></>
               )}
             </div>
-            <img
-              className="absolute bottom-4 right-4 h-4"
-              src={findRiskImage(getRiskLevel(key))}
-              alt={"High Risk"}
-            />
+            {key !== "lastLogin" && (
+              <img
+                className="absolute bottom-4 right-4 h-4"
+                src={findRiskImage(getRiskLevel(key))}
+                alt={"High Risk"}
+              />
+            )}
           </div>
         ))}
       </div>

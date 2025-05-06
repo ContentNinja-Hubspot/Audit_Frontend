@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MissingData from "../components/MissingData";
-import { findBorderColor, findRiskImage } from "../utils";
+import { getBorderColor, findRiskImage } from "../utils";
 import UsageScoreCard from "./sales/UsageScorecard";
 import SalesPerformance from "./sales/SalesPerformance";
 import ToggleSection from "./utils/ToggleSection";
@@ -59,7 +59,7 @@ const SalesAudit = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-10">
             {auditData.map((item, index) => {
               const isSelected = selectedItem === item.label;
-              const borderColor = findBorderColor(Number(item.score));
+              const borderColor = getBorderColor(item.risk);
               const riskImage = findRiskImage(item.risk);
               const bgColor = isSelected
                 ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MissingData from "../components/MissingData";
 import ToggleSection from "./utils/ToggleSection";
-import { findBorderColor, findRiskImage, getRiskLevel } from "../utils";
+import { getBorderColor, findRiskImage, getRiskLevel } from "../utils";
 
 const DataAudit = ({
   auditObjectScore,
@@ -50,7 +50,7 @@ const DataAudit = ({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-10">
             {auditData.map((item, index) => {
               const isSelected = selectedItem === item.title;
-              const borderColor = findBorderColor(Number(item.score));
+              const borderColor = getBorderColor(item.risk);
               const riskImage = findRiskImage(item.risk); // get the risk image based on the score
               const bgColor = isSelected
                 ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"

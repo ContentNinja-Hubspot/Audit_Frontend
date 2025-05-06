@@ -49,10 +49,18 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
   const [chartData, setChartData] = useState(null);
 
   const getChartTitle = (selectedMetric) => {
-    if (selectedMetric === "overdue_tasks") {
-      return "% of Task Overdue";
-    }
-    return "Days Since Last Activity";
+    const titleMap = {
+      users_not_loggedin: "Days since reps logged in",
+      deals_not_owned: "Days since reps owned new deals",
+      calls_not_logged: "Days since reps made any call",
+      email_not_logged: "Days since reps sent an email",
+      contacts_not_added: "Days since reps added new contacts",
+      overdue_tasks: "% of overdue tasks",
+      meetings_not_logged: "Days since reps logged a meeting",
+      deals_not_created: "Days since reps created new deals",
+    };
+
+    return titleMap[selectedMetric] || "Days Since Last Activity";
   };
 
   useEffect(() => {

@@ -100,9 +100,9 @@ const SalesPerformanceBarChart = ({
       values = rawValues;
     }
 
-    const colors = rawValues.map((val) =>
-      val >= 0 ? "rgba(54, 162, 235, 0.6)" : "rgba(239,68,68,0.6)"
-    ); // Blue for positive, Red for negative
+    const colors = rawValues.map(
+      (val) => (val >= 0 ? "rgba(54, 162, 235, 0.6)" : "rgba(239,68,68,0.6)") // Blue for positive, Red for negative
+    );
 
     setChartData({
       labels,
@@ -120,7 +120,7 @@ const SalesPerformanceBarChart = ({
 
   const getChartTitle = (metric) => {
     if (metric === "lastLogin") {
-      return "Days Since Last Login Performance Metrics"; // Special title for lastLogin
+      return "Days Since Last Login"; // Special title for lastLogin
     }
     // Other titles are based on the metric label
     return `${metricLabelMap[selectedMetric]} Performance Metrics`;
@@ -193,19 +193,26 @@ const SalesPerformanceBarChart = ({
 
   return (
     <div className="w-full">
-      <div className="overflow-x-auto">
-        <div className="min-w-[600px] md:max-w-[950px] h-[500px] mx-auto">
-          {chartData && chartData.labels.length > 0 ? (
-            <Bar
-              data={chartData}
-              options={options}
-              plugins={[ChartDataLabels]}
-            />
-          ) : (
-            <p className="text-center text-gray-500 py-10">
-              No data available for this metric.
-            </p>
-          )}
+      <div className="overflow-hidden">
+        <div className="relative">
+          <div
+            className="min-w-[600px] md:max-w-[950px] h-[500px] mx-auto overflow-y-scroll"
+            style={{
+              maxHeight: "500px", // Fixed height for the chart container
+            }}
+          >
+            {chartData && chartData.labels.length > 0 ? (
+              <Bar
+                data={chartData}
+                options={options}
+                plugins={[ChartDataLabels]}
+              />
+            ) : (
+              <p className="text-center text-gray-500 py-10">
+                No data available for this metric.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>
