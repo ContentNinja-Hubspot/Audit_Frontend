@@ -266,7 +266,7 @@ const SalesPerformance = ({
       key: "dealClosure",
       label: "Deal Won",
       info: "Deal Win Rate: Close Won/All Closed Deals",
-      text: "of all won deals",
+      text: "of all closed deals",
       risk: "High Risk",
       suffix: "%",
     },
@@ -274,7 +274,7 @@ const SalesPerformance = ({
       key: "revenueImpact",
       label: "Revenue Won",
       info: "Revenue Impact: Reps Closed Won Amount/Overall Closed Won Amount",
-      text: "of the all won revenue",
+      text: "of all revenue won",
       suffix: "%",
     },
     // {
@@ -296,7 +296,7 @@ const SalesPerformance = ({
     {
       key: "dealstagnationrate",
       label: "Deal Stagnation Rate",
-      info: "Deals stagnation rate: Rep’s Deals with no activity in the last 30 days/Rep’s All open dealse",
+      info: "Deals stagnation rate: Rep’s Deals with no activity in the last 30 days/Rep’s All open deals",
       suffix: "%",
     },
     {
@@ -577,20 +577,22 @@ const SalesPerformance = ({
       </div>
 
       {/* User and Time Selection */}
-      <div className="flex justify-between items-center mt-4 rounded-lg mx-10">
-        <span></span>
-        <select
-          className="border rounded px-3 py-1"
-          value={selectedUser}
-          onChange={(e) => setSelectedUser(e.target.value)}
-        >
-          {users.map((user) => (
-            <option key={user} value={user}>
-              {user}
-            </option>
-          ))}
-        </select>
-        <div></div>
+      <div className="sticky top-20 z-10 bg-white p-2">
+        <div className="flex justify-between items-center mt-4 rounded-lg mx-10">
+          <span></span>
+          <select
+            className="border rounded px-3 py-1"
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+          >
+            {users.map((user) => (
+              <option key={user} value={user}>
+                {user}
+              </option>
+            ))}
+          </select>
+          <div></div>
+        </div>
       </div>
 
       {/* Impact Analysis */}

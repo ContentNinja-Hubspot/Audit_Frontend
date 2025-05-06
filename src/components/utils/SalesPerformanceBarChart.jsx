@@ -23,16 +23,16 @@ ChartJS.register(
 
 // Metric display names (for better graph labels)
 const metricLabelMap = {
-  dealClosure: "Deal Win Rate",
-  revenueImpact: "Revenue Impact",
+  dealClosure: "Deal Won Percentage",
+  revenueImpact: "Revenue Impact Percentage",
   revenueWinRate: "Revenue Win Rate",
-  dealstagnationrate: "Deal Stagnation Rate",
-  callRate: "Connected Call Rate",
-  taskCompletion: "Task Completion Rate",
-  meetingRate: "Meeting Rate",
-  actionstaken: "Actions Taken",
-  contactsowned: "Contacts Owned",
-  dealsowned: "Deals Owned",
+  dealstagnationrate: "Deal Stagnation Percentage",
+  callRate: "Connected Call Percentage",
+  taskCompletion: "Task Completion Percentage",
+  meetingRate: "Meeting Taken Percentage",
+  actionstaken: "Actions Taken Percentage",
+  contactsowned: "Contacts Owned Percentage",
+  dealsowned: "Deals Owned Percentage",
   lastLogin: "Days Since Last Login", // Added for lastLogin
 };
 
@@ -123,7 +123,7 @@ const SalesPerformanceBarChart = ({
       return "Days Since Last Login"; // Special title for lastLogin
     }
     // Other titles are based on the metric label
-    return `${metricLabelMap[selectedMetric]} Performance Metrics`;
+    return `${metricLabelMap[selectedMetric]}`;
   };
 
   const options = {
