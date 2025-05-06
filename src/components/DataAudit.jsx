@@ -38,7 +38,9 @@ const DataAudit = ({
       {/* Section Heading */}
       <div className="w-full bg-white rounded-xl pb-6">
         <div className="flex items-center justify-between pr-5">
-          <h3 className="text-lg font-bold text-start p-4">Data Quality</h3>
+          <h3 className="text-lg font-bold text-start p-4">
+            Data Quality Score
+          </h3>
           <ToggleSection
             isSectionExpanded={isSectionExpanded}
             setIsSectionExpanded={setIsSectionExpanded}
