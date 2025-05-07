@@ -196,7 +196,7 @@ const Dashboard = () => {
         setSalesInUse(true);
         const response = await checkSalesReportStatus(token, firstReportId);
         if (response?.completed_objects?.includes("no_sales_seat")) {
-          console.log("No sales seat assigned to any rep in past report.");
+          console.log("No sales seat assigned to any rep in dashboard.");
           setSalesInUse(false);
         }
       } catch (e) {
@@ -208,7 +208,7 @@ const Dashboard = () => {
     if (token) {
       fetchSalesReportStatus();
     }
-  }, [token]);
+  }, [token, hubID]);
 
   useEffect(() => {
     if (!token || !hubID) return;
