@@ -10,9 +10,9 @@ const Contact = ({
   token,
   scoreData,
   graphData,
-  isGeneratingGraph,
   hubId,
   page,
+  completeReportGenerated,
 }) => {
   const { missing_data, junk_data, total_contacts } = scoreData;
 
@@ -530,7 +530,7 @@ const Contact = ({
                       "create"
                     )
                   }
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -572,7 +572,7 @@ const Contact = ({
                       "create"
                     )
                   }
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -614,7 +614,7 @@ const Contact = ({
                       "create"
                     )
                   }
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -643,7 +643,7 @@ const Contact = ({
                       "create"
                     )
                   }
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -673,7 +673,7 @@ const Contact = ({
                       "delete"
                     )
                   }
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Delete Junk"
                 />
               </div>

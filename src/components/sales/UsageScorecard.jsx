@@ -6,12 +6,11 @@ import { findRiskImage, getBorderColor } from "../../utils";
 import BulkActionTable from "./BulkActionSection";
 
 const UsageScoreCard = ({
-  isGeneratingGraph,
-  token,
   graphData,
   usage_metrics,
   total_reps,
   page,
+  completeReportGenerated,
 }) => {
   const [days, setDays] = useState(7);
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
@@ -277,7 +276,10 @@ const UsageScoreCard = ({
       )}
 
       <div className="mt-12">
-        <BulkActionTable page={page} />
+        <BulkActionTable
+          page={page}
+          completeReportGenerated={completeReportGenerated}
+        />
       </div>
     </div>
   );

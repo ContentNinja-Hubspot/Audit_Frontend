@@ -5,7 +5,7 @@ import { useNotify } from "../../context/NotificationContext";
 import { addNewAccount } from "../../api";
 import Cookies from "js-cookie";
 
-const HubSelector = () => {
+const HubSelector = ({ completeReportGenerated }) => {
   const { user, token } = useUser();
   const { selectedHub, setSelectedHub, reportGenerated } = useAudit();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -66,10 +66,10 @@ const HubSelector = () => {
               key={hub.hub_id}
               onClick={() => handleHubChange(hub)}
               className="block w-full text-left p-4 text-xs text-gray-700 bg-gray-100 hover:bg-gray-200 shadow-none"
-              disabled={!reportGenerated}
+              disabled={!completeReportGenerated}
               style={{
-                opacity: reportGenerated ? 1 : 0.6,
-                cursor: reportGenerated ? "pointer" : "not-allowed",
+                opacity: completeReportGenerated ? 1 : 0.6,
+                cursor: completeReportGenerated ? "pointer" : "not-allowed",
               }}
             >
               Hub ID: {hub.hub_id} ({hub.hub_domain})
@@ -77,11 +77,11 @@ const HubSelector = () => {
           ))}
           <button
             onClick={handleAddNewAccount}
-            disabled={!reportGenerated}
+            disabled={!completeReportGenerated}
             className="mb-2 p-2"
             style={{
-              opacity: reportGenerated ? 1 : 0.6,
-              cursor: reportGenerated ? "pointer" : "not-allowed",
+              opacity: completeReportGenerated ? 1 : 0.6,
+              cursor: completeReportGenerated ? "pointer" : "not-allowed",
             }}
           >
             + Add New Portal

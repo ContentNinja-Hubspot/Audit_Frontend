@@ -11,6 +11,7 @@ const SalesAudit = ({
   salesUsageScore,
   salesGraphData,
   page,
+  completeReportGenerated,
 }) => {
   const [selectedItem, setSelectedItem] = useState("sales_performance");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
@@ -92,20 +93,20 @@ const SalesAudit = ({
         {selectedItem === "usage_scorecard" ? (
           <UsageScoreCard
             usage_metrics={inference_sales_usage}
-            isGeneratingGraph={false}
             total_reps={total_reps}
             graphData={graph_usage_scorecard}
             page={page}
+            completeReportGenerated={completeReportGenerated}
           />
         ) : (
           <SalesPerformance
             sales_performance_metrics={inference_sales_performance}
-            isGeneratingGraph={false}
             total_reps={total_reps}
             graphData={graph_sales_performance}
             companyAverages={company_averages}
             inactiveDaysGraph={inactiveDaysGraph}
             page={page}
+            completeReportGenerated={completeReportGenerated}
           />
         )}
       </div>

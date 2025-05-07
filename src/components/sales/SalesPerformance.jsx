@@ -11,12 +11,12 @@ import { useNotify } from "../../context/NotificationContext";
 
 const SalesPerformance = ({
   sales_performance_metrics = [],
-  isGeneratingGraph,
   companyAverages,
   graphData,
   total_reps,
   inactiveDaysGraph,
   page,
+  completeReportGenerated,
 }) => {
   const timeRanges = [7, 30];
   const { token } = useUser();
@@ -940,7 +940,7 @@ const SalesPerformance = ({
         <div className="relative group">
           <button
             className="shadow-none disabled:cursor-not-allowed"
-            disabled={page === "past"}
+            disabled={page === "past" || !completeReportGenerated}
             onClick={async () => {
               const payload = buildSalesPerformancePayload();
 

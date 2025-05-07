@@ -18,6 +18,7 @@ const MainContent = ({
   salesScore,
   scores,
   salesGraphData,
+  completeReportGenerated,
 }) => {
   const [selectedBreakdown, setSelectedBreakdown] = useState("Data Quality");
   const { user } = useUser();
@@ -77,6 +78,7 @@ const MainContent = ({
           page={page}
           token={token}
           hubId={hubId}
+          completeReportGenerated={completeReportGenerated}
         />
       ) : (
         <SalesAudit
@@ -85,6 +87,7 @@ const MainContent = ({
           salesUsageScore={usage_score}
           salesGraphData={salesGraphData}
           page={page}
+          completeReportGenerated={completeReportGenerated}
         />
       )}
     </div>

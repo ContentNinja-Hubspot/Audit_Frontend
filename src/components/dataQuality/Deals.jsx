@@ -10,9 +10,9 @@ const Deal = ({
   token,
   scoreData,
   graphData,
-  isGeneratingGraph,
   hubId,
   page,
+  completeReportGenerated,
 }) => {
   const { missing_data, junk_data, total_deals } = scoreData;
   const [firstDatapoint, setFirstDatapoint] = useState("dealname");
@@ -456,7 +456,7 @@ const Deal = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group1")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -491,7 +491,7 @@ const Deal = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group2")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -514,7 +514,7 @@ const Deal = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group3")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -541,7 +541,7 @@ const Deal = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group4")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Delete Junk"
                 />
               </div>

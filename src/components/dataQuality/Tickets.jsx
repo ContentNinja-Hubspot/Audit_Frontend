@@ -10,9 +10,9 @@ const Ticket = ({
   token,
   scoreData,
   graphData,
-  isGeneratingGraph,
   hubId,
   page,
+  completeReportGenerated,
 }) => {
   const { missing_data, junk_data, total_tickets } = scoreData;
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
@@ -448,7 +448,7 @@ const Ticket = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group1")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -483,7 +483,7 @@ const Ticket = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group2")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -506,7 +506,7 @@ const Ticket = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group3")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -532,7 +532,7 @@ const Ticket = ({
                 />
                 <ActionButton
                   onClick={() => handleDeleteActiveList("group4")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Delete Junk"
                 />
               </div>

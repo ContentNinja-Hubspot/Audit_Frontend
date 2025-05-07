@@ -10,6 +10,7 @@ const DataAudit = ({
   page,
   token,
   hubId,
+  completeReportGenerated,
 }) => {
   const [selectedItem, setSelectedItem] = useState("Contacts");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
@@ -89,6 +90,7 @@ const DataAudit = ({
           page={page}
           token={token}
           hubId={hubId}
+          completeReportGenerated={completeReportGenerated}
         />
       </div>
     </div>

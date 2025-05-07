@@ -11,6 +11,7 @@ const MissingData = ({
   token,
   hubId,
   page,
+  completeReportGenerated,
 }) => {
   if (!dataAudit) return null;
 
@@ -24,6 +25,7 @@ const MissingData = ({
             page={page}
             hubId={hubId}
             token={token}
+            completeReportGenerated={completeReportGenerated}
           />
         );
       case "Companies":
@@ -34,6 +36,7 @@ const MissingData = ({
             page={page}
             hubId={hubId}
             token={token}
+            completeReportGenerated={completeReportGenerated}
           />
         );
       case "Deals":
@@ -44,6 +47,7 @@ const MissingData = ({
             page={page}
             hubId={hubId}
             token={token}
+            completeReportGenerated={completeReportGenerated}
           />
         );
       case "Tickets":
@@ -54,6 +58,7 @@ const MissingData = ({
             page={page}
             hubId={hubId}
             token={token}
+            completeReportGenerated={completeReportGenerated}
           />
         );
       default:
@@ -64,6 +69,7 @@ const MissingData = ({
             page={page}
             hubId={hubId}
             token={token}
+            completeReportGenerated={completeReportGenerated}
           />
         );
     }

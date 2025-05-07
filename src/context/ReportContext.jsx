@@ -26,6 +26,7 @@ export const ReportProvider = ({ children }) => {
     useState(false);
   const [latestReportId, setLatestReportId] = useState(null);
   const [salesReportProgress, setSalesReportProgress] = useState(2);
+  const [completeReportGenerated, setCompleteReportGenerated] = useState(false);
 
   // Set the default hub when user is ready
   useEffect(() => {
@@ -138,6 +139,7 @@ export const ReportProvider = ({ children }) => {
         setSalesReportData(salesData);
         setSalesGraphData(salesGraph.data);
         setSalesReportProgress(100);
+        setCompleteReportGenerated(true);
       } catch (err) {
         console.error("Error during sales report fetch:", err);
       }
@@ -168,6 +170,8 @@ export const ReportProvider = ({ children }) => {
         checkTriggerReportGeneration,
         salesReportProgress,
         setSalesReportProgress,
+        completeReportGenerated,
+        setCompleteReportGenerated,
       }}
     >
       {children}

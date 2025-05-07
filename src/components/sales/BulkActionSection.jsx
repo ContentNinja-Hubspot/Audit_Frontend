@@ -29,7 +29,7 @@ const mapApiToMetrics = (apiItem) => {
   };
 };
 
-const BulkActionTable = ({ page }) => {
+const BulkActionTable = ({ page, completeReportGenerated }) => {
   const [data, setData] = useState([]);
   const [actionData, setActionData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -201,7 +201,11 @@ const BulkActionTable = ({ page }) => {
             <button
               className="shadow-none bg-blue-600 text-white px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleSendEmail}
-              disabled={page === "past" || selectedReps.length === 0}
+              disabled={
+                page === "past" ||
+                selectedReps.length === 0 ||
+                !completeReportGenerated
+              }
             >
               Send Email to Selected Reps
             </button>

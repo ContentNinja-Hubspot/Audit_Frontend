@@ -10,9 +10,9 @@ const Company = ({
   token,
   scoreData,
   graphData,
-  isGeneratingGraph,
   hubId,
   page,
+  completeReportGenerated,
 }) => {
   const { missing_data, junk_data, total_companies } = scoreData;
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
@@ -284,7 +284,7 @@ const Company = ({
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
                       setSecondRowSelectedItem(item.key);
-                      handleDataPointChange(2, item.dataPoint);
+                      handleDataPointChange(2, item.field);
                     }}
                   >
                     <div className="flex items-start justify-between">
@@ -370,7 +370,7 @@ const Company = ({
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
                       setThirdRowSelectedItem(item.key);
-                      handleDataPointChange(3, item.dataPoint);
+                      handleDataPointChange(3, item.field);
                     }}
                   >
                     <div className="flex items-start justify-between">
@@ -563,7 +563,7 @@ const Company = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group1")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -597,7 +597,7 @@ const Company = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group2")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -631,7 +631,7 @@ const Company = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group3")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -653,7 +653,7 @@ const Company = ({
                 />
                 <ActionButton
                   onClick={() => handleCreateActiveList("group4")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Create Active List"
                 />
               </div>
@@ -679,7 +679,7 @@ const Company = ({
                 />
                 <ActionButton
                   onClick={() => handleDeleteActiveList("group5")}
-                  disabled={isGeneratingGraph}
+                  disabled={!completeReportGenerated}
                   label="Delete Junk"
                 />
               </div>

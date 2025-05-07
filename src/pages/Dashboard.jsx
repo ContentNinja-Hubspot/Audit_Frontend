@@ -42,6 +42,8 @@ const Dashboard = () => {
     checkTriggerReportGeneration,
     salesReportProgress,
     setSalesReportProgress,
+    completeReportGenerated,
+    setCompleteReportGenerated,
   } = useAudit();
 
   const location = useLocation();
@@ -161,6 +163,7 @@ const Dashboard = () => {
         setSalesGraphData(salesGraphResult.data);
         setSalesReportProgress(100);
         setSalesReportGenerated(true);
+        setCompleteReportGenerated(true);
       } else {
         console.warn("Unexpected sales report status:", salesData);
       }
@@ -243,7 +246,7 @@ const Dashboard = () => {
     <div className="flex">
       <Sidebar />
       <main className="flex-1 overflow-auto h-screen">
-        <Header />
+        <Header completeReportGenerated={completeReportGenerated} />
 
         {!user?.hub_details?.data?.hs_user ? (
           <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] text-center px-4">
@@ -277,6 +280,7 @@ const Dashboard = () => {
             salesScores={salesScores}
             scores={scores}
             salesGraphData={salesGraphData}
+            completeReportGenerated={completeReportGenerated}
           />
         )}
       </main>
