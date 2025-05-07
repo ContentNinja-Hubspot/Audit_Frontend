@@ -69,7 +69,7 @@ const AuditScore = ({
 
           {/* Overlay Message */}
           {!reportGenerated && (
-            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 rounded-lg">
+            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 rounded-lg">
               <p className="text-gray-500 text-center md:text-lg text-base font-medium">
                 Overall Score will be displayed after Sales Report is generated.
               </p>
