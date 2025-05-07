@@ -49,6 +49,8 @@ const metricKeyToDataArrayMap = {
 
 const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
   const [chartData, setChartData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const getChartTitle = (selectedMetric) => {
     const titleMap = {
@@ -92,6 +94,7 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
       });
     }
 
+    setCurrentPage(1);
     setChartData({
       labels: users,
       datasets: [
@@ -104,6 +107,22 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
       ],
     });
   }, [usageScorecardData, selectedMetric]);
+
+  const handleNextPage = () => {
+    if (chartData) {
+      const totalItems = chartData.labels.length;
+      const maxPages = Math.ceil(totalItems / itemsPerPage);
+      if (currentPage < maxPages) {
+        setCurrentPage(currentPage + 1);
+      }
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const options = {
     responsive: true,
@@ -129,11 +148,21 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
       datalabels: {
         anchor: (context) => {
           const value = context.dataset.data[context.dataIndex];
-          return value < 50 ? "end" : "center"; // Move outside if small value
+          const total = context.chart.data.datasets[0].data.reduce(
+            (a, b) => a + b,
+            0
+          );
+          const threshold = total * 0.1; // 10% of total value
+          return value < threshold ? "end" : "center"; // Move outside if small value
         },
         align: (context) => {
           const value = context.dataset.data[context.dataIndex];
-          return value < 50 ? "end" : "center"; // Align accordingly
+          const total = context.chart.data.datasets[0].data.reduce(
+            (a, b) => a + b,
+            0
+          );
+          const threshold = total * 0.1; // 10% of total value
+          return value < threshold ? "end" : "center"; // Align accordingly
         },
         color: (context) => {
           const value = context.dataset.data[context.dataIndex];
@@ -173,13 +202,32 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
     },
   };
 
+  const pagedData = chartData
+    ? {
+        ...chartData,
+        labels: chartData.labels.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        ),
+        datasets: [
+          {
+            ...chartData.datasets[0],
+            data: chartData.datasets[0].data.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage
+            ),
+          },
+        ],
+      }
+    : null;
+
   return (
-    <div className="w-full">
-      <div className="overflow-x-auto">
+    <div className="w-full relative">
+      <div className="overflow-hidden">
         <div className="min-w-[600px] md:max-w-[950px] h-[500px] mx-auto">
-          {chartData && chartData.labels.length > 0 ? (
+          {pagedData && pagedData.labels.length > 0 ? (
             <Bar
-              data={chartData}
+              data={pagedData}
               options={options}
               plugins={[ChartDataLabels]}
             />
@@ -190,6 +238,26 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
           )}
         </div>
       </div>
+
+      {/* Up Arrow Button */}
+      <button
+        onClick={handlePreviousPage}
+        disabled={currentPage === 1}
+        className="absolute top-4 right-16 bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 disabled:bg-gray-400"
+      >
+        ↑
+      </button>
+
+      {/* Down Arrow Button */}
+      <button
+        onClick={handleNextPage}
+        disabled={
+          !pagedData || currentPage * itemsPerPage >= chartData.labels.length
+        }
+        className="absolute bottom-4 right-16 bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 disabled:bg-gray-400"
+      >
+        ↓
+      </button>
     </div>
   );
 };

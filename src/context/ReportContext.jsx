@@ -111,7 +111,7 @@ export const ReportProvider = ({ children }) => {
           setGraphData(graph);
           setScores(scoreData);
 
-          fetchSalesReport(latestReportId);
+          await fetchSalesReport(latestReportId);
           setReportGenerated(true);
         }
       } catch (err) {

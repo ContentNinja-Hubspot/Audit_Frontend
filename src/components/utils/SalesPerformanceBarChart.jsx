@@ -43,6 +43,8 @@ const SalesPerformanceBarChart = ({
   inactiveDaysGraph,
 }) => {
   const [chartData, setChartData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Show 10 bars at a time
 
   useEffect(() => {
     if ((!salesPerformanceData && !inactiveDaysGraph) || !selectedMetric)
@@ -97,15 +99,17 @@ const SalesPerformanceBarChart = ({
       (val) => (val >= 0 ? "rgba(54, 162, 235, 0.6)" : "rgba(239,68,68,0.6)") // Blue for positive, Red for negative
     );
 
+    setCurrentPage(1);
+    // Set initial chart data
     setChartData({
       labels,
+      rawValues, // Keep raw values for data labels
       datasets: [
         {
           label: metricLabelMap[selectedMetric] || "Selected Metric",
           data: values,
           backgroundColor: colors,
           barThickness: 20,
-          rawValues, // Keep raw values for datalabels
         },
       ],
     });
@@ -115,7 +119,6 @@ const SalesPerformanceBarChart = ({
     if (metric === "lastLogin") {
       return "Days Since Last Login"; // Special title for lastLogin
     }
-    // Other titles are based on the metric label
     return `${metricLabelMap[selectedMetric]}`;
   };
 
@@ -184,19 +187,55 @@ const SalesPerformanceBarChart = ({
     },
   };
 
+  // Paginate the data
+  const pagedData = chartData
+    ? {
+        ...chartData,
+        labels: chartData.labels.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        ),
+        datasets: [
+          {
+            ...chartData.datasets[0],
+            data: chartData.datasets[0].data.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage
+            ),
+          },
+        ],
+        rawValues: chartData.rawValues.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        ),
+      }
+    : null;
+
+  const handleNextPage = () => {
+    if (pagedData && currentPage * itemsPerPage < chartData.labels.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full relative">
       <div className="overflow-hidden">
         <div className="relative">
           <div
-            className="min-w-[600px] md:max-w-[950px] h-[500px] mx-auto overflow-y-scroll"
+            className="min-w-[600px] md:max-w-[950px] h-[500px] mx-auto"
             style={{
               maxHeight: "500px", // Fixed height for the chart container
             }}
           >
-            {chartData && chartData.labels.length > 0 ? (
+            {pagedData && pagedData.labels.length > 0 ? (
               <Bar
-                data={chartData}
+                data={pagedData}
                 options={options}
                 plugins={[ChartDataLabels]}
               />
@@ -208,6 +247,26 @@ const SalesPerformanceBarChart = ({
           </div>
         </div>
       </div>
+
+      {/* Up Arrow Button */}
+      <button
+        onClick={handlePreviousPage}
+        disabled={currentPage === 1}
+        className="absolute top-4 right-16 bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 disabled:bg-gray-400"
+      >
+        ↑
+      </button>
+
+      {/* Down Arrow Button */}
+      <button
+        onClick={handleNextPage}
+        disabled={
+          pagedData && currentPage * itemsPerPage >= chartData.labels.length
+        }
+        className="absolute bottom-4 right-16 bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 disabled:bg-gray-400"
+      >
+        ↓
+      </button>
     </div>
   );
 };
