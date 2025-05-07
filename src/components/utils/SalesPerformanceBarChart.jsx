@@ -159,9 +159,9 @@ const SalesPerformanceBarChart = ({
             return `${Math.abs(rawValue)} Days`; // Show days instead of percentage for lastLogin
           }
           if (rawValue < 0) {
-            return `-${Math.abs(rawValue)}%`;
+            return `-${Math.abs(rawValue)}`;
           }
-          return `${Math.abs(rawValue)}%`;
+          return `${Math.abs(rawValue)}`;
         },
       },
     },
