@@ -156,7 +156,7 @@ export const ReportProvider = ({ children }) => {
     };
 
     fetchAuditReport();
-  }, [selectedHub, token, checkTriggerReportGeneration]);
+  }, [token, checkTriggerReportGeneration]);
 
   return (
     <ReportContext.Provider
