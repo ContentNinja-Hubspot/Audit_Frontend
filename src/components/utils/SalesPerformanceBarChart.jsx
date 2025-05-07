@@ -23,30 +23,30 @@ ChartJS.register(
 
 ChartJS.defaults.font.family = "'Lexend', sans-serif";
 
-// Metric display names (for better graph labels)
-const metricLabelMap = {
-  dealClosure: "Deal Won Percentage",
-  revenueImpact: "Revenue Impact Percentage",
-  revenueWinRate: "Revenue Win Rate",
-  dealstagnationrate: "Deal Stagnation Percentage",
-  callRate: "Connected Call Percentage",
-  taskCompletion: "Task Completion Percentage",
-  meetingRate: "Meeting Taken Percentage",
-  actionstaken: "Actions Taken Percentage",
-  contactsowned: "Contacts Owned Percentage",
-  dealsowned: "Deals Owned Percentage",
-  lastLogin: "Days Since Last Login", // Added for lastLogin
-};
-
 const SalesPerformanceBarChart = ({
   salesPerformanceData = [],
   selectedMetric,
   inactiveDaysGraph,
-  companyAverage = 10,
+  companyAverage,
 }) => {
   const [chartData, setChartData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Show 10 bars at a time
+
+  // Metric display names (for better graph labels)
+  const metricLabelMap = {
+    dealClosure: `Count of Won Deals  [Company Average - ${companyAverage}]`,
+    revenueImpact: `Revenue Impact  [Company Average - ${companyAverage}]`,
+    revenueWinRate: `Revenue Win Rate  [Company Average - ${companyAverage}]`,
+    dealstagnationrate: `Count of Stagnated Deals  [Company Average - ${companyAverage}]`,
+    callRate: `Count of Connected Calls  [Company Average - ${companyAverage}]`,
+    taskCompletion: `Count of Completed Tasks  [Company Average - ${companyAverage}]`,
+    meetingRate: `Count of Meetings Taken  [Company Average - ${companyAverage}]`,
+    actionstaken: `Count of Actions Taken  [Company Average - ${companyAverage}]`,
+    contactsowned: `Count of Contacts Owned  [Company Average - ${companyAverage}]`,
+    dealsowned: `Count of Deals Owned  [Company Average - ${companyAverage}]`,
+    lastLogin: "Days Since Last Login", // No change here
+  };
 
   useEffect(() => {
     if ((!salesPerformanceData && !inactiveDaysGraph) || !selectedMetric)
