@@ -264,6 +264,7 @@ const Dashboard = () => {
             setSalesGraphData(salesGraph.data);
             setSalesReportProgress(100);
             setSalesReportGenerated(true);
+            setCompleteReportGenerated(true);
           } else {
             pollSalesReportGeneration(reportId);
           }
