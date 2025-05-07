@@ -37,7 +37,7 @@ const Header = ({ completeReportGenerated }) => {
 
   return (
     <header className="text-black p-5 bg-[#f8fafd] fixed top-0 left-0 w-full lg:left-72 lg:w-[calc(100%-18rem)] z-50 flex flex-wrap lg:flex-nowrap items-center justify-between gap-4 lg:gap-6">
-      <div className="hidden lg:flex sm:flex-row items-center sm:gap-4 w-full sm:w-auto mx-14 lg:mx-0  justify-between sm:justify-start">
+      <div className="hidden lg:flex sm:flex-row items-center sm:gap-4 w-full sm:w-auto mx-14 lg:mx-0 justify-between sm:justify-start">
         <h2 className="text-xl md:text-2xl text-center sm:text-left">
           Hi{" "}
           {user?.hub_details?.data?.hs_user
@@ -53,33 +53,55 @@ const Header = ({ completeReportGenerated }) => {
 
       <div className="flex flex-row items-center gap-2 lg:gap-4 w-full lg:w-auto sm:ml-0 md:ml-80 lg:ml-0">
         <div className="flex md:flex-row gap-2 w-[80%] md:w-full sm:w-auto ml-12 md:ml-0">
-          <DisabledTooltip tooltipText="Please wait while your report is being generated">
-            <button
-              onClick={() =>
-                document
-                  .getElementById("take_action")
-                  .scrollIntoView({ behavior: "smooth" })
-              }
-              className={`w-[50%] text-xs md:min-w-min md:text-sm h-10 md:h-10 truncate ${
-                !completeReportGenerated ? "cursor-not-allowed" : ""
-              }`}
-              disabled={!completeReportGenerated}
-            >
-              Take Bulk Action ↓
-            </button>
-          </DisabledTooltip>
+          {/* Conditionally wrap the buttons in DisabledTooltip */}
+          {completeReportGenerated ? (
+            <>
+              <button
+                onClick={() =>
+                  document
+                    .getElementById("take_action")
+                    .scrollIntoView({ behavior: "smooth" })
+                }
+                className="w-[50%] text-xs md:min-w-min md:text-sm h-10 md:h-10 truncate"
+              >
+                Take Bulk Action ↓
+              </button>
 
-          <DisabledTooltip tooltipText="Please wait while your report is being generated">
-            <button
-              onClick={handleGenerateReport}
-              className={`w-[50%] text-xs md:min-w-min md:text-sm h-10 md:h-10 truncate ${
-                !completeReportGenerated ? "cursor-not-allowed" : ""
-              }`}
-              disabled={!completeReportGenerated}
-            >
-              Generate New Report
-            </button>
-          </DisabledTooltip>
+              <button
+                onClick={handleGenerateReport}
+                className="w-[50%] text-xs md:min-w-min md:text-sm h-10 md:h-10 truncate"
+              >
+                Generate New Report
+              </button>
+            </>
+          ) : (
+            <>
+              {/* Wrap buttons in DisabledTooltip when completeReportGenerated is false */}
+              <DisabledTooltip tooltipText="Please wait while your report is being generated">
+                <button
+                  onClick={() =>
+                    document
+                      .getElementById("take_action")
+                      .scrollIntoView({ behavior: "smooth" })
+                  }
+                  className="w-[50%] text-xs md:min-w-min md:text-sm h-10 md:h-10 truncate cursor-not-allowed"
+                  disabled
+                >
+                  Take Bulk Action ↓
+                </button>
+              </DisabledTooltip>
+
+              <DisabledTooltip tooltipText="Please wait while your report is being generated">
+                <button
+                  onClick={handleGenerateReport}
+                  className="w-[50%] text-xs md:min-w-min md:text-sm h-10 md:h-10 truncate cursor-not-allowed"
+                  disabled
+                >
+                  Generate New Report
+                </button>
+              </DisabledTooltip>
+            </>
+          )}
         </div>
 
         <div ref={userDropdownRef} className="relative">

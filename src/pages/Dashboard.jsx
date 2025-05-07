@@ -45,6 +45,7 @@ const Dashboard = () => {
     completeReportGenerated,
     setCompleteReportGenerated,
     setSalesInUse,
+    firstReportId,
   } = useAudit();
 
   const location = useLocation();
@@ -194,6 +195,8 @@ const Dashboard = () => {
     const triggerCheck = async () => {
       try {
         const data = await triggerCheckReport(token, hubID);
+
+        setLatestReportId(firstReportId);
 
         if (data?.generate_report && checkTriggerReportGeneration) {
           // Report generation is needed — initiate it

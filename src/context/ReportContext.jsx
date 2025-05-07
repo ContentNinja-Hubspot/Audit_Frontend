@@ -28,6 +28,7 @@ export const ReportProvider = ({ children }) => {
   const [salesReportProgress, setSalesReportProgress] = useState(2);
   const [completeReportGenerated, setCompleteReportGenerated] = useState(false);
   const [salesInUse, setSalesInUse] = useState(true);
+  const [firstReportId, setFirstReportId] = useState(null);
 
   // Set the default hub when user is ready
   useEffect(() => {
@@ -39,6 +40,7 @@ export const ReportProvider = ({ children }) => {
         ) || user.unique_hub_ids[0];
       setSelectedHub(defaultHub);
       setLatestReportId(defaultHub?.latest_report_id || null);
+      setFirstReportId(defaultHub?.latest_report_id || null);
     }
   }, [user]);
 
@@ -125,6 +127,7 @@ export const ReportProvider = ({ children }) => {
           reportId
         );
         if (salesStatus?.completed_objects?.includes("no_sales_seat")) {
+          console.log("No sales seat assigned to any rep.");
           setSalesInUse(false);
           setCompleteReportGenerated(true);
           setSalesReportProgress(100);
@@ -185,6 +188,7 @@ export const ReportProvider = ({ children }) => {
         setCompleteReportGenerated,
         salesInUse,
         setSalesInUse,
+        firstReportId,
       }}
     >
       {children}

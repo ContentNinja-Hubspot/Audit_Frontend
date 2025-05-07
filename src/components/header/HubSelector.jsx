@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 
 const HubSelector = ({ completeReportGenerated }) => {
   const { user, token } = useUser();
-  const { selectedHub, setSelectedHub, reportGenerated } = useAudit();
+  const { selectedHub, setSelectedHub } = useAudit();
   const [showDropdown, setShowDropdown] = useState(false);
   const { success } = useNotify();
   const dropdownRef = useRef(null);

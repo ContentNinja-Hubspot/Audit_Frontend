@@ -13,6 +13,7 @@ import {
   fetchAllScores,
 } from "../api";
 import { useNotify } from "../context/NotificationContext";
+import { useAudit } from "../context/ReportContext";
 
 const PastReportDetail = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
@@ -23,6 +24,7 @@ const PastReportDetail = () => {
   const [salesGraphData, setSalesGraphData] = useState(null);
   const [scores, setScores] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { setLatestReportId } = useAudit();
 
   const { error } = useNotify();
   const { token } = useUser();
@@ -33,7 +35,7 @@ const PastReportDetail = () => {
         const decodedId = decodeURIComponent(encryptedId);
         const bytes = CryptoJS.AES.decrypt(decodedId, CRYPTO_SECRET_KEY);
         const decryptedId = bytes.toString(CryptoJS.enc.Utf8);
-
+        setLatestReportId(decryptedId);
         const [
           reportResponse,
           graphResponse,
