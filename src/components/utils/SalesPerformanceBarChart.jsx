@@ -72,21 +72,13 @@ const SalesPerformanceBarChart = ({
         case "taskCompletion":
           return rep.task_completion_rate_rounded ?? 0;
         case "meetingRate":
-          return (
-            rep.meetings_than_company_average?.last_30_days_percentage_diff ?? 0
-          );
+          return rep.meetings_than_company_average?.last_30_days_count ?? 0;
         case "actionstaken":
-          return (
-            rep.actions_than_company_average?.last_30_days_percentage_diff ?? 0
-          );
+          return rep.actions_than_company_average?.last_30_days_count ?? 0;
         case "contactsowned":
-          return (
-            rep.contacts_than_company_average?.last_30_days_percentage_diff ?? 0
-          );
+          return rep.contacts_than_company_average?.last_30_days_count ?? 0;
         case "dealsowned":
-          return (
-            rep.deals_than_company_average?.last_30_days_percentage_diff ?? 0
-          );
+          return rep.deals_than_company_average?.last_30_days_count ?? 0;
         default:
           return 0;
       }

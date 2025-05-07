@@ -141,8 +141,10 @@ const UsageScoreCard = ({
               <div className="flex mx-10 font-semibold text-lg text-black truncate">
                 <p>Sales Adoption (Reps with paid sales seats)</p>
               </div>
+            </div>
+            <div className="sticky top-20 right-0 z-10 mx-10 flex justify-end">
               <select
-                className="border rounded px-3 py-1 sticky top-0 right-0 z-50"
+                className="border rounded px-3 py-1 "
                 value={days}
                 onChange={(e) => setDays(Number(e.target.value))}
               >
