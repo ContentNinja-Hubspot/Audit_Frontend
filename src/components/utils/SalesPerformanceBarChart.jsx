@@ -22,6 +22,7 @@ ChartJS.register(
 );
 
 ChartJS.defaults.font.family = "'Lexend', sans-serif";
+
 // Metric display names (for better graph labels)
 const metricLabelMap = {
   dealClosure: "Deal Won Percentage",
@@ -41,6 +42,7 @@ const SalesPerformanceBarChart = ({
   salesPerformanceData = [],
   selectedMetric,
   inactiveDaysGraph,
+  companyAverage = 10,
 }) => {
   const [chartData, setChartData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -143,12 +145,22 @@ const SalesPerformanceBarChart = ({
       },
       datalabels: {
         anchor: (context) => {
-          const value = context.dataset.rawValues?.[context.dataIndex] || 0;
-          return Math.abs(value) < 5 ? "end" : "center";
+          const value = context.dataset.data[context.dataIndex];
+          const total = context.chart.data.datasets[0].data.reduce(
+            (a, b) => a + Number(b),
+            0
+          );
+          const threshold = total * 0.1;
+          return value < threshold ? "end" : "center"; // Align accordingly
         },
         align: (context) => {
-          const value = context.dataset.rawValues?.[context.dataIndex] || 0;
-          return Math.abs(value) < 5 ? "end" : "center";
+          const value = context.dataset.data[context.dataIndex];
+          const total = context.chart.data.datasets[0].data.reduce(
+            (a, b) => a + Number(b),
+            0
+          );
+          const threshold = total * 0.1; // 10% of total value
+          return value < threshold ? "end" : "center"; // Align accordingly
         },
         color: (context) => {
           const value = context.dataset.rawValues?.[context.dataIndex] || 0;
@@ -156,7 +168,7 @@ const SalesPerformanceBarChart = ({
         },
         font: { weight: "light", size: 12 },
         formatter: (value, context) => {
-          const rawValue = context.dataset.rawValues?.[context.dataIndex] || 0;
+          const rawValue = context.dataset.data?.[context.dataIndex] || 0;
           if (rawValue === 0) return "";
           if (selectedMetric === "lastLogin") {
             return `${Math.abs(rawValue)} Days`; // Show days instead of percentage for lastLogin

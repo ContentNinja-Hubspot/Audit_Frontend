@@ -911,6 +911,7 @@ const SalesPerformance = ({
         <SalesPerformanceBarChart
           salesPerformanceData={graphData}
           selectedMetric={thirdRowSelectedItem}
+          companyAverage={getCompanyAverage(thirdRowSelectedItem)}
         />
       </div>
 
