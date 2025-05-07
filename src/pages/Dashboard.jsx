@@ -198,6 +198,7 @@ const Dashboard = () => {
         if (response?.completed_objects?.includes("no_sales_seat")) {
           console.log("No sales seat assigned to any rep in dashboard.");
           setSalesInUse(false);
+          setCompleteReportGenerated(true);
         }
       } catch (e) {
         error("Error while fetching sales report status");
