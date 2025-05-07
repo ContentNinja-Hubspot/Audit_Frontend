@@ -143,7 +143,7 @@ const ScoreBreakdown = ({
                       {/* If it's the Sales score and salesInUse is false, show N/A */}
                       {item.title === "Sales" && !salesInUse
                         ? "N/A"
-                        : item.score}
+                        : item.score + " / 100"}{" "}
                     </p>
                   </div>
 
