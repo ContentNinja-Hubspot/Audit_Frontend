@@ -121,11 +121,7 @@ export const ReportProvider = ({ children }) => {
 
     const fetchSalesReport = async (reportId) => {
       try {
-        const salesStatus = await checkSalesReportStatus(
-          token,
-          selectedHub.hub_id,
-          reportId
-        );
+        const salesStatus = await checkSalesReportStatus(token, reportId);
         if (salesStatus?.completed_objects?.includes("no_sales_seat")) {
           console.log("No sales seat assigned to any rep.");
           setSalesInUse(false);

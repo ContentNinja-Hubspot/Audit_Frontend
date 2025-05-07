@@ -11,6 +11,7 @@ import {
   fetchSalesReportData,
   fetchSalesGraphData,
   fetchAllScores,
+  checkSalesReportStatus,
 } from "../api";
 import { useNotify } from "../context/NotificationContext";
 import { useAudit } from "../context/ReportContext";
@@ -24,10 +25,33 @@ const PastReportDetail = () => {
   const [salesGraphData, setSalesGraphData] = useState(null);
   const [scores, setScores] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { setLatestReportId } = useAudit();
+  const { setLatestReportId, setSalesInUse } = useAudit();
 
   const { error } = useNotify();
   const { token } = useUser();
+
+  useEffect(() => {
+    const fetchSalesReportStatus = async () => {
+      try {
+        setSalesInUse(true);
+        const decodedId = decodeURIComponent(encryptedId);
+        const bytes = CryptoJS.AES.decrypt(decodedId, CRYPTO_SECRET_KEY);
+        const decryptedId = bytes.toString(CryptoJS.enc.Utf8);
+        const response = await checkSalesReportStatus(token, decryptedId);
+        if (response?.completed_objects?.includes("no_sales_seat")) {
+          console.log("No sales seat assigned to any rep in past report.");
+          setSalesInUse(false);
+        }
+      } catch (e) {
+        error("Error while fetching sales report status");
+        console.error("Failed to fetch sales report status:", e);
+      }
+    };
+
+    if (token && encryptedId) {
+      fetchSalesReportStatus();
+    }
+  }, [token, encryptedId, CRYPTO_SECRET_KEY, error]);
 
   useEffect(() => {
     const fetchData = async () => {

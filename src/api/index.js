@@ -381,7 +381,7 @@ export const fetchSalesReportData = async (token, reportId) => {
   }
 };
 
-export const checkSalesReportStatus = async (token, hubId, reportId) => {
+export const checkSalesReportStatus = async (token, reportId) => {
   try {
     const response = await fetch(`${BASE_URL}/checksalesprogress`, {
       method: "POST",
@@ -390,7 +390,6 @@ export const checkSalesReportStatus = async (token, hubId, reportId) => {
         state: token, // JWT token from backend
       },
       body: JSON.stringify({
-        hub_id: hubId,
         report_id: reportId,
       }),
     });

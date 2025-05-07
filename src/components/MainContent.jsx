@@ -27,6 +27,8 @@ const MainContent = ({
   if (!reportData) return <div>Loading report...</div>;
   const { salesInUse } = useAudit();
 
+  console.log("saelsInUse", salesInUse);
+
   const { result, updated_at } = reportData;
   const { data_audit, object_scores, overall_audit_score, score_breakdown } =
     result;

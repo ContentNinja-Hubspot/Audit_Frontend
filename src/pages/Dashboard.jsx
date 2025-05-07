@@ -148,8 +148,9 @@ const Dashboard = () => {
     if (isPollingSales.current || !token || !hubID) return;
     isPollingSales.current = true;
     try {
-      const salesData = await checkSalesReportStatus(token, hubID, reportId);
+      const salesData = await checkSalesReportStatus(token, reportId);
       if (salesData?.completed_objects?.includes("no_sales_seat")) {
+        console.log("No sales seat assigned to any rep.");
         setSalesInUse(false);
         setCompleteReportGenerated(true);
         setSalesReportProgress(100);
@@ -190,6 +191,26 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    const fetchSalesReportStatus = async () => {
+      try {
+        setSalesInUse(true);
+        const response = await checkSalesReportStatus(token, firstReportId);
+        if (response?.completed_objects?.includes("no_sales_seat")) {
+          console.log("No sales seat assigned to any rep in past report.");
+          setSalesInUse(false);
+        }
+      } catch (e) {
+        error("Error while fetching sales report status");
+        console.error("Failed to fetch sales report status:", e);
+      }
+    };
+
+    if (token) {
+      fetchSalesReportStatus();
+    }
+  }, [token]);
+
+  useEffect(() => {
     if (!token || !hubID) return;
 
     const triggerCheck = async () => {
@@ -221,7 +242,7 @@ const Dashboard = () => {
             fetchAuditDataByID(token, reportId),
             fetchGraphData(token, reportId),
             fetchAllScores(token, reportId),
-            checkSalesReportStatus(token, hubID, reportId),
+            checkSalesReportStatus(token, reportId),
           ]);
 
           setLatestReportData(report);
