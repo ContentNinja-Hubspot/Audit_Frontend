@@ -14,7 +14,7 @@ const SalesAudit = ({
   completeReportGenerated,
   salesInUse,
 }) => {
-  const [selectedItem, setSelectedItem] = useState("sales_performance");
+  const [selectedItem, setSelectedItem] = useState("usage_scorecard");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
 
   if (!salesInUse) {
@@ -38,16 +38,16 @@ const SalesAudit = ({
 
   const auditData = [
     {
-      label: "sales_performance",
-      title: "Sales Performance Scorecard",
-      score: Math.round(salesPerformancescore),
-      risk: "High Risk",
-    },
-    {
       label: "usage_scorecard",
       title: "Usage Scorecard",
       score: Math.round(salesUsageScore),
       risk: "Moderate Risk",
+    },
+    {
+      label: "sales_performance",
+      title: "Sales Performance Scorecard",
+      score: Math.round(salesPerformancescore),
+      risk: "High Risk",
     },
   ];
 

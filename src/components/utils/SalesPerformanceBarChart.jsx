@@ -36,16 +36,16 @@ const SalesPerformanceBarChart = ({
   // Metric display names (for better graph labels)
   const metricLabelMap = {
     dealClosure: `Count of Won Deals  [Company Average - ${companyAverage}]`,
-    revenueImpact: `Revenue Impact  [Company Average - ${companyAverage}]`,
+    revenueImpact: `Revenue Impact`,
     revenueWinRate: `Revenue Win Rate  [Company Average - ${companyAverage}]`,
     dealstagnationrate: `Count of Stagnated Deals  [Company Average - ${companyAverage}]`,
     callRate: `Count of Connected Calls  [Company Average - ${companyAverage}]`,
     taskCompletion: `Count of Completed Tasks  [Company Average - ${companyAverage}]`,
-    meetingRate: `Count of Meetings Taken  [Company Average - ${companyAverage}]`,
-    actionstaken: `Count of Actions Taken  [Company Average - ${companyAverage}]`,
-    contactsowned: `Count of Contacts Owned  [Company Average - ${companyAverage}]`,
-    dealsowned: `Count of Deals Owned  [Company Average - ${companyAverage}]`,
-    lastLogin: "Days Since Last Login", // No change here
+    meetingRate: `Count of Meetings Taken in Last 30 Days [Company Average - ${companyAverage}]`,
+    actionstaken: `Count of Actions Taken in Last 30 Days  [Company Average - ${companyAverage}]`,
+    contactsowned: `Count of Contacts Owned in Last 30 Days  [Company Average - ${companyAverage}]`,
+    dealsowned: `Count of Deals Owned in Last 30 Days [Company Average - ${companyAverage}]`,
+    lastLogin: "Days Since Last Login",
   };
 
   useEffect(() => {
