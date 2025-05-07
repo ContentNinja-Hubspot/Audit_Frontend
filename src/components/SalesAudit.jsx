@@ -12,9 +12,21 @@ const SalesAudit = ({
   salesGraphData,
   page,
   completeReportGenerated,
+  salesInUse,
 }) => {
   const [selectedItem, setSelectedItem] = useState("sales_performance");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
+
+  if (!salesInUse) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="text-lg">
+          We could not conduct a Sales Audit as you do not have a paid sales
+          seat assigned to any rep.
+        </p>
+      </div>
+    );
+  }
 
   const {
     inference_sales_usage,

@@ -10,6 +10,7 @@ const ScoreBreakdown = ({
   salesReportProgress,
   salesScore,
   dataAuditScore,
+  salesInUse,
 }) => {
   const titleMap = {
     data_quality: "Data Quality",
@@ -29,7 +30,8 @@ const ScoreBreakdown = ({
 
     let actualScore = value.score;
     if (isSales) {
-      actualScore = salesScore;
+      // If salesInUse is false, set the sales score to "N/A"
+      actualScore = salesInUse ? salesScore : "N/A";
     }
     if (isDataQuality) {
       actualScore = dataAuditScore;
@@ -53,7 +55,7 @@ const ScoreBreakdown = ({
 
     return {
       title: titleMap[key] || key,
-      score: isComingSoon ? "?" : Number(actualScore.toFixed(1)),
+      score: isComingSoon ? "?" : actualScore,
       description,
       comingSoon: isComingSoon,
     };
@@ -138,7 +140,10 @@ const ScoreBreakdown = ({
                           : ""
                       }`}
                     >
-                      {item.score}/100
+                      {/* If it's the Sales score and salesInUse is false, show N/A */}
+                      {item.title === "Sales" && !salesInUse
+                        ? "N/A"
+                        : item.score}
                     </p>
                   </div>
 
@@ -160,15 +165,20 @@ const ScoreBreakdown = ({
             <div className="w-36 h-36">
               <CircularProgressbar
                 value={
-                  selectedScore.comingSoon
+                  // If Sales is not in use, reset the progress bar to 0%
+                  selectedScore.title === "Sales" && !salesInUse
+                    ? 0
+                    : selectedScore.comingSoon
                     ? 0
                     : selectedScore.score || dataAuditScore
                 }
                 text={`${
-                  selectedScore.comingSoon
+                  selectedScore.title === "Sales" && !salesInUse
+                    ? "N/A"
+                    : selectedScore.comingSoon
                     ? "?"
                     : selectedScore.score || dataAuditScore
-                }%`}
+                }`}
                 strokeWidth={10}
                 styles={buildStyles({
                   textColor: "#374151",

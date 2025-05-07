@@ -44,6 +44,7 @@ const Dashboard = () => {
     setSalesReportProgress,
     completeReportGenerated,
     setCompleteReportGenerated,
+    setSalesInUse,
   } = useAudit();
 
   const location = useLocation();
@@ -147,6 +148,19 @@ const Dashboard = () => {
     isPollingSales.current = true;
     try {
       const salesData = await checkSalesReportStatus(token, hubID, reportId);
+      if (salesData?.completed_objects?.includes("no_sales_seat")) {
+        setSalesInUse(false);
+        setCompleteReportGenerated(true);
+        setSalesReportProgress(100);
+        setSalesReportData({
+          message:
+            "We could not conduct a Sales Audit as you do not have a paid sales seat assigned to any rep.",
+        });
+        setSalesGraphData(null);
+        const allScores = await fetchAllScores(token, reportId);
+        setScores(allScores);
+        return;
+      }
 
       if (salesData?.progress < 100 && salesData?.status !== "Completed") {
         setSalesReportProgress(salesData?.progress || 0);

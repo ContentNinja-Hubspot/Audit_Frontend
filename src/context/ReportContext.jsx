@@ -27,6 +27,7 @@ export const ReportProvider = ({ children }) => {
   const [latestReportId, setLatestReportId] = useState(null);
   const [salesReportProgress, setSalesReportProgress] = useState(2);
   const [completeReportGenerated, setCompleteReportGenerated] = useState(false);
+  const [salesInUse, setSalesInUse] = useState(true);
 
   // Set the default hub when user is ready
   useEffect(() => {
@@ -72,7 +73,6 @@ export const ReportProvider = ({ children }) => {
             token,
             selectedHub.hub_id
           );
-          console.log("Audit Status:", auditStatus);
           const auditComplete =
             auditStatus?.report_details?.status === "Completed";
           const reportId = auditStatus?.report_details?.report_id;
@@ -124,6 +124,17 @@ export const ReportProvider = ({ children }) => {
           selectedHub.hub_id,
           reportId
         );
+        if (salesStatus?.completed_objects?.includes("no_sales_seat")) {
+          setSalesInUse(false);
+          setCompleteReportGenerated(true);
+          setSalesReportProgress(100);
+          setSalesReportData({
+            message:
+              "We could not conduct a Sales Audit as you do not have a paid sales seat assigned to any rep.",
+          });
+          setSalesGraphData(null);
+          return;
+        }
         const salesComplete = salesStatus?.status === "Completed";
 
         if (!salesComplete) {
@@ -172,6 +183,8 @@ export const ReportProvider = ({ children }) => {
         setSalesReportProgress,
         completeReportGenerated,
         setCompleteReportGenerated,
+        salesInUse,
+        setSalesInUse,
       }}
     >
       {children}

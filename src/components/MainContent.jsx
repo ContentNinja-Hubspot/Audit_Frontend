@@ -6,6 +6,7 @@ import DataAudit from "../components/DataAudit";
 import SalesAudit from "../components/SalesAudit";
 import { useUser } from "../context/UserContext";
 import HubSelector from "./header/HubSelector";
+import { useAudit } from "../context/ReportContext";
 
 const MainContent = ({
   reportData,
@@ -24,6 +25,7 @@ const MainContent = ({
   const { user } = useUser();
 
   if (!reportData) return <div>Loading report...</div>;
+  const { salesInUse } = useAudit();
 
   const { result, updated_at } = reportData;
   const { data_audit, object_scores, overall_audit_score, score_breakdown } =
@@ -68,6 +70,7 @@ const MainContent = ({
         salesReportProgress={salesReportProgress}
         salesScore={sales_score}
         dataAuditScore={data_audit_score}
+        salesInUse={salesInUse}
       />
 
       {selectedBreakdown === "Data Quality" ? (
@@ -88,6 +91,7 @@ const MainContent = ({
           salesGraphData={salesGraphData}
           page={page}
           completeReportGenerated={completeReportGenerated}
+          salesInUse={salesInUse}
         />
       )}
     </div>
