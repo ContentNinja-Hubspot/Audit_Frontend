@@ -31,7 +31,7 @@ const ScoreBreakdown = ({
     let actualScore = value.score;
     if (isSales) {
       // If salesInUse is false, set the sales score to "N/A"
-      actualScore = salesInUse ? salesScore : "N/A";
+      actualScore = salesInUse ? Number(salesScore?.toFixed(1)) : "N/A";
     }
     if (isDataQuality) {
       actualScore = dataAuditScore;
