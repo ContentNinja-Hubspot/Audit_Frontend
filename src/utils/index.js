@@ -1,7 +1,7 @@
 export const findBorderColor = (score) => {
   if (typeof score !== "number") return "border-gray-300";
   if (score <= 24) return "border-red-500";
-  if (score <= 70) return "border-gray-500";
+  if (score <= 70) return "border-amber-400";
   return "border-green-500";
 };
 
@@ -44,10 +44,10 @@ export const findRiskImageForObject = (value) => {
 
 export const getBorderColor = (risk) => {
   if (risk === "High Risk") return "border-red-500";
-  if (risk === "Moderate Risk") return "border-gray-500";
+  if (risk === "Moderate Risk") return "border-amber-400";
   if (risk === "No Risk") return "border-green-500";
   if (risk === "Low Risk") return "border-green-500";
-  return "border-gray-500";
+  return "border-green-500";
 };
 
 export const getRiskLevel = (score) => {
