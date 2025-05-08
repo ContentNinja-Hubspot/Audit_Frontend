@@ -220,9 +220,7 @@ const Dashboard = () => {
 
         setLatestReportId(firstReportId);
 
-        if (data?.generate_report && checkTriggerReportGeneration) {
-          // Report generation is needed — initiate it
-
+        if (checkTriggerReportGeneration) {
           setReportProgress(2);
           if (!hasTriggeredReport.current) {
             hasTriggeredReport.current = true;
@@ -271,6 +269,36 @@ const Dashboard = () => {
 
           setLoading(false);
         } else {
+          const [report, graph, allScores, salesStatus] = await Promise.all([
+            fetchAuditDataByID(token, firstReportId),
+            fetchGraphData(token, firstReportId),
+            fetchAllScores(token, firstReportId),
+            checkSalesReportStatus(token, firstReportId),
+          ]);
+
+          setLatestReportData(report);
+          setGraphData(graph);
+          setScores(allScores);
+          setReportProgress(100);
+          setReportGenerated(true);
+
+          if (
+            salesStatus?.status === "Completed" &&
+            salesStatus?.progress === 100
+          ) {
+            const [salesData, salesGraph] = await Promise.all([
+              fetchSalesReportData(token, firstReportId),
+              fetchSalesGraphData(token, firstReportId),
+            ]);
+            setSalesReportData(salesData);
+            setSalesGraphData(salesGraph.data);
+            setSalesReportProgress(100);
+            setSalesReportGenerated(true);
+            setCompleteReportGenerated(true);
+          } else {
+            pollSalesReportGeneration(firstReportId);
+          }
+
           setLoading(false);
         }
       } catch (error) {
