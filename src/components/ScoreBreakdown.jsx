@@ -155,6 +155,11 @@ const ScoreBreakdown = ({
                         : "🕒 Coming Soon"}
                     </span>
                   )}
+                  {item.title === "Sales" && (
+                    <span className="absolute top-2 left-2 text-xs font-semibold bg-green-600 text-white py-1 px-2 rounded-l-none rounded-r-full flex items-center">
+                      New Feature
+                    </span>
+                  )}
                 </div>
               );
             })}

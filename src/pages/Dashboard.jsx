@@ -55,6 +55,9 @@ const Dashboard = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.has("state")) {
+      const stateValue = params.get("state");
+
+      Cookies.set("state", stateValue, { path: "/" });
       params.delete("state");
       navigate(location.pathname, { replace: true });
     }

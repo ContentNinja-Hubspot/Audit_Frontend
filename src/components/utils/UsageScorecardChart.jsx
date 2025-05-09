@@ -222,7 +222,7 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
     : null;
 
   return (
-    <div className="w-full relative">
+    <div className="hidden md:block w-full relative">
       <div className="overflow-hidden">
         <div className="min-w-[600px] md:max-w-[950px] h-[500px] mx-auto">
           {pagedData && pagedData.labels.length > 0 ? (
@@ -240,24 +240,30 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
       </div>
 
       {/* Up Arrow Button */}
-      <button
-        onClick={handlePreviousPage}
-        disabled={currentPage === 1}
-        className="absolute top-4 right-16 bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 disabled:bg-gray-400"
-      >
-        ↑
-      </button>
+      <div className="absolute top-1/2 right-16 transform -translate-y-1/2 flex flex-col items-center w-4 h-full">
+        {/* Container for the buttons and the connecting line */}
+        <div className="flex flex-col items-center justify-between w-4 bg-gray-300 rounded-lg h-full">
+          {/* Up Arrow Button */}
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="flex justify-center bg-blue-500 text-white p-2 rounded-t-md shadow-md hover:bg-blue-600 disabled:bg-gray-400 w-full"
+          >
+            ↑
+          </button>
 
-      {/* Down Arrow Button */}
-      <button
-        onClick={handleNextPage}
-        disabled={
-          !pagedData || currentPage * itemsPerPage >= chartData.labels.length
-        }
-        className="absolute bottom-4 right-16 bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 disabled:bg-gray-400"
-      >
-        ↓
-      </button>
+          {/* Down Arrow Button */}
+          <button
+            onClick={handleNextPage}
+            disabled={
+              pagedData && currentPage * itemsPerPage >= chartData.labels.length
+            }
+            className="flex justify-center bg-blue-500 text-white p-2 rounded-b-md shadow-md hover:bg-blue-600 disabled:bg-gray-400 w-full"
+          >
+            ↓
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

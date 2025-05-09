@@ -918,9 +918,9 @@ const SalesPerformance = ({
       </div>
 
       {/* Areas of Improvement */}
-      <div className="text-start mt-14 mx-10 p-4" id="take_action">
+      <div className="text-start mt-14 mx-0  md:mx-10 p-4" id="take_action">
         <h4 className="text-lg font-semibold">Areas of Improvement</h4>
-        <ul className="list-none pl-6 mt-2 text-gray-600">
+        <ul className="list-none pl-2 md:pl-6 mt-2 text-gray-600">
           {getAreasOfImprovement().length > 0 ? (
             getAreasOfImprovement().map((item, index) => (
               <li key={index} className="mb-2">
