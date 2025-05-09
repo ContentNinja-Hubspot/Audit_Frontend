@@ -14,7 +14,12 @@ const Contact = ({
   page,
   completeReportGenerated,
 }) => {
-  const { missing_data, junk_data, total_contacts } = scoreData;
+  const {
+    missing_data,
+    junk_data,
+    total_contacts,
+    total_contact_oppurtunity_customer,
+  } = scoreData;
 
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
   const [isDeletingDataExpanded, setIsDeletingDataExpanded] = useState(true);
@@ -268,7 +273,10 @@ const Contact = ({
                       <p className="text-xs lg:text-sm text-gray-500">
                         {missing_data[item.key]?.count.toLocaleString()}{" "}
                         <span className="text-gray-400 text-xs lg:text-sm">
-                          / {total_contacts.toLocaleString()}
+                          /{" "}
+                          {item.key === "without_deals"
+                            ? total_contact_oppurtunity_customer.toLocaleString()
+                            : total_contacts.toLocaleString()}
                         </span>
                       </p>
                     </div>
