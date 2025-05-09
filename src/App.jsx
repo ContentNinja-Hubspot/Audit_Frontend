@@ -30,6 +30,15 @@ function App() {
         secure: window.location.protocol === "https:",
         expires: 1,
       });
+
+      setTimeout(() => {
+        const token = Cookies.get("state");
+        if (token) {
+          window.location.href = "/dashboard";
+        } else {
+          window.location.href = "/login";
+        }
+      }, 3000); // Delay of 3 seconds
     }
   }, []);
 
