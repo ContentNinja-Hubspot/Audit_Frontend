@@ -13,8 +13,8 @@ import { useUser } from "./UserContext";
 
 const ReportContext = createContext();
 
-export const ReportProvider = ({ children }) => {
-  const { user, token } = useUser();
+export const ReportProvider = ({ paramToken, children }) => {
+  let { user, token } = useUser();
   const [selectedHub, setSelectedHub] = useState(null);
   const [reportGenerated, setReportGenerated] = useState(false);
   const [latestReportData, setLatestReportData] = useState(null);
@@ -47,7 +47,12 @@ export const ReportProvider = ({ children }) => {
   useEffect(() => {
     const checkReportGenerationForSession = async (token) => {
       try {
-        const response = await checkReportGeneration(token);
+        let response;
+        if (paramToken) {
+          response = await checkReportGeneration(paramToken);
+        } else {
+          response = await checkReportGeneration(token);
+        }
         if (response?.generate_report) {
           setCheckTriggerReportGeneration(true);
         }

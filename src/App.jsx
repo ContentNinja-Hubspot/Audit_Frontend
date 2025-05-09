@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
 import { ReportProvider } from "./context/ReportContext";
@@ -19,11 +19,14 @@ import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
 function App() {
+  const [paramToken, setParamToken] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const tokenFromParams = params.get("state");
 
     if (tokenFromParams) {
+      setParamToken(tokenFromParams);
       Cookies.set("state", tokenFromParams, {
         path: "/",
         sameSite: "Lax",
@@ -31,21 +34,26 @@ function App() {
         expires: 1,
       });
 
-      setTimeout(() => {
-        const token = Cookies.get("state");
-        if (token) {
-          window.location.href = "/dashboard";
-        } else {
-          window.location.href = "/login";
-        }
-      }, 3000); // Delay of 3 seconds
+      params.delete("state");
+
+      // Update the browser's URL without reloading the page
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + params.toString()
+      );
     }
+    setLoading(false);
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <NotificationProvider>
       <UserProvider>
-        <ReportProvider>
+        <ReportProvider paramToken={paramToken}>
           <ErrorBoundary FallbackComponent={FallbackErrorPage}>
             <Router>
               <ToastContainer

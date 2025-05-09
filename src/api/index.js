@@ -328,7 +328,7 @@ export const checkReportGeneration = async (token) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log(`Error fetching graph data:`, error);
+    console.log(`Error cehcking report generation:`, error);
     throw error;
   }
 };

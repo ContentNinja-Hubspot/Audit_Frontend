@@ -11,7 +11,6 @@ import {
   triggerCheckReport,
   fetchAuditDataByID,
   fetchGraphData,
-  checkReportGeneration,
   triggerReportGeneration,
   checkSalesReportStatus,
   fetchAllScores,
@@ -48,20 +47,7 @@ const Dashboard = () => {
     firstReportId,
   } = useAudit();
 
-  const location = useLocation();
-  const navigate = useNavigate();
   const hasTriggeredReport = useRef(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    if (params.has("state")) {
-      const stateValue = params.get("state");
-
-      Cookies.set("state", stateValue, { path: "/" });
-      params.delete("state");
-      navigate(location.pathname, { replace: true });
-    }
-  }, [location.search, location.pathname, navigate]);
 
   const [loading, setLoading] = useState(true);
   const [reportProgress, setReportProgress] = useState(0);
