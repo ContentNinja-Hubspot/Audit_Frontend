@@ -18,6 +18,20 @@ import FallbackErrorPage from "./components/FallbackErrorPage";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tokenFromParams = params.get("state");
+
+    if (tokenFromParams) {
+      Cookies.set("state", tokenFromParams, {
+        path: "/",
+        sameSite: "Lax",
+        secure: window.location.protocol === "https:",
+        expires: 1,
+      });
+    }
+  }, []);
+
   return (
     <NotificationProvider>
       <UserProvider>
