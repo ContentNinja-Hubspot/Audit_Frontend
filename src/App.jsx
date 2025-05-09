@@ -16,6 +16,7 @@ import AdminPortal from "./pages/AdminPortal";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackErrorPage from "./components/FallbackErrorPage";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie";
 
 function App() {
   useEffect(() => {
