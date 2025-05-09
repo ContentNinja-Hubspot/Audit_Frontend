@@ -22,9 +22,11 @@ const PastReportHeader = () => {
           Hi {user?.hub_details?.data?.hs_user}
         </h2>
 
-        <div className="relative bg-gray-200 text-gray-600 p-3  text-xs  sm:mt-0 cursor-pointer truncate max-w-60 md:max-w-full">
-          {pastReportDomain}
-        </div>
+        {pastReportDomain && (
+          <div className="relative bg-gray-200 text-gray-600 p-3  text-xs  sm:mt-0 cursor-pointer truncate max-w-60 md:max-w-full">
+            {pastReportDomain}
+          </div>
+        )}
         <div ref={userDropdownRef} className="relative block md:hidden">
           <FaUserCircle
             className="w-7 h-7 sm:w-8 sm:h-8 text-gray-700 cursor-pointer"

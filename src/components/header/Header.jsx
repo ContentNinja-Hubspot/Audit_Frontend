@@ -77,7 +77,7 @@ const Header = ({ completeReportGenerated }) => {
           ) : (
             <>
               {/* Wrap buttons in DisabledTooltip when completeReportGenerated is false */}
-              <DisabledTooltip tooltipText="Please wait while your report is being generated">
+              <DisabledTooltip tooltipText="Please wait while your report is generated">
                 <button
                   onClick={() =>
                     document
@@ -91,7 +91,7 @@ const Header = ({ completeReportGenerated }) => {
                 </button>
               </DisabledTooltip>
 
-              <DisabledTooltip tooltipText="Please wait while your report is being generated">
+              <DisabledTooltip tooltipText="Please wait while your report is generated">
                 <button
                   onClick={handleGenerateReport}
                   className="w-[50%] text-xs md:min-w-min md:text-sm h-10 md:h-10 truncate cursor-not-allowed"

@@ -100,20 +100,16 @@ const Login = () => {
 
         {/* Buttons: aligned side by side if OTP is generated */}
         {isOtpGenerated ? (
-          <div className="flex justify-between gap-3 mb-6">
-            <button
-              onClick={handleLogin}
-              className="w-1/2 bg-white text-purple-500 border border-purple-500 py-2 hover:bg-gray-100 transition shadow-none"
-            >
-              Submit
-            </button>
-            <button
-              onClick={handleResendOtp}
-              className="w-1/2 bg-white text-purple-500 border border-purple-500 py-2 hover:bg-gray-100 transition shadow-none"
-            >
-              Resend OTP
-            </button>
-          </div>
+          <>
+            <div className="flex justify-center gap-3 mb-6">
+              <button
+                onClick={handleLogin}
+                className="w-1/2 bg-white text-purple-500 border border-purple-500 py-2 hover:bg-gray-100 transition shadow-none"
+              >
+                Submit
+              </button>
+            </div>
+          </>
         ) : (
           <button
             onClick={handleGenerateOtp}
@@ -123,7 +119,18 @@ const Login = () => {
           </button>
         )}
 
-        <p className="mt-6 text-gray-500 text-sm">
+        {isOtpGenerated && (
+          <p
+            onClick={handleResendOtp}
+            className="w-auto text-gray-500 text-sm  transition shadow-none"
+          >
+            Didn't received OTP -{" "}
+            <span className="underline cursor-pointer text-purple-500">
+              Resend OTP
+            </span>
+          </p>
+        )}
+        <p className=" text-gray-500 text-sm">
           Don’t have an account?{" "}
           <span
             className="text-gray-500 cursor-pointer underline"

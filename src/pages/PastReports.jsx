@@ -6,6 +6,7 @@ import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import CryptoJS from "crypto-js";
 import { useAudit } from "../context/ReportContext";
+import PastReportHeader from "../components/header/PastReportHeader";
 
 const PastReports = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
@@ -70,8 +71,9 @@ const PastReports = () => {
   return (
     <div className="flex">
       <Sidebar />
+      <PastReportHeader />
       <main className="flex-1 overflow-auto h-screen">
-        <div className="p-6">
+        <div className="p-6 mt-20">
           <h2 className="text-2xl font-bold text-center">Past Reports</h2>
           <div className="mt-4 text-center flex justify-center items-center gap-4 text-gray-700">
             <p
