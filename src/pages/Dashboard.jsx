@@ -196,6 +196,7 @@ const Dashboard = () => {
 
         if (success) {
           onProgressUpdate(progress);
+          setLoading(false);
           if (progress >= 100) return true;
         } else {
           console.warn("Failed to get progress, retrying...");
