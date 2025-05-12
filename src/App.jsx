@@ -80,7 +80,7 @@ function App() {
                 </Route>
 
                 <Route element={<AdminRoute />}>
-                  <Route path="/admin-portal" element={<AdminPortal />} />
+                  {/* <Route path="/admin-portal" element={<AdminPortal />} /> */}
                 </Route>
 
                 <Route path="*" element={<NotFound />} />
