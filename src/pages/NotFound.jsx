@@ -10,8 +10,7 @@ const NotFound = () => {
           Oops! Page not found.
         </p>
         <p className="text-gray-500 my-4">
-          Looking deep, you can find God. But the page you're looking for
-          doesn't exist.
+          Looks like the page you're looking for doesn't exist.
         </p>
         <Link
           to="/dashboard"

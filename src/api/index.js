@@ -295,7 +295,7 @@ export const handleJunkDataAction = async ({
 
     if (response.ok) {
       return {
-        success: true,
+        success: data[item]?.success,
         message: data[item]?.message || data.message || "Success",
       };
     } else {
@@ -519,6 +519,32 @@ export const sendBulkEmailToReps = async (token, payload) => {
     return data;
   } catch (error) {
     console.error("Error sending bulk email:", error);
+    throw error;
+  }
+};
+
+export const checkReportProgressViaReportId = async (
+  token,
+  reportId,
+  hubId
+) => {
+  try {
+    const response = await fetch(`${BASE_URL}/checkprogressviareportid`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify({
+        report_id: reportId,
+        hub_id: hubId,
+      }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error checking report progress:", error);
     throw error;
   }
 };

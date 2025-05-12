@@ -8,6 +8,7 @@ import {
   triggerCheckReport,
   checkSalesReportStatus,
   checkReportGeneration,
+  checkReportProgressViaReportId,
 } from "../api";
 import { useUser } from "./UserContext";
 
@@ -20,6 +21,7 @@ export const ReportProvider = ({ paramToken, children }) => {
   const [latestReportData, setLatestReportData] = useState(null);
   const [salesReportData, setSalesReportData] = useState(null);
   const [salesGraphData, setSalesGraphData] = useState(null);
+  const [reportProgress, setReportProgress] = useState(0);
   const [scores, setScores] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [checkTriggerReportGeneration, setCheckTriggerReportGeneration] =
@@ -106,6 +108,21 @@ export const ReportProvider = ({ paramToken, children }) => {
           // Trigger sales report check in parallel (don't block audit data)
           fetchSalesReport(reportId);
         } else {
+          const progressCheck = await checkReportProgressViaReportId(
+            token,
+            latestReportId,
+            selectedHub.hub_id
+          );
+          const progressStatus = progressCheck?.status === "success";
+          const progressData = progressCheck?.data;
+          if (!progressStatus || progressData?.progress !== 100) {
+            setReportProgress(progressData?.progress || 2);
+            console.log(
+              "Report is still in progress in context:",
+              progressData
+            );
+            return;
+          }
           const [auditData, graph, scoreData] = await Promise.all([
             fetchAuditDataByID(token, latestReportId),
             fetchGraphData(token, latestReportId),
@@ -190,6 +207,8 @@ export const ReportProvider = ({ paramToken, children }) => {
         salesInUse,
         setSalesInUse,
         firstReportId,
+        reportProgress,
+        setReportProgress,
       }}
     >
       {children}

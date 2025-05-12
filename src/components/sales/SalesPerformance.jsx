@@ -390,12 +390,12 @@ const SalesPerformance = ({
         inference: metrics.revenue_impact?.inference || "",
       });
     }
-    if (metrics.revenue_win_rate?.risk === "High Risk") {
-      improvements.push({
-        label: "Revenue Win Rate",
-        inference: metrics.revenue_win_rate?.inference || "",
-      });
-    }
+    // if (metrics.revenue_win_rate?.risk === "High Risk") {
+    //   improvements.push({
+    //     label: "Revenue Win Rate",
+    //     inference: metrics.revenue_win_rate?.inference || "",
+    //   });
+    // }
 
     // Efficiency Metrics
     if (metrics.deal_stagnation_rate?.risk === "High Risk") {
@@ -919,7 +919,19 @@ const SalesPerformance = ({
 
       {/* Areas of Improvement */}
       <div className="text-start mt-14 mx-0  md:mx-10 p-4" id="take_action">
-        <h4 className="text-lg font-semibold">Areas of Improvement</h4>
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="text-lg font-semibold">Areas of Improvement</h4>
+          <button
+            onClick={() =>
+              document
+                .getElementById("overall_audit_section")
+                .scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            Move to Top ↑
+          </button>
+        </div>
+
         <ul className="list-none pl-2 md:pl-6 mt-2 text-gray-600">
           {getAreasOfImprovement().length > 0 ? (
             getAreasOfImprovement().map((item, index) => (

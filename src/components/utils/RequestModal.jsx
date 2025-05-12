@@ -37,11 +37,14 @@ const RequestModal = ({
           objectname,
         });
 
+        const isSuccess = response?.success;
+        const message = response?.message || "Unknown error";
+
         setLoadingStatus((prev) => ({
           ...prev,
           [item]: {
-            status: response.success ? "success" : "failed",
-            message: response.message,
+            status: isSuccess ? "success" : "failed",
+            message,
           },
         }));
       })
@@ -50,12 +53,12 @@ const RequestModal = ({
     setIsProcessing(false);
   };
 
-  const retryFailed = () => {
-    const failedItems = Object.keys(loadingStatus).filter(
-      (key) => loadingStatus[key].status === "failed"
-    );
-    if (failedItems.length > 0) processRequests(failedItems);
-  };
+  // const retryFailed = () => {
+  //   const failedItems = Object.keys(loadingStatus).filter(
+  //     (key) => loadingStatus[key].status === "failed"
+  //   );
+  //   if (failedItems.length > 0) processRequests(failedItems);
+  // };
 
   if (!isOpen) return null;
 
@@ -105,7 +108,7 @@ const RequestModal = ({
           >
             Close
           </button>
-          <button
+          {/* <button
             onClick={retryFailed}
             disabled={isProcessing}
             className={`px-4 py-2 text-white font-medium ${
@@ -115,7 +118,7 @@ const RequestModal = ({
             }`}
           >
             Retry Failed
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

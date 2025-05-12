@@ -17,6 +17,7 @@ import {
   fetchSalesReportData,
   fetchSalesGraphData,
   addNewAccount,
+  checkReportProgressViaReportId,
 } from "../api";
 import Cookies from "js-cookie";
 
@@ -45,15 +46,15 @@ const Dashboard = () => {
     setCompleteReportGenerated,
     setSalesInUse,
     firstReportId,
+    reportProgress,
+    setReportProgress,
   } = useAudit();
 
   const hasTriggeredReport = useRef(false);
 
   const [loading, setLoading] = useState(true);
-  const [reportProgress, setReportProgress] = useState(0);
 
   const [salesReportGenerated, setSalesReportGenerated] = useState(false);
-  const [salesScores, setSalesScores] = useState(0);
   const { user } = useUser();
 
   const isPollingReport = useRef(false);
@@ -179,6 +180,34 @@ const Dashboard = () => {
     isPollingSales.current = false;
   };
 
+  const pollReportGenerationViaReportId = async ({
+    token,
+    reportId,
+    hubId,
+    checkFn,
+    onProgressUpdate = () => {},
+    interval = 60000,
+  }) => {
+    while (true) {
+      try {
+        const response = await checkFn(token, reportId, hubId);
+        const success = response?.status === "success";
+        const progress = response?.data?.progress || 0;
+
+        if (success) {
+          onProgressUpdate(progress);
+          if (progress >= 100) return true;
+        } else {
+          console.warn("Failed to get progress, retrying...");
+        }
+      } catch (err) {
+        console.error("Polling error:", err);
+      }
+
+      await new Promise((res) => setTimeout(res, interval)); // wait 1 minute
+    }
+  };
+
   useEffect(() => {
     const fetchSalesReportStatus = async () => {
       try {
@@ -258,6 +287,19 @@ const Dashboard = () => {
 
           setLoading(false);
         } else {
+          const isComplete = await pollReportGenerationViaReportId({
+            token,
+            reportId: firstReportId,
+            hubId: selectedHub.hub_id,
+            checkFn: checkReportProgressViaReportId,
+            onProgressUpdate: (progress) => setReportProgress(progress || 2),
+          });
+
+          if (!isComplete) {
+            console.log("Report progress polling timed out");
+            return;
+          }
+
           const [report, graph, allScores, salesStatus] = await Promise.all([
             fetchAuditDataByID(token, firstReportId),
             fetchGraphData(token, firstReportId),
@@ -334,7 +376,6 @@ const Dashboard = () => {
             token={token}
             hubId={hubID}
             salesReportProgress={salesReportProgress}
-            salesScores={salesScores}
             scores={scores}
             salesGraphData={salesGraphData}
             completeReportGenerated={completeReportGenerated}

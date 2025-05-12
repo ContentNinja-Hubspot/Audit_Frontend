@@ -16,7 +16,6 @@ const MainContent = ({
   token,
   hubId,
   salesReportProgress,
-  salesScore,
   scores,
   salesGraphData,
   completeReportGenerated,

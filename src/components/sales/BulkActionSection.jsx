@@ -126,7 +126,19 @@ const BulkActionTable = ({ page, completeReportGenerated }) => {
 
   return (
     <div className="mt-8 p-6 px-10" id="take_action">
-      <h4 className="text-start text-lg font-semibold">Take Bulk Action</h4>
+      <div className="flex items-center justify-between mb-4">
+        <h4 className="text-start text-lg font-semibold">Take Bulk Action</h4>
+        <button
+          onClick={() =>
+            document
+              .getElementById("overall_audit_section")
+              .scrollIntoView({ behavior: "smooth" })
+          }
+        >
+          Move to Top ↑
+        </button>
+      </div>
+
       <p className="text-start text-sm text-gray-500 mb-4">
         Reps will receive an email notification with all the metrics they are
         failing at. This email acts as a soft reminder for them to use the most
