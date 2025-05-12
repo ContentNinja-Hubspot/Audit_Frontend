@@ -275,8 +275,10 @@ const Contact = ({
                         <span className="text-gray-400 text-xs lg:text-sm">
                           /{" "}
                           {item.key === "without_deals"
-                            ? total_contact_oppurtunity_customer.toLocaleString()
-                            : total_contacts.toLocaleString()}
+                            ? (
+                                total_contact_oppurtunity_customer ?? 0
+                              ).toLocaleString()
+                            : (total_contacts ?? 0).toLocaleString()}
                         </span>
                       </p>
                     </div>
