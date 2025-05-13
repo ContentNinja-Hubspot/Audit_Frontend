@@ -548,3 +548,25 @@ export const checkReportProgressViaReportId = async (
     throw error;
   }
 };
+
+export const checkAdminStatus = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/checkadmin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error checking admin status:", error);
+    throw error;
+  }
+};
