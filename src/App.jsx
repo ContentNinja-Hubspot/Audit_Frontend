@@ -13,6 +13,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import AdminRoute from "./components/AdminRoute";
 import AdminPortal from "./pages/AdminPortal";
+import AdminLogin from "./components/admin/AdminLogin";
+
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackErrorPage from "./components/FallbackErrorPage";
 import "react-toastify/dist/ReactToastify.css";
@@ -79,8 +81,10 @@ function App() {
                   />
                 </Route>
 
+                <Route path="/admin-login" element={<AdminLogin />} />
+
                 <Route element={<AdminRoute />}>
-                  {/* <Route path="/admin-portal" element={<AdminPortal />} /> */}
+                  <Route path="/admin-portal" element={<AdminPortal />} />
                 </Route>
 
                 <Route path="*" element={<NotFound />} />

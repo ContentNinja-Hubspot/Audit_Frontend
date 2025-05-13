@@ -195,15 +195,20 @@ const Dashboard = () => {
         const progress = response?.data?.progress || 0;
 
         if (success) {
-          setLoading(false);
           onProgressUpdate(progress);
-          if (progress >= 100) return true;
+          if (progress >= 100) {
+            // setLoading(false);
+            return true;
+          }
         } else {
           console.warn("Failed to get progress, retrying...");
         }
+        setLoading(false);
       } catch (err) {
         console.error("Polling error:", err);
       }
+
+      // setLoading(false);
 
       await new Promise((res) => setTimeout(res, interval)); // wait 1 minute
     }

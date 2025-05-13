@@ -5,6 +5,7 @@ import { findRiskImage, getBorderColor } from "../../utils";
 import { Tooltip } from "../utils/Tooltip";
 import ToggleSection from "../utils/ToggleSection";
 import { CheckboxGroup, ActionButton } from "../utils/TakeAction";
+import { useNotify } from "../../context/NotificationContext";
 
 const Company = ({
   token,
@@ -14,6 +15,7 @@ const Company = ({
   page,
   completeReportGenerated,
 }) => {
+  const { success, error } = useNotify();
   const { missing_data, junk_data, total_companies } = scoreData;
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
   const [isDeletingDataExpanded, setIsDeletingDataExpanded] = useState(true);
@@ -84,7 +86,7 @@ const Company = ({
       .map(([key]) => key);
 
     if (!selectedKeys.length) {
-      alert("Please select at least one property.");
+      error("Please select at least one property.");
       return;
     }
 
@@ -98,7 +100,7 @@ const Company = ({
       .map(([key]) => key);
 
     if (!selectedKeys.length) {
-      alert("Please select at least one property.");
+      error("Please select at least one property.");
       return;
     }
 

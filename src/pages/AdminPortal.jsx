@@ -118,7 +118,9 @@ const AdminPortal = () => {
                     {new Date(report.created_at).toLocaleDateString("en-US")}
                   </td>
                   <td className="p-2 border border-gray-300">
-                    {report?.score}
+                    {report?.overall_score
+                      ? Number(report?.overall_score.toFixed(1))
+                      : "N/A"}
                   </td>
                   <td className="p-2 border border-gray-300">
                     <button

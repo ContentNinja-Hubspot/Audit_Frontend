@@ -5,6 +5,7 @@ import { findRiskImage, getBorderColor } from "../../utils";
 import { Tooltip } from "../utils/Tooltip";
 import ToggleSection from "../utils/ToggleSection";
 import { CheckboxGroup, ActionButton } from "../utils/TakeAction";
+import { useNotify } from "../../context/NotificationContext";
 
 const Deal = ({
   token,
@@ -14,6 +15,7 @@ const Deal = ({
   page,
   completeReportGenerated,
 }) => {
+  const { success, error } = useNotify();
   const { missing_data, junk_data, total_deals } = scoreData;
   const [firstDatapoint, setFirstDatapoint] = useState("dealname");
   const [secondDataPoint, setSecondDataPoint] = useState("closedate");
@@ -72,7 +74,7 @@ const Deal = ({
       .map(([key]) => key);
 
     if (!selectedKeys.length) {
-      alert("Please select at least one property.");
+      error("Please select at least one property.");
       return;
     }
 
@@ -86,7 +88,7 @@ const Deal = ({
       .map(([key]) => key);
 
     if (!selectedKeys.length) {
-      alert("Please select at least one property.");
+      error("Please select at least one property.");
       return;
     }
 
