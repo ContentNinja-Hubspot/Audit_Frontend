@@ -525,10 +525,10 @@ const Contact = ({
                     },
                     { label: "Contacts without Email", value: "no_email" },
                     { label: "Contacts without Owner", value: "no_owner" },
-                    {
-                      label: "Contacts without Associated Company",
-                      value: "no_associated_company",
-                    },
+                    // {
+                    //   label: "Contacts without Associated Company",
+                    //   value: "no_associated_company",
+                    // },
                   ]}
                 />
                 <ActionButton
