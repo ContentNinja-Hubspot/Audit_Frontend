@@ -172,7 +172,7 @@ const UsageScoreCard = ({
                   }}
                 >
                   <div className="flex items-start justify-between">
-                    <p className="text-sm font-medium text-gray-600 pr-6 text-start min-h-12 max-w-60 max-h-12">
+                    <p className="text-xs xl:text-sm font-medium text-gray-600 text-start min-h-8 lg:min-h-12 max-h-8  lg:max-h-12 max-w-60">
                       {item.label}
                     </p>
                     <Tooltip tooltipText={item?.info}>
@@ -184,7 +184,7 @@ const UsageScoreCard = ({
                     </Tooltip>
                   </div>
                   <div className="flex flex-col items-start gap-2 justify-start mt-2">
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text:xl md:text-2xl xl:text-3xl font-bold text-gray-900">
                       {item?.percent}%
                     </p>
                     <p className="text-sm text-gray-500">
@@ -195,7 +195,7 @@ const UsageScoreCard = ({
                     </p>
                   </div>
                   <img
-                    className="absolute bottom-4 right-4 h-4"
+                    className="absolute bottom-4 right-4 h-3 xl:h-4"
                     src={findRiskImage(item?.risk)}
                     alt={item?.risk}
                   />
@@ -231,7 +231,7 @@ const UsageScoreCard = ({
                   }}
                 >
                   <div className="flex items-start justify-between">
-                    <p className="text-sm font-medium text-gray-600 pr-6 text-start min-h-12 max-w-60 max-h-12">
+                    <p className="text-xs xl:text-sm font-medium text-gray-600 text-start min-h-8 lg:min-h-12 max-h-8  lg:max-h-12 max-w-60">
                       {item.label}
                     </p>
                     <Tooltip tooltipText={item?.info}>
@@ -243,7 +243,7 @@ const UsageScoreCard = ({
                     </Tooltip>
                   </div>
                   <div className="flex flex-col items-start gap-2 justify-start mt-2">
-                    <p className="text-3xl font-bold text-gray-900">
+                    <p className="text:xl md:text-2xl xl:text-3xl font-bold text-gray-900">
                       {item?.percent}%
                     </p>
                     <p className="text-sm text-gray-500">
@@ -254,7 +254,7 @@ const UsageScoreCard = ({
                     </p>
                   </div>
                   <img
-                    className="absolute bottom-4 right-4 h-4"
+                    className="absolute bottom-4 right-4 h-3 xl:h-4"
                     src={findRiskImage(item?.risk)}
                     alt={item?.risk}
                   />

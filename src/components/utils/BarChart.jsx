@@ -148,6 +148,11 @@ const BarChart = ({
     responsive: true,
     indexAxis: "y",
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        right: 60,
+      },
+    },
     plugins: {
       legend: { display: false },
       datalabels: {

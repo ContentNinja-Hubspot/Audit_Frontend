@@ -48,7 +48,7 @@ const MainContent = ({
           Hi {user?.hub_details?.data?.hs_user}
         </h2>
         <div className={`${page === "past" ? "hidden" : "block"} `}>
-          <HubSelector />
+          <HubSelector completeReportGenerated={completeReportGenerated} />
         </div>
       </div>
       <div>

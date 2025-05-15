@@ -65,11 +65,11 @@ const DataAudit = ({
                   className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 h-24 lg:h-32  ${bgColor} ${borderColor}`}
                   onClick={() => setSelectedItem(item.title)}
                 >
-                  <p className="text-lg text-start font-medium text-gray-800">
+                  <p className="text-sm xl:text-lg text-start font-medium text-gray-800">
                     {item.title}
                   </p>
                   <div className="flex justify-between items-center mt-6 lg:mt-10">
-                    <p className="text-lg lg:text-2xl font-semibold text-black">
+                    <p className="text-lg lg:text-xl xl:text-2xl font-semibold text-black">
                       {item.score} / 100
                     </p>
                     <img src={riskImage} alt="Risk" className="h-4" />

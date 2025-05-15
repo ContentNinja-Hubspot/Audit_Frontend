@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels"; // Import datalabels plugin
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(
   CategoryScale,
@@ -18,12 +18,11 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ChartDataLabels // Register datalabels plugin
+  ChartDataLabels
 );
 
 ChartJS.defaults.font.family = "'Lexend', sans-serif";
 
-// Prettier labels for the selected metrics
 const metricLabelMap = {
   users_not_loggedin: "Days Not Logged In",
   deals_not_owned: "Days Deals Not Owned",
@@ -35,7 +34,6 @@ const metricLabelMap = {
   deals_not_created: "Deals Not Created",
 };
 
-// Map selectedMetric -> actual data array key inside usageScorecardData
 const metricKeyToDataArrayMap = {
   users_not_loggedin: "inactive_days",
   calls_not_logged: "calls_not_made_days",
@@ -44,13 +42,11 @@ const metricKeyToDataArrayMap = {
   deals_not_created: "deals_not_created_days",
   deals_not_owned: "deals_not_owned_days",
   meetings_not_logged: "meetings_not_logged_days",
-  overdue_tasks: "users_with_high_overdue_tasks", // special case
+  overdue_tasks: "users_with_high_overdue_tasks",
 };
 
 const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
   const [chartData, setChartData] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
   const getChartTitle = (selectedMetric) => {
     const titleMap = {
@@ -70,18 +66,13 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
   useEffect(() => {
     if (!usageScorecardData || !selectedMetric) return;
 
+    const dataArrayKey = metricKeyToDataArrayMap[selectedMetric];
+    if (!dataArrayKey) return;
+
     let users = [];
     let values = [];
 
-    const dataArrayKey = metricKeyToDataArrayMap[selectedMetric];
-
-    if (!dataArrayKey) {
-      console.error(`No mapping found for selected metric: ${selectedMetric}`);
-      return;
-    }
-
     if (selectedMetric === "overdue_tasks") {
-      // Special case handling
       const overdueArray = usageScorecardData[dataArrayKey] || [];
       users = overdueArray.map((item) => item.user_email);
       values = overdueArray.map((item) => item.overdue_percentage || 0);
@@ -94,7 +85,6 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
       });
     }
 
-    setCurrentPage(1);
     setChartData({
       labels: users,
       datasets: [
@@ -108,33 +98,22 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
     });
   }, [usageScorecardData, selectedMetric]);
 
-  const handleNextPage = () => {
-    if (chartData) {
-      const totalItems = chartData.labels.length;
-      const maxPages = Math.ceil(totalItems / itemsPerPage);
-      if (currentPage < maxPages) {
-        setCurrentPage(currentPage + 1);
-      }
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
   const options = {
     responsive: true,
     indexAxis: "y",
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        right: 60,
+      },
+    },
     plugins: {
       legend: { display: false },
       tooltip: { mode: "index", intersect: false },
       title: {
         display: true,
         text: getChartTitle(selectedMetric),
-        align: "center", // <-- align left
+        align: "center",
         color: "#000",
         font: {
           size: 16,
@@ -146,40 +125,17 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
         },
       },
       datalabels: {
-        anchor: (context) => {
-          const value = context.dataset.data[context.dataIndex];
-          const total = context.chart.data.datasets[0].data.reduce(
-            (a, b) => a + b,
-            0
-          );
-          const threshold = total * 0.1; // 10% of total value
-          return value < threshold ? "end" : "center"; // Move outside if small value
-        },
-        align: (context) => {
-          const value = context.dataset.data[context.dataIndex];
-          const total = context.chart.data.datasets[0].data.reduce(
-            (a, b) => a + b,
-            0
-          );
-          const threshold = total * 0.1; // 10% of total value
-          return value < threshold ? "end" : "center"; // Align accordingly
-        },
-        color: (context) => {
-          const value = context.dataset.data[context.dataIndex];
-          return "#000"; // Black outside, White inside
-        },
+        anchor: "end",
+        align: "end",
+        // offset: 16,
+        color: "#000",
         font: {
           weight: "light",
           size: 12,
         },
         formatter: (value, context) => {
-          const selected =
-            context.chart.data.datasets[context.datasetIndex].label;
-          if (selected.includes("%")) {
-            return value ? `${value}%` : "";
-          } else {
-            return value ? `${value} Days` : "";
-          }
+          const label = context.chart.data.datasets[context.datasetIndex].label;
+          return label.includes("%") ? `${value}%` : `${value} Days`;
         },
       },
     },
@@ -202,32 +158,20 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
     },
   };
 
-  const pagedData = chartData
-    ? {
-        ...chartData,
-        labels: chartData.labels.slice(
-          (currentPage - 1) * itemsPerPage,
-          currentPage * itemsPerPage
-        ),
-        datasets: [
-          {
-            ...chartData.datasets[0],
-            data: chartData.datasets[0].data.slice(
-              (currentPage - 1) * itemsPerPage,
-              currentPage * itemsPerPage
-            ),
-          },
-        ],
-      }
-    : null;
-
   return (
     <div className="hidden md:block w-full relative">
-      <div className="overflow-hidden">
-        <div className="min-w-[600px] md:max-w-[950px] h-[500px] mx-auto">
-          {pagedData && pagedData.labels.length > 0 ? (
+      <div className="overflow-y-auto h-[500px] cursor-all-scroll">
+        <div
+          className="min-w-[600px] md:max-w-[950px] mx-auto"
+          style={{
+            height: chartData?.labels?.length
+              ? `${chartData.labels.length * 50}px`
+              : "500px",
+          }}
+        >
+          {chartData && chartData.labels.length > 0 ? (
             <Bar
-              data={pagedData}
+              data={chartData}
               options={options}
               plugins={[ChartDataLabels]}
             />
@@ -236,32 +180,6 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
               No data available for this metric.
             </p>
           )}
-        </div>
-      </div>
-
-      {/* Up Arrow Button */}
-      <div className="absolute top-1/2 right-16 transform -translate-y-1/2 flex flex-col items-center w-4 h-full">
-        {/* Container for the buttons and the connecting line */}
-        <div className="flex flex-col items-center justify-between w-4 bg-gray-300 rounded-lg h-full">
-          {/* Up Arrow Button */}
-          <button
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-            className="flex justify-center bg-blue-500 text-white p-2 rounded-t-md shadow-md hover:bg-blue-600 disabled:bg-gray-400 w-full"
-          >
-            ↑
-          </button>
-
-          {/* Down Arrow Button */}
-          <button
-            onClick={handleNextPage}
-            disabled={
-              pagedData && currentPage * itemsPerPage >= chartData.labels.length
-            }
-            className="flex justify-center bg-blue-500 text-white p-2 rounded-b-md shadow-md hover:bg-blue-600 disabled:bg-gray-400 w-full"
-          >
-            ↓
-          </button>
         </div>
       </div>
     </div>

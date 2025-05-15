@@ -682,7 +682,7 @@ const SalesPerformance = ({
             }}
           >
             <div className="flex items-start justify-between">
-              <p className="text-sm font-medium text-center text-gray-600">
+              <p className="text-xs xl:text-sm font-medium text-gray-600 text-start">
                 {label}
               </p>
               <Tooltip tooltipText={info}>
@@ -694,7 +694,7 @@ const SalesPerformance = ({
               </Tooltip>
             </div>
             <div className="flex flex-col items-start gap-2 justify-start mt-2">
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text:xl md:text-2xl xl:text-3xl font-bold text-gray-900">
                 {userData.impactAnalysis[key]?.rate}
                 {suffix}
               </p>
@@ -708,7 +708,7 @@ const SalesPerformance = ({
               {/* <p className="text-xs text-gray-500">{getCompanyAverage(key)}</p> */}
             </div>
             <img
-              className="absolute bottom-4 right-4 h-4"
+              className="absolute bottom-4 right-4 h-3 xl:h-4"
               src={findRiskImage(getRiskLevel(key))}
               alt={"High Risk"}
             />
@@ -760,12 +760,12 @@ const SalesPerformance = ({
             }}
           >
             <div className="flex items-start justify-between">
-              <p className="text-sm font-medium text-gray-600 pr-6 text-start min-h-12 max-w-60 max-h-12">
+              <p className="text-xs xl:text-sm font-medium text-gray-600 text-start min-h-8 lg:min-h-12 max-h-8  lg:max-h-12 max-w-60">
                 {label}
               </p>
               <Tooltip tooltipText={info}>
                 <img
-                  className="h-4 min-w-4"
+                  className="h-3 w-3 xl:h-4 xl:w-4"
                   src="https://6343592.fs1.hubspotusercontent-na1.net/hubfs/6343592/info.png"
                   alt="Info"
                 />
@@ -773,20 +773,20 @@ const SalesPerformance = ({
             </div>
             <div className="flex flex-col items-start gap-2 justify-start mt-2">
               {key !== "lastLogin" ? (
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text:xl md:text-2xl xl:text-3xl font-bold text-gray-900">
                   {userData.efficiencyAnalysis[key]?.rate}
                   {suffix}
                 </p>
               ) : (
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text:xl md:text-2xl xl:text-3xl font-bold text-gray-900">
                   {lastActivityDate}
                   {suffix}
                 </p>
               )}
 
               {key !== "lastLogin" ? (
-                <div className="flex items-center gap-2">
-                  <p className="text-sm text-gray-500">
+                <div className="flex items-center gap-1 xl:gap-2">
+                  <p className="text-xs xl:text-sm text-gray-500">
                     {userData?.efficiencyAnalysis[
                       key
                     ]?.userShare?.toLocaleString()}
@@ -807,7 +807,7 @@ const SalesPerformance = ({
             </div>
             {key !== "lastLogin" && (
               <img
-                className="absolute bottom-4 right-4 h-4"
+                className="absolute bottom-4 right-4 h-3 xl:h-4"
                 src={findRiskImage(getRiskLevel(key))}
                 alt={"High Risk"}
               />
@@ -862,7 +862,7 @@ const SalesPerformance = ({
             }}
           >
             <div className="flex items-start justify-between">
-              <p className="text-sm font-medium text-gray-600 pr-6 text-start min-h-12 max-w-60 max-h-12">
+              <p className="text-xs xl:text-sm font-medium text-gray-600 text-start min-h-8 lg:min-h-12 max-h-8  lg:max-h-12 max-w-60">
                 {label}
               </p>
               <Tooltip tooltipText={info}>
@@ -874,7 +874,7 @@ const SalesPerformance = ({
               </Tooltip>
             </div>
             <div className="flex flex-col items-start gap-2 justify-start mt-2">
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text:xl md:text-2xl xl:text-3xl font-bold text-gray-900">
                 {userData.usageAnalysis[key]?.rate}
                 {suffix}
               </p>
@@ -896,7 +896,7 @@ const SalesPerformance = ({
               <p></p>
             </div>
             <img
-              className="absolute bottom-4 right-4 h-4"
+              className="absolute bottom-4 right-4 h-3 xl:h-4"
               src={findRiskImage(getRiskLevel(key))}
               alt={"High Risk"}
             />
