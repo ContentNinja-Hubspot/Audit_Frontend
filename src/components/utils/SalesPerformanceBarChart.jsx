@@ -83,8 +83,19 @@ const SalesPerformanceBarChart = ({
       }
     };
 
-    const labels = salesPerformanceData.map((rep) => rep.rep_email);
-    const rawValues = salesPerformanceData.map((rep) => getMetricValue(rep));
+    // Combine reps with values
+    const combined = salesPerformanceData.map((rep) => {
+      return {
+        email: rep.rep_email,
+        value: getMetricValue(rep),
+      };
+    });
+
+    // Sort descending based on raw value
+    combined.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+
+    const labels = combined.map((item) => item.email);
+    const rawValues = combined.map((item) => item.value);
     const values = rawValues.map((val) => Math.abs(val));
     const colors = rawValues.map((val) =>
       val >= 0 ? "rgba(54, 162, 235, 0.6)" : "rgba(239,68,68,0.6)"

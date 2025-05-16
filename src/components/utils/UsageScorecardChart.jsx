@@ -74,12 +74,22 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
 
     if (selectedMetric === "overdue_tasks") {
       const overdueArray = usageScorecardData[dataArrayKey] || [];
-      users = overdueArray.map((item) => item.user_email);
-      values = overdueArray.map((item) => item.overdue_percentage || 0);
+      const sorted = [...overdueArray].sort(
+        (a, b) => (b.overdue_percentage || 0) - (a.overdue_percentage || 0)
+      );
+
+      users = sorted.map((item) => item.user_email);
+      values = sorted.map((item) => item.overdue_percentage || 0);
     } else {
       const metricArray = usageScorecardData[dataArrayKey] || [];
-      users = metricArray.map((item) => item.user_email);
-      values = metricArray.map((item) => {
+      const sorted = [...metricArray].sort((a, b) => {
+        const aDays = a.days === "None" ? 0 : Number(a.days || 0);
+        const bDays = b.days === "None" ? 0 : Number(b.days || 0);
+        return bDays - aDays;
+      });
+
+      users = sorted.map((item) => item.user_email);
+      values = sorted.map((item) => {
         if (item.days === "None") return 0;
         return item.days ? Number(item.days) : 0;
       });

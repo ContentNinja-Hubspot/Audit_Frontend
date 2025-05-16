@@ -112,17 +112,8 @@ const BarChart = ({
     );
     ownerEntries.sort((a, b) => b[1] - a[1]);
 
-    const topOwners = ownerEntries.slice(0, 9);
-    const othersValue = ownerEntries
-      .slice(9)
-      .reduce((sum, [, val]) => sum + val, 0);
-
-    const labelsByOwners = topOwners.map(([key]) => key);
-    const valuesByOwners = topOwners.map(([, value]) => value);
-    if (othersValue > 0) {
-      labelsByOwners.push("Others");
-      valuesByOwners.push(othersValue);
-    }
+    const labelsByOwners = ownerEntries.map(([key]) => key);
+    const valuesByOwners = ownerEntries.map(([, value]) => value);
 
     setChartDataByOwners({
       labels: labelsByOwners,
@@ -194,20 +185,29 @@ const BarChart = ({
     },
   };
 
-  const renderChart = () => (
-    <div className="overflow-x-auto">
-      <div className="min-w-[500px] md:max-w-[950px] h-[300px] sm:h-[400px] md:h-[432px] mx-auto">
-        <Bar
-          data={
-            view === "source"
-              ? chartDataBySource || dummyDataBySource
-              : chartDataByOwners || dummyDataByOwners
-          }
-          options={options}
-        />
+  const renderChart = () => {
+    const activeChartData =
+      view === "source"
+        ? chartDataBySource || dummyDataBySource
+        : chartDataByOwners || dummyDataByOwners;
+
+    const rowHeight = 50;
+    const chartHeight =
+      activeChartData?.labels?.length > 0
+        ? activeChartData.labels.length * rowHeight
+        : 400;
+
+    return (
+      <div className="overflow-y-auto max-h-[500px] cursor-all-scroll">
+        <div
+          className="min-w-[600px] md:max-w-[950px] mx-auto"
+          style={{ height: `${chartHeight}px` }}
+        >
+          <Bar data={activeChartData} options={options} />
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="w-full hidden md:block">
