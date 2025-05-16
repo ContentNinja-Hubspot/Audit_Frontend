@@ -74,7 +74,7 @@ const ScoreBreakdown = ({
 
   return (
     <div className="mb-6 px-4 md:pr-10 md:px-0 lg:px-10">
-      <div className="p-4 bg-white rounded-lg max-w-6xl mx-auto my-4">
+      <div className="p-4 bg-white rounded-lg mx-auto my-4">
         <h2 className="text-start font-semibold text-lg mb-3">
           Score Breakdown
         </h2>

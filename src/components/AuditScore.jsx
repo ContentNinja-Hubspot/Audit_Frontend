@@ -26,7 +26,7 @@ const AuditScore = ({
     <div className="mb-6 px-4 md:pr-10 md:px-0 lg:px-10">
       <div
         className="relative bg-white p-3 md:p-4 rounded-lg 
-                   w-full max-w-md sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-6xl 
+                   w-full
                    mx-auto md:mx-0 lg:mx-auto mt-2 flex flex-col"
         id="overall_audit_section"
       >
