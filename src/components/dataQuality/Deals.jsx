@@ -123,6 +123,9 @@ const Deal = ({
     return <div className="p-4">No data available for Deals.</div>;
   }
 
+  if (scoreData.total_deals === 0)
+    return <div className="p-4">No data available for Deals.</div>;
+
   return (
     <div className="text-gray-700 rounded-lg border-gray-300">
       {/* Missing Data Section ....*/}

@@ -137,7 +137,15 @@ const Company = ({
 
   if (!scoreData) {
     return (
-      <div className="report-details">
+      <div className="p-4">
+        <p>No data available for Companies.</p>
+      </div>
+    );
+  }
+
+  if (!scoreData?.total_companies) {
+    return (
+      <div className="p-4">
         <p>No data available for Companies.</p>
       </div>
     );

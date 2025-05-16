@@ -119,6 +119,9 @@ const Ticket = ({
     return <div className="p-4">No data available for Tickets.</div>;
   }
 
+  if (scoreData.total_tickets === 0)
+    return <div className="p-4">No data available for Tickets.</div>;
+
   return (
     <div className="text-gray-700 rounded-lg border-gray-300">
       {/* Missing Data Section */}
