@@ -180,7 +180,7 @@ const SalesPerformanceBarChart = ({
     <div className="hidden md:block w-full relative">
       <div className="overflow-y-auto h-[500px] cursor-all-scroll">
         <div
-          className="min-w-[600px] md:max-w-[950px] mx-auto"
+          className="min-w-[600px] min-h-[500px] md:max-w-[950px] mx-auto"
           style={{
             height: chartData?.labels?.length
               ? `${chartData.labels.length * 50}px`
