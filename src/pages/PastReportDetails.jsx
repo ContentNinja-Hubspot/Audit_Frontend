@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CryptoJS from "crypto-js";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
 import MainContent from "../components/MainContent";
@@ -26,6 +26,8 @@ const PastReportDetail = () => {
   const [scores, setScores] = useState(null);
   const [loading, setLoading] = useState(true);
   const { setLatestReportId, setSalesInUse } = useAudit();
+
+  const navigate = useNavigate();
 
   const { error } = useNotify();
   const { token } = useUser();
@@ -105,6 +107,14 @@ const PastReportDetail = () => {
       <Sidebar />
       <main className="flex-1 overflow-auto h-screen">
         <PastReportHeader />
+        <div className="relative top-24 right-0 text-start mx-10 text-xs">
+          <p
+            onClick={() => navigate(-1)}
+            className="cursor-pointer  transition"
+          >
+            ← Go Back
+          </p>
+        </div>
         <MainContent
           reportData={data}
           token={token}
