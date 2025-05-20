@@ -108,12 +108,12 @@ const PastReportDetail = () => {
       <main className="flex-1 overflow-auto h-screen">
         <PastReportHeader />
         <div className="relative top-24 right-0 text-start mx-10 text-xs">
-          <p
+          <span
             onClick={() => navigate(-1)}
             className="cursor-pointer  transition"
           >
             ← Go Back
-          </p>
+          </span>
         </div>
         <MainContent
           reportData={data}
