@@ -5,8 +5,8 @@ import { fetchReportList } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import CryptoJS from "crypto-js";
-import { useAudit } from "../context/ReportContext";
 import PastReportHeader from "../components/header/PastReportHeader";
+import ShareReportModal from "../components/ShareReportModal";
 
 const PastReports = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
@@ -15,6 +15,10 @@ const PastReports = () => {
   const [loading, setLoading] = useState(true);
   const { error } = useNotify();
   const { token } = useUser();
+
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareEmail, setShareEmail] = useState("");
+  const [selectedReport, setSelectedReport] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,13 +59,22 @@ const PastReports = () => {
   };
 
   const getSafeScore = (score) => {
-    // Ensure the score is a number and is defined
     return score && !isNaN(score) ? Number(score.toFixed(1)) : "N/A";
   };
 
   const formatDate = (date) => {
-    // Ensure the date is valid before formatting
     return date ? new Date(date).toLocaleDateString("en-US") : "N/A";
+  };
+
+  const handleShareEmail = () => {
+    if (!shareEmail || !selectedReport) return;
+    // Actual API call to share report
+    console.log(
+      `Sharing report ID ${selectedReport.report_id} with email: ${shareEmail}`
+    );
+    setShowShareModal(false);
+    setShareEmail("");
+    setSelectedReport(null);
   };
 
   if (loading) {
@@ -121,6 +134,9 @@ const PastReports = () => {
                   <th className="text-sm sm:text-md p-2 border border-gray-300">
                     Action
                   </th>
+                  <th className="text-sm sm:text-md p-2 border border-gray-300">
+                    Share
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -154,6 +170,17 @@ const PastReports = () => {
                         View Report
                       </button>
                     </td>
+                    <td className="text-sm md:text-md p-2 border border-gray-300">
+                      <button
+                        onClick={() => {
+                          setSelectedReport(report);
+                          setShowShareModal(true);
+                        }}
+                        className="text-sm min-w-min md:text-md h-10 md:h-10 truncate"
+                      >
+                        Share Report
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -161,6 +188,18 @@ const PastReports = () => {
           </div>
         </div>
       </main>
+      {/* Share Modal */}
+      <ShareReportModal
+        visible={showShareModal}
+        onClose={() => {
+          setShowShareModal(false);
+          setShareEmail("");
+          setSelectedReport(null);
+        }}
+        onShare={handleShareEmail}
+        email={shareEmail}
+        setEmail={setShareEmail}
+      />
     </div>
   );
 };
