@@ -15,21 +15,24 @@ export const requestOTP = async (email) => {
     }
 
     const data = await response.json();
-    return data;
+    return {
+      status: response.status,
+      data,
+    };
   } catch (error) {
     console.error("Error requesting OTP:", error);
     throw error;
   }
 };
 
-export const validateOTP = async (email, otp) => {
+export const validateOTP = async (body) => {
   try {
     const response = await fetch(`${BASE_URL}/validate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: email, otp: otp, page: "signin" }),
+      body: JSON.stringify({ ...body, page: "signin" }),
     });
 
     if (!response.ok) {
