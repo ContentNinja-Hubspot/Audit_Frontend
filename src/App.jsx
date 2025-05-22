@@ -87,7 +87,7 @@ function App() {
 
                 <Route path="*" element={<NotFound />} />
                 <Route path="/not-found" element={<NotFound />} />
-                <Route path="/profile" element={<PartnerRegistrationPage />} />
+                <Route path="/partner_registration" element={<PartnerRegistrationPage />} />
                 <Route path="/plans" element={<PlanPage />} />
               </Routes>
             </Router>

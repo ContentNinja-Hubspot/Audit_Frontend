@@ -40,7 +40,7 @@ const PlanPage = () => {
   const handleCardClick = (name) => {
     const updatedPlans = plans.map((plan) => ({
       ...plan,
-      highlight: plan.name === name, // Only the clicked one gets highlight
+      highlight: plan.name === name, 
     }));
     setPlans(updatedPlans);
   };
