@@ -62,12 +62,12 @@ export default function PartnerRegistration() {
             onChange={handleChange}
           />
         </FormRow>
-        <FormRow label="Logo (jpeg, png & xyz)">
+        <FormRow label="Logo (jpeg, png & jpg)">
           <input
             className="border-0 border-b-2 border-purple-200 focus:border-purple-400 outline-none bg-white px-2 py-2 w-80 text-base transition file:text-purple-500 file:font-medium"
             name="logo"
             type="file"
-            accept=".jpeg,.png,.jpg,.xyz"
+            accept=".jpeg,.png,.jpg"
             onChange={handleChange}
           />
         </FormRow>
