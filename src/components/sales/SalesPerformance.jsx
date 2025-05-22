@@ -700,12 +700,15 @@ const SalesPerformance = ({
               </p>
               <p className="text-sm text-gray-500">{text}</p>
               <p className="text-sm text-gray-500">
-                {userData?.impactAnalysis[key]?.userShare?.toLocaleString()}
-                <span className="text-gray-400">
-                  / {userData.impactAnalysis[key]?.total?.toLocaleString()}
-                </span>
+                {key !== "revenueImpact" ? (
+                  <>
+                    {userData?.impactAnalysis[key]?.userShare?.toLocaleString()}
+                    <span className="text-gray-400">
+                      / {userData?.impactAnalysis[key]?.total?.toLocaleString()}
+                    </span>
+                  </>
+                ) : null}
               </p>
-              {/* <p className="text-xs text-gray-500">{getCompanyAverage(key)}</p> */}
             </div>
             <img
               className="absolute bottom-4 right-4 h-3 xl:h-4"
