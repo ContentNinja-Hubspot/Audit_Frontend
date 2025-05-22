@@ -43,7 +43,7 @@ export default function PartnerRegistration() {
         className="flex flex-col gap-7 min-w-[420px] bg-transparent text-start"
         onSubmit={handleSubmit}
       >
-        <FormRow label="Partner Agency Name*" required>
+        <FormRow label="Partner Agency Name" required>
           <input
             className="border-0 border-b-2 border-purple-200 focus:border-purple-400 outline-none bg-white px-2 py-2 w-80 text-base transition"
             name="agencyName"
@@ -53,7 +53,7 @@ export default function PartnerRegistration() {
             required
           />
         </FormRow>
-        <FormRow label="Partner Agency Domain">
+        <FormRow label="Partner Agency Domain" required>
           <input
             className="border-0 border-b-2 border-purple-200 focus:border-purple-400 outline-none bg-white px-2 py-2 w-80 text-base transition"
             name="agencyDomain"

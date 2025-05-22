@@ -151,12 +151,12 @@ const Sidebar = () => {
             <p className="text-lg font-semibold tracking-wide mb-3">
               {credits}/100
             </p>
-            <button
-              className="flex items-center justify-center disabled:cursor-not-allowed bg-gray-600"
-              disabled
+            <Link
+              to="/plans"
+              className="flex items-center justify-center px-4 py-2 bg-black text-white transition"
             >
               <FiPlus className="mr-2" size={16} /> Add Credits
-            </button>
+            </Link>
           </div>
         </aside>
       </div>

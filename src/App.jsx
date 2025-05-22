@@ -16,6 +16,7 @@ import AdminPortal from "./pages/AdminPortal";
 import PartnerRegistrationPage from "./pages/PartnerRegistraionPage";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackErrorPage from "./components/FallbackErrorPage";
+import PlanPage from "./pages/PlanPage";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
@@ -87,6 +88,7 @@ function App() {
                 <Route path="*" element={<NotFound />} />
                 <Route path="/not-found" element={<NotFound />} />
                 <Route path="/profile" element={<PartnerRegistrationPage />} />
+                <Route path="/plans" element={<PlanPage />} />
               </Routes>
             </Router>
           </ErrorBoundary>
