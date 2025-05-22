@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import UserDropdown from "./UserDropdown";
 import { useUser } from "../../context/UserContext";
 
 const PastReportHeader = () => {
@@ -53,16 +54,7 @@ const PastReportHeader = () => {
             onClick={() => setShowUserDropdown(!showUserDropdown)}
           />
 
-          {showUserDropdown && (
-            <div className="absolute right-0 mt-4 rounded-lg">
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 bg-white text-sm shadow-none text-gray-700 hover:bg-gray-100"
-              >
-                Logout
-              </button>
-            </div>
-          )}
+          {showUserDropdown && <UserDropdown onLogout={handleLogout} />}
         </div>
       </div>
     </header>
