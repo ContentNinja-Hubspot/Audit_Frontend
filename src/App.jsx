@@ -53,10 +53,10 @@ function App() {
   }
 
   return (
-    <NotificationProvider>
-      <UserProvider>
-        <ReportProvider paramToken={paramToken}>
-          <ErrorBoundary FallbackComponent={FallbackErrorPage}>
+    <ErrorBoundary FallbackComponent={FallbackErrorPage}>
+      <NotificationProvider>
+        <UserProvider>
+          <ReportProvider paramToken={paramToken}>
             <Router>
               <ToastContainer
                 position="top-right"
@@ -79,6 +79,11 @@ function App() {
                     path="/past-reports/:reportID"
                     element={<PastReportDetail />}
                   />
+                  <Route
+                    path="/partner_registration"
+                    element={<PartnerRegistrationPage />}
+                  />
+                  <Route path="/plans" element={<PlanPage />} />
                 </Route>
 
                 <Route element={<AdminRoute />}>
@@ -87,14 +92,12 @@ function App() {
 
                 <Route path="*" element={<NotFound />} />
                 <Route path="/not-found" element={<NotFound />} />
-                <Route path="/partner_registration" element={<PartnerRegistrationPage />} />
-                <Route path="/plans" element={<PlanPage />} />
               </Routes>
             </Router>
-          </ErrorBoundary>
-        </ReportProvider>
-      </UserProvider>
-    </NotificationProvider>
+          </ReportProvider>
+        </UserProvider>
+      </NotificationProvider>
+    </ErrorBoundary>
   );
 }
 

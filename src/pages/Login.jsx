@@ -28,7 +28,7 @@ const Login = () => {
 
       if (resp.status === 201) {
         setNewUser(true);
-        setUserType(""); 
+        setUserType("");
       } else {
         setNewUser(false);
       }
@@ -57,8 +57,12 @@ const Login = () => {
       const response = await validateOTP(body);
       if (response.success && response.state) {
         Cookies.set("state", response.state, { expires: 7 });
-        window.location.href = "/dashboard";
         success("Login successful!");
+        if (response.redirect_url) {
+          window.location.href = response.redirect_url;
+        } else {
+          window.location.href = "/dashboard";
+        }
       } else {
         error("Invalid OTP! Try again.");
       }
