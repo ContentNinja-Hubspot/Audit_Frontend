@@ -16,6 +16,7 @@ import AdminPortal from "./pages/AdminPortal";
 import PartnerRegistrationPage from "./pages/PartnerRegistraionPage";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackErrorPage from "./components/FallbackErrorPage";
+import UsersPage from "./pages/UsersPage";
 import PlanPage from "./pages/PlanPage";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
@@ -84,6 +85,7 @@ function App() {
                     element={<PartnerRegistrationPage />}
                   />
                   <Route path="/plans" element={<PlanPage />} />
+                  <Route path="/users" element={<UsersPage />} />
                 </Route>
 
                 <Route element={<AdminRoute />}>

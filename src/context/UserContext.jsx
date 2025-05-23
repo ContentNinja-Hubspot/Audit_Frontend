@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { fetchUserData } from "../api";
+import { fetchUserData, checkUserType } from "../api";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userType, setUserType] = useState(null);
   const [token, setToken] = useState(Cookies.get("state") || null);
   const [loading, setLoading] = useState(true);
 
@@ -26,8 +27,18 @@ export const UserProvider = ({ children }) => {
     }
   }, [token]);
 
+  useEffect(() => {
+    if (token) {
+      checkUserType(token).then((res) => {
+        setUserType(res.user_type); 
+      });
+    }
+  }, [token]);
+
   return (
-    <UserContext.Provider value={{ user, token, setToken, logout, loading }}>
+    <UserContext.Provider
+      value={{ user, userType, token, setToken, logout, loading }}
+    >
       {children}
     </UserContext.Provider>
   );
