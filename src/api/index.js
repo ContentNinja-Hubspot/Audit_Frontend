@@ -573,3 +573,47 @@ export const checkAdminStatus = async (token) => {
     throw error;
   }
 };
+
+export const uploadPartnerData = async (formData, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/submit_partner_details`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error uploading partner data:", error);
+    throw error;
+  }
+};
+
+export const fetchThemeDetails = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/get_themes_and_fonts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner details:", error);
+    throw error;
+  }
+};
