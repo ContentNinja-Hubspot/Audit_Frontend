@@ -6,10 +6,12 @@ import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
 import { addUsertoPartner } from "../api";
 import { useUser } from "../context/UserContext";
+import { useNotify } from "../context/NotificationContext";
 
 const UsersPage = () => {
   const [users, setUsers] = useState([]);
   const { userType, token } = useUser();
+  const { success, error } = useNotify();
 
   if (userType !== "partner") {
     return <Navigate to="/not-found" replace />;
@@ -54,7 +56,7 @@ const UsersPage = () => {
     );
 
     if (isDuplicate) {
-      alert("User with this email already exists.");
+      error("User with this email already exists.");
       return;
     }
 
@@ -64,6 +66,7 @@ const UsersPage = () => {
       });
 
       if (response.success) {
+        success("User added successfully.");
         const addedUser = {
           ...newUser,
           id: Date.now(),
@@ -71,11 +74,11 @@ const UsersPage = () => {
         };
         setUsers((prev) => [...prev, addedUser]);
       } else {
-        alert(response.error || "Failed to add user.");
+        error(response.error || "Failed to add user.");
       }
     } catch (error) {
       console.error("Error adding user:", error);
-      alert("An error occurred while adding the user.");
+      error("An error occurred while adding the user.");
     }
   };
 
