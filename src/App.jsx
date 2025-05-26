@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
 import { ReportProvider } from "./context/ReportContext";
 import { NotificationProvider } from "./context/NotificationContext";
@@ -81,8 +86,12 @@ function App() {
                     element={<PastReportDetail />}
                   />
                   <Route
-                    path="/partner_registration"
+                    path="/profile"
                     element={<PartnerRegistrationPage />}
+                  />
+                  <Route
+                    path="/partner_registration"
+                    element={<Navigate to="/profile" replace />}
                   />
                   <Route path="/plans" element={<PlanPage />} />
                   <Route path="/users" element={<UsersPage />} />

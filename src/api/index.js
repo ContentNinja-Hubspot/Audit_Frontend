@@ -639,3 +639,26 @@ export const checkUserType = async (token) => {
     throw error;
   }
 }
+
+export const addUsertoPartner = async (token, userData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/addusertopartner`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error adding user to partner:", error);
+    throw error;
+  }
+}
