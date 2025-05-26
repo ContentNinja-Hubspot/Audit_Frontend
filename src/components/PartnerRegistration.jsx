@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { uploadPartnerData, fetchThemeDetails, checkUserType } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
+import { useNavigate } from "react-router-dom";
 
 function NormalSettingsForm({ form, handleChange, handleSubmit, loading }) {
   return (
@@ -47,6 +48,8 @@ export default function PartnerRegistration() {
 
   const { token } = useUser();
   const { success, error } = useNotify();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkType = async () => {
@@ -119,6 +122,7 @@ export default function PartnerRegistration() {
         setLoading(false);
       }
     }
+    navigate("/dashboard");
   };
 
   if (!userType) {
