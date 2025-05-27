@@ -400,11 +400,11 @@ const Deal = ({
       {/* Take Action for Deals */}
       <section
         className={`${
-          page === "past" ? "blur-sm pointer-events-none relative" : ""
+          page === "past" ? "backdrop-blur-3xl pointer-events-none relative" : ""
         }`}
       >
         {page === "past" && (
-          <div className="absolute inset-0 bg-white/80 flex items-center justify-center text-lg font-semibold text-gray-800 z-10">
+          <div className="absolute inset-0 bg-white/80 flex items-center justify-center text-2xl font-semibold text-gray-800 z-10">
             Can't take action in past report
           </div>
         )}
