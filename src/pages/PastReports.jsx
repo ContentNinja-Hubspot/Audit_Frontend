@@ -83,28 +83,23 @@ const PastReports = () => {
     return date ? new Date(date).toLocaleDateString("en-US") : "N/A";
   };
 
-  const handleShareReport = async () => {
-    if (!shareEmail || !selectedReport) return;
+  const handleShareReport = async (email) => {
+    if (!email || !selectedReport) return;
 
     try {
       const response = await shareReport(
         token,
         selectedReport.report_id,
-        shareEmail
+        email
       );
 
-      if (response.status === "success") {
-        success("Report shared successfully.");
-      } else {
-        error(response.message || "Failed to share report.");
-      }
+      return response; 
     } catch (e) {
       console.error("Share report error:", e);
-      error("Something went wrong while sharing the report.");
-    } finally {
-      setShowShareModal(false);
-      setShareEmail("");
-      setSelectedReport(null);
+      return {
+        status: "error",
+        message: "Something went wrong while sharing the report.",
+      };
     }
   };
 
@@ -240,12 +235,9 @@ const PastReports = () => {
         visible={showShareModal}
         onClose={() => {
           setShowShareModal(false);
-          setShareEmail("");
           setSelectedReport(null);
         }}
         onShare={handleShareReport}
-        email={shareEmail}
-        setEmail={setShareEmail}
       />
     </div>
   );

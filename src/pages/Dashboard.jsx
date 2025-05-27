@@ -357,11 +357,10 @@ const Dashboard = () => {
           <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] text-center px-4">
             <div className="bg-inherit border bg-white border-black text-black px-6 py-4 rounded shadow-md max-w-lg mx-auto">
               <p className="text-lg font-medium">
-                Looks like you haven’t added any Hub yet.
+                Looks like you haven’t added any hub yet.
               </p>
               <p className="mt-2 text-sm">
-                Please select a Hub by adding a new portal using the Add New
-                Portal Button.
+                Please add a new hub using the button below.
               </p>
               <button onClick={handleAddNewAccount} className="my-4 p-2">
                 + Add New Portal
