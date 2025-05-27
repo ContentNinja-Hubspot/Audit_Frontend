@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/SideBar";
 import { useNavigate } from "react-router-dom";
-import { fetchReportList } from "../api";
+import { fetchReportList, shareReport, fetchSharedReports } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import CryptoJS from "crypto-js";
@@ -13,9 +13,11 @@ const PastReports = () => {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { error } = useNotify();
+  const { error, success } = useNotify();
   const { token } = useUser();
 
+  const [activeTab, setActiveTab] = useState("past");
+  const [sharedReports, setSharedReports] = useState([]);
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareEmail, setShareEmail] = useState("");
   const [selectedReport, setSelectedReport] = useState(null);
@@ -24,7 +26,7 @@ const PastReports = () => {
     const fetchData = async () => {
       try {
         const response = await fetchReportList(token);
-        setReports(response?.data);
+        setReports(response?.data || []);
       } catch (e) {
         error("Error while fetching past report data");
         console.error("Failed to fetch audit data:", e);
@@ -33,7 +35,22 @@ const PastReports = () => {
       }
     };
 
+    const fetchShared = async () => {
+      try {
+        const response = await fetchSharedReports(token);
+        if (response.success) {
+          setSharedReports(response.data || []);
+        } else {
+          error(response.message || "Failed to fetch shared reports");
+        }
+      } catch (e) {
+        error("Error while fetching shared reports");
+        console.error(e);
+      }
+    };
+
     fetchData();
+    fetchShared();
   }, []);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,15 +83,29 @@ const PastReports = () => {
     return date ? new Date(date).toLocaleDateString("en-US") : "N/A";
   };
 
-  const handleShareEmail = () => {
+  const handleShareReport = async () => {
     if (!shareEmail || !selectedReport) return;
-    // Actual API call to share report
-    console.log(
-      `Sharing report ID ${selectedReport.report_id} with email: ${shareEmail}`
-    );
-    setShowShareModal(false);
-    setShareEmail("");
-    setSelectedReport(null);
+
+    try {
+      const response = await shareReport(
+        token,
+        selectedReport.report_id,
+        shareEmail
+      );
+
+      if (response.status === "success") {
+        success("Report shared successfully.");
+      } else {
+        error(response.message || "Failed to share report.");
+      }
+    } catch (e) {
+      console.error("Share report error:", e);
+      error("Something went wrong while sharing the report.");
+    } finally {
+      setShowShareModal(false);
+      setShareEmail("");
+      setSelectedReport(null);
+    }
   };
 
   if (loading) {
@@ -87,102 +118,118 @@ const PastReports = () => {
       <PastReportHeader />
       <main className="flex-1 overflow-auto h-screen">
         <div className="p-6 mt-20">
-          <h2 className="text-2xl font-bold text-center">Past Reports</h2>
-          <div className="mt-4 text-center flex justify-center items-center gap-4 text-gray-700">
-            <p
-              className={`underline text-sm ${
-                currentPage === 1
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:cursor-pointer"
-              }`}
-              onClick={goToPreviousPage}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </p>
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <p
-              className={`underline text-sm ${
-                currentPage === totalPages
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:cursor-pointer"
-              }`}
-              onClick={goToNextPage}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </p>
+          <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
+            {/* Toggle Tabs */}
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setActiveTab("past")}
+                className={`px-4 py-2 rounded-md font-medium ${
+                  activeTab === "past"
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-black"
+                }`}
+              >
+                Past Reports
+              </button>
+              <button
+                onClick={() => setActiveTab("shared")}
+                className={`px-4 py-2 rounded-md font-medium ${
+                  activeTab === "shared"
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-black"
+                }`}
+              >
+                Shared With Me
+              </button>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex items-center text-sm text-gray-700">
+              <p
+                className={`underline mr-4 ${
+                  currentPage === 1
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
+                onClick={goToPreviousPage}
+              >
+                Previous
+              </p>
+              <span className="mr-4">
+                Page {currentPage} of {totalPages}
+              </span>
+              <p
+                className={`underline ${
+                  currentPage === totalPages
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
+                onClick={goToNextPage}
+              >
+                Next
+              </p>
+            </div>
           </div>
-          <div className="mt-4 overflow-x-auto w-full">
-            <table className="w-full min-w-[600px] border-collapse border border-gray-300">
+
+          <div className="bg-white shadow rounded-md overflow-x-auto">
+            <table className="min-w-full border-collapse">
               <thead>
                 <tr className="bg-black text-white">
-                  <th className="text-sm sm:text-md p-2 border border-gray-300">
-                    S. No.
-                  </th>
-                  <th className="text-sm sm:text-md p-2 border border-gray-300">
-                    Hub Domain
-                  </th>
-                  <th className="text-sm sm:text-md p-2 border border-gray-300">
-                    Create Date
-                  </th>
-                  <th className="text-sm sm:text-md p-2 border border-gray-300">
-                    Score
-                  </th>
-                  <th className="text-sm sm:text-md p-2 border border-gray-300">
-                    Action
-                  </th>
-                  <th className="text-sm sm:text-md p-2 border border-gray-300">
-                    Share
-                  </th>
+                  <th className="text-center px-4 py-3 text-sm">S. No.</th>
+                  <th className="text-center px-4 py-3 text-sm">Hub Domain</th>
+                  <th className="text-center px-4 py-3 text-sm">Create Date</th>
+                  <th className="text-center px-4 py-3 text-sm">Score</th>
+                  <th className="text-center px-4 py-3 text-sm">Action</th>
+                  {activeTab === "past" && (
+                    <th className="text-center px-4 py-3 text-sm">Share</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
-                {currentReports.map((report, index) => (
-                  <tr
-                    key={indexOfFirstReport + index + 1}
-                    className="bg-gray-100 text-start md:text-center"
-                  >
-                    <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {indexOfFirstReport + index + 1}
-                    </td>
-                    <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {report?.hub_domain || "N/A"}
-                    </td>
-                    <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {formatDate(report?.created_at)}
-                    </td>
-                    <td className="text-sm md:text-md p-2 border border-gray-300">
-                      {getSafeScore(report?.overall_score)}
-                    </td>
-                    <td className="text-sm md:text-md p-2 border border-gray-300">
-                      <button
-                        onClick={() =>
-                          handlePastReportClick(
-                            report.hub_domain,
-                            report.report_id
-                          )
-                        }
-                        className="text-sm min-w-min md:text-md h-10 md:h-10 truncate"
-                      >
-                        View Report
-                      </button>
-                    </td>
-                    <td className="text-sm md:text-md p-2 border border-gray-300">
-                      <button
-                        onClick={() => {
-                          setSelectedReport(report);
-                          setShowShareModal(true);
-                        }}
-                        className="text-sm min-w-min md:text-md h-10 md:h-10 truncate"
-                      >
-                        Share Report
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {(activeTab === "past" ? currentReports : sharedReports).map(
+                  (report, index) => (
+                    <tr key={index} className="bg-gray-50 border-t">
+                      <td className="px-4 py-3 text-sm">
+                        {indexOfFirstReport + index + 1}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {report?.hub_domain || "N/A"}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {formatDate(report?.created_at)}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        {getSafeScore(report?.overall_score)}
+                      </td>
+                      <td className="px-4 py-3 text-sm">
+                        <button
+                          onClick={() =>
+                            handlePastReportClick(
+                              report.hub_domain,
+                              report.report_id
+                            )
+                          }
+                          className="bg-black text-white px-3 py-2 rounded-md text-sm"
+                        >
+                          View Report
+                        </button>
+                      </td>
+                      {activeTab === "past" && (
+                        <td className="px-4 py-3 text-sm">
+                          <button
+                            onClick={() => {
+                              setSelectedReport(report);
+                              setShowShareModal(true);
+                            }}
+                            className="bg-black text-white px-3 py-2 rounded-md text-sm"
+                          >
+                            Share Report
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </div>
@@ -196,7 +243,7 @@ const PastReports = () => {
           setShareEmail("");
           setSelectedReport(null);
         }}
-        onShare={handleShareEmail}
+        onShare={handleShareReport}
         email={shareEmail}
         setEmail={setShareEmail}
       />

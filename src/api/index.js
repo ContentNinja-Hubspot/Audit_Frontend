@@ -638,7 +638,7 @@ export const checkUserType = async (token) => {
     console.error("Error checking user type:", error);
     throw error;
   }
-}
+};
 
 export const addUsertoPartner = async (token, userData) => {
   try {
@@ -661,4 +661,93 @@ export const addUsertoPartner = async (token, userData) => {
     console.error("Error adding user to partner:", error);
     throw error;
   }
-}
+};
+
+export const shareReport = async (token, reportId, email) => {
+  try {
+    const response = await fetch(`${BASE_URL}/sharereport`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify({
+        report_id: reportId,
+        email: email,
+      }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error sharing report:", error);
+    throw error;
+  }
+};
+
+export const fetchSharedReports = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/fetchsharedreport`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching shared reports:", error);
+    throw error;
+  }
+};
+
+
+export const fetchUserFontAndTheme = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/user-font`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token, // send user token if required for auth
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching font: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.font;
+  } catch (error) {
+    console.error("Error fetching user font:", error);
+    throw error;
+  }
+};
+
+export const fetchThemeSettings = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getlogo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token, // send user token if required for auth
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching theme settings: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching theme settings:", error);
+    throw error;
+  }
+};
