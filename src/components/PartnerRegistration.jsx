@@ -3,6 +3,7 @@ import { uploadPartnerData, fetchThemeDetails, checkUserType } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import { useNavigate } from "react-router-dom";
+import CropModal from "./utils/CropModal";
 
 function NormalSettingsForm({ form, handleChange, handleSubmit, loading }) {
   return (
@@ -51,6 +52,10 @@ export default function PartnerRegistration() {
 
   const navigate = useNavigate();
 
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [croppedImageURL, setCroppedImageURL] = useState(null);
+
   useEffect(() => {
     const checkType = async () => {
       try {
@@ -64,7 +69,6 @@ export default function PartnerRegistration() {
             if (b.font_name === "Lexend (Default)") return 1;
             return 0;
           });
-
           setFonts(sortedFonts);
         }
       } catch {
@@ -77,10 +81,16 @@ export default function PartnerRegistration() {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
+    if (name === "logo" && files && files[0]) {
+      const imageURL = URL.createObjectURL(files[0]);
+      setSelectedImage(imageURL);
+      setCropModalOpen(true);
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: files ? files[0] : value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -98,14 +108,16 @@ export default function PartnerRegistration() {
       try {
         await uploadPartnerData(formData, token);
         success("Form submitted! 🎉");
-        setForm((f) => ({
-          ...f,
+        setForm({
           agency_name: "",
           agency_domain: "",
           logo: null,
           theme_id: "",
           font_id: "",
-        }));
+          name: "",
+          email: "",
+        });
+        setCroppedImageURL(null);
       } catch (err) {
         error(err?.message || "Something went wrong.");
       } finally {
@@ -113,7 +125,6 @@ export default function PartnerRegistration() {
       }
     } else {
       try {
-        // await saveUserSettings({ name: form.name, email: form.email }, token);
         success("Settings saved.");
         setForm((f) => ({ ...f, name: "", email: "" }));
       } catch {
@@ -164,44 +175,33 @@ export default function PartnerRegistration() {
               <div className="w-full">
                 <label
                   htmlFor="logo-upload"
-                  className="flex items-center gap-4 border border-dashed border-gray-300 rounded-lg px-4 py-2 cursor-pointer hover:border-purple-500 transition"
+                  className="flex flex-col items-center gap-2 border border-dashed border-gray-300 rounded-lg px-4 py-4 cursor-pointer hover:border-purple-500 transition"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 hover:text-purple-600 transition"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 10l7-7m0 0l7 7m-7-7v18"
+                  {croppedImageURL ? (
+                    <img
+                      src={croppedImageURL}
+                      alt="Preview"
+                      className="w-24 h-24 object-contain"
                     />
-                  </svg>
-
-                  <div className="text-left">
-                    {form.logo ? (
-                      <>
-                        <p className="text-gray-700 font-medium">
-                          {form.logo.name}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          Click to change file
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="font-medium text-gray-600">
-                          Click to upload
-                        </p>
-                        <p className="text-sm text-gray-400">
-                          JPEG, PNG, or JPG
-                        </p>
-                      </>
-                    )}
-                  </div>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6 hover:text-purple-600 transition"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 10l7-7m0 0l7 7m-7-7v18"
+                      />
+                    </svg>
+                  )}
+                  <span className="text-gray-600 font-medium">
+                    {form.logo?.name || "Click to upload"}
+                  </span>
                 </label>
 
                 <input
@@ -278,6 +278,27 @@ export default function PartnerRegistration() {
           />
         )}
       </div>
+
+      {cropModalOpen && selectedImage && (
+        <CropModal
+          imageSrc={selectedImage}
+          onClose={() => {
+            setCropModalOpen(false);
+            URL.revokeObjectURL(selectedImage);
+            setSelectedImage(null);
+          }}
+          onCropComplete={(blob) => {
+            const croppedFile = new File([blob], "cropped-logo.jpg", {
+              type: "image/jpeg",
+            });
+            const previewURL = URL.createObjectURL(blob);
+            setForm((prev) => ({ ...prev, logo: croppedFile }));
+            setCroppedImageURL(previewURL);
+            setCropModalOpen(false);
+            URL.revokeObjectURL(selectedImage);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -296,7 +317,7 @@ function FormRow({ label, required, children }) {
 
 function SubmitButton({ loading, text }) {
   return (
-    <div className=" flex justify-center">
+    <div className="flex justify-center">
       <button
         type="submit"
         disabled={loading}

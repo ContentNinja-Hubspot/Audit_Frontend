@@ -93,7 +93,7 @@ const PastReports = () => {
         email
       );
 
-      return response; 
+      return response;
     } catch (e) {
       console.error("Share report error:", e);
       return {
@@ -119,9 +119,7 @@ const PastReports = () => {
               <button
                 onClick={() => setActiveTab("past")}
                 className={`px-4 py-2 rounded-md font-medium ${
-                  activeTab === "past"
-                    ? "bg-black text-white"
-                    : "bg-gray-100 text-black"
+                  activeTab === "past" ? "" : "bg-gray-100 text-black"
                 }`}
               >
                 Past Reports
@@ -129,9 +127,7 @@ const PastReports = () => {
               <button
                 onClick={() => setActiveTab("shared")}
                 className={`px-4 py-2 rounded-md font-medium ${
-                  activeTab === "shared"
-                    ? "bg-black text-white"
-                    : "bg-gray-100 text-black"
+                  activeTab === "shared" ? "" : "bg-gray-100 text-black"
                 }`}
               >
                 Shared With Me
@@ -204,7 +200,6 @@ const PastReports = () => {
                               report.report_id
                             )
                           }
-                          className="bg-black text-white px-3 py-2 rounded-md text-sm"
                         >
                           View Report
                         </button>
@@ -216,7 +211,6 @@ const PastReports = () => {
                               setSelectedReport(report);
                               setShowShareModal(true);
                             }}
-                            className="bg-black text-white px-3 py-2 rounded-md text-sm"
                           >
                             Share Report
                           </button>

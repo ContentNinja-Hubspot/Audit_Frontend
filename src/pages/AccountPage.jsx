@@ -138,7 +138,7 @@ const AccountPage = () => {
             <p className="text-gray-600">
               Available Credits: <strong>0/20</strong>
             </p>
-            <button className="mt-3 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+            <button className="mt-3">
               Add Credits
             </button>
           </div>
