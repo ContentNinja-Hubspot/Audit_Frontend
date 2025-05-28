@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import UserForm from "../components/users/UserForm";
-import UsersList from "../components/users/UserList";
+import UserForm from "../components/account/UserForm";
+import UsersList from "../components/account/UserList";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
 import { addUsertoPartner } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
-import SubscriptionDetails from "../components/users/SubscriptionDetail";
-import CreditUsage from "../components/users/CreditUsage";
+import SubscriptionDetails from "../components/account/SubscriptionDetail";
+import CreditUsage from "../components/account/CreditUsage";
 import {
   UserGroupIcon,
   CreditCardIcon,
@@ -110,7 +110,11 @@ const AccountPage = () => {
                 label: "Subscription",
                 Icon: WalletIcon,
               },
-              { key: "creditUsage", label: "Credit Usage", Icon: CreditCardIcon },
+              {
+                key: "creditUsage",
+                label: "Credit Usage",
+                Icon: CreditCardIcon,
+              },
             ].map(({ key, label, Icon }) => (
               <h3
                 key={key}
