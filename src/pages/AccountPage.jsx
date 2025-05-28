@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import UserForm from "../components/account/UserForm";
 import UsersList from "../components/account/UserList";
@@ -18,13 +18,31 @@ import {
 const AccountPage = () => {
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("users");
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
 
+  const modalRef = useRef(null);
   const { userType, token } = useUser();
   const { success, error } = useNotify();
 
   if (userType !== "partner") {
     return <Navigate to="/not-found" replace />;
   }
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowAddUserModal(false);
+      }
+    }
+
+    if (showAddUserModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showAddUserModal]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -102,14 +120,10 @@ const AccountPage = () => {
           </h2>
 
           {/* Tab Navigation */}
-          <div className="flex space-x-6 border-b border-gray-200 mb-6">
+          <div className="flex overflow-x-auto space-x-6 border-b border-gray-200 mb-6 pb-2 sm:overflow-visible">
             {[
               { key: "users", label: "Users", Icon: UserGroupIcon },
-              {
-                key: "subscription",
-                label: "Subscription",
-                Icon: WalletIcon,
-              },
+              { key: "subscription", label: "Subscription", Icon: WalletIcon },
               {
                 key: "creditUsage",
                 label: "Credit Usage",
@@ -119,7 +133,7 @@ const AccountPage = () => {
               <h3
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`flex items-center space-x-2 pb-2 text-md font-medium cursor-pointer ${
+                className={`flex items-center shrink-0 space-x-2 text-md font-medium cursor-pointer transition-colors duration-150 focus:outline-none ${
                   activeTab === key
                     ? "border-b-2 border-indigo-600 text-indigo-600"
                     : "text-gray-500 hover:text-gray-700"
@@ -134,8 +148,13 @@ const AccountPage = () => {
           {/* Tab Content */}
           {activeTab === "users" && (
             <>
-              <div className="bg-white p-6 rounded-lg shadow mb-6">
-                <UserForm onAddUser={handleAddUser} />
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={() => setShowAddUserModal(true)}
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  + Add User
+                </button>
               </div>
               <UsersList users={users} />
             </>
@@ -144,6 +163,22 @@ const AccountPage = () => {
           {activeTab === "subscription" && <SubscriptionDetails />}
           {activeTab === "creditUsage" && <CreditUsage />}
         </section>
+        {showAddUserModal && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center">
+            <div
+              ref={modalRef}
+              className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative"
+            >
+              
+              <UserForm
+                onAddUser={(newUser) => {
+                  handleAddUser(newUser);
+                  setShowAddUserModal(false);
+                }}
+              />
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
