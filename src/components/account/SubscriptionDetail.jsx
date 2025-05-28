@@ -48,9 +48,7 @@ const SubscriptionDetails = () => {
         </div>
       </div>
 
-      <button className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-md text-center">
-        ↑ Upgrade Plan
-      </button>
+      <button className="mt-6 w-full">↑ Upgrade Plan</button>
 
       <p className="text-xs text-center text-gray-500 mt-4">
         For billing inquiries, please contact{" "}

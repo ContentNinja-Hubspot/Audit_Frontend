@@ -149,10 +149,7 @@ const AccountPage = () => {
           {activeTab === "users" && (
             <>
               <div className="flex justify-end mb-4">
-                <button
-                  onClick={() => setShowAddUserModal(true)}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
-                >
+                <button onClick={() => setShowAddUserModal(true)}>
                   + Add User
                 </button>
               </div>
@@ -169,7 +166,6 @@ const AccountPage = () => {
               ref={modalRef}
               className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative"
             >
-              
               <UserForm
                 onAddUser={(newUser) => {
                   handleAddUser(newUser);

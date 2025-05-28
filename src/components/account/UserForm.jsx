@@ -64,12 +64,7 @@ const UserForm = ({ onAddUser }) => {
 
         {/* Second row: button centered */}
         <div className="flex justify-center">
-          <button
-            type="submit"
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-md text-sm"
-          >
-            + Add User
-          </button>
+          <button type="submit">+ Add User</button>
         </div>
       </form>
 

@@ -57,7 +57,7 @@ const CreditUsage = () => {
           </div>
           <input
             type="text"
-            placeholder="Search reports..."
+            placeholder="Search transactions..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -67,19 +67,14 @@ const CreditUsage = () => {
           />
         </div>
 
-        <button
-          onClick={handleExportCSV}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 text-sm rounded-md w-full sm:w-auto"
-        >
-          Export CSV
-        </button>
+        <button onClick={handleExportCSV}>Export CSV</button>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-600 min-w-[500px]">
           <thead className="text-xs text-gray-500 bg-gray-200 uppercase border-b">
             <tr>
-              <th className="px-4 py-2">Report Name</th>
+              <th className="px-4 py-2">Transaction Name</th>
               <th className="py-2">Date Generated</th>
               <th className="py-2">Credits Used</th>
             </tr>
