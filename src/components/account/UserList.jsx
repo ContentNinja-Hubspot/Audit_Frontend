@@ -16,42 +16,44 @@ const UsersList = ({ users }) => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
         <h3 className="text-lg font-semibold">User List</h3>
         <input
           type="text"
-          className="border border-gray-300 px-3 py-1 rounded"
+          className="w-full sm:w-64 border border-gray-300 px-3 py-2 text-sm rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="Search users..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      <table className="w-full table-auto text-left">
-        <thead>
-          <tr className="text-gray-600 border-b">
-            <th className="py-2">Name</th>
-            <th>Email</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredUsers.map((user) => (
-            <tr key={user.id} className="border-b hover:bg-gray-50">
-              <td className="py-2 font-medium">{user.name}</td>
-              <td>{user.email}</td>
-              <td>
-                <span
-                  className={`px-2 py-1 text-sm rounded-full font-medium ${
-                    statusClasses[user.status] || "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  {user.status}
-                </span>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto text-left text-sm min-w-[500px]">
+          <thead>
+            <tr className="text-gray-600 border-b">
+              <th className="py-2">Name</th>
+              <th>Email</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredUsers.map((user) => (
+              <tr key={user.id} className="border-b hover:bg-gray-50">
+                <td className="py-2 font-medium">{user.name}</td>
+                <td>{user.email}</td>
+                <td>
+                  <span
+                    className={`px-2 py-1 text-sm rounded-full font-medium ${
+                      statusClasses[user.status] || "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {user.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
