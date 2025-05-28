@@ -7,10 +7,17 @@ import PastReportHeader from "../components/header/PastReportHeader";
 import { addUsertoPartner } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
+import SubscriptionDetails from "../components/users/SubscriptionDetail";
+import CreditUsage from "../components/users/CreditUsage";
+import {
+  UserGroupIcon,
+  CreditCardIcon,
+  WalletIcon,
+} from "@heroicons/react/24/outline";
 
 const AccountPage = () => {
   const [users, setUsers] = useState([]);
-  const [activeTab, setActiveTab] = useState("manageUsers");
+  const [activeTab, setActiveTab] = useState("users");
 
   const { userType, token } = useUser();
   const { success, error } = useNotify();
@@ -89,60 +96,50 @@ const AccountPage = () => {
       <main className="flex-1 bg-gray-50 h-screen overflow-auto px-6">
         <PastReportHeader />
 
-        {/* Tab Navigation */}
-        <div className="flex space-x-6 border-b border-gray-200 mt-28 mb-6">
-          {["manageUsers", "subscription", "creditUsage"].map((tab) => (
-            <h2
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-2 text-md capitalize cursor-pointer ${
-                activeTab === tab
-                  ? "border-b-2 border-indigo-500 text-indigo-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {tab === "manageUsers"
-                ? "Manage Users"
-                : tab === "subscription"
-                ? "Subscription"
-                : "Credit Usage"}
-            </h2>
-          ))}
-        </div>
+        <section className="mt-28">
+          <h2 className="text-2xl text-start font-semibold text-gray-800 my-8">
+            Manage Account
+          </h2>
 
-        {/* Tab Content */}
-        {activeTab === "manageUsers" && (
-          <>
-            <div className="bg-white p-6 rounded-lg shadow mb-6">
-              <UserForm onAddUser={handleAddUser} />
-            </div>
-            <UsersList users={users} />
-          </>
-        )}
-
-        {activeTab === "subscription" && (
-          <div className="bg-white p-6 rounded-lg shadow mb-6">
-            <h3 className="text-lg font-semibold mb-2">Subscription Details</h3>
-            <p className="text-gray-600">
-              Your current subscription plan: <strong>Pro Plan</strong>
-            </p>
-            <p className="text-gray-600 mt-1">
-              Renewal date: <strong>August 20, 2025</strong>
-            </p>
+          {/* Tab Navigation */}
+          <div className="flex space-x-6 border-b border-gray-200 mb-6">
+            {[
+              { key: "users", label: "Users", Icon: UserGroupIcon },
+              {
+                key: "subscription",
+                label: "Subscription",
+                Icon: WalletIcon,
+              },
+              { key: "creditUsage", label: "Credit Usage", Icon: CreditCardIcon },
+            ].map(({ key, label, Icon }) => (
+              <h3
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`flex items-center space-x-2 pb-2 text-md font-medium cursor-pointer ${
+                  activeTab === key
+                    ? "border-b-2 border-indigo-600 text-indigo-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                <Icon className="h-5 w-5" />
+                <span>{label}</span>
+              </h3>
+            ))}
           </div>
-        )}
 
-        {activeTab === "creditUsage" && (
-          <div className="bg-white p-6 rounded-lg shadow mb-6">
-            <h3 className="text-lg font-semibold mb-2">Credit Usage</h3>
-            <p className="text-gray-600">
-              Available Credits: <strong>0/20</strong>
-            </p>
-            <button className="mt-3">
-              Add Credits
-            </button>
-          </div>
-        )}
+          {/* Tab Content */}
+          {activeTab === "users" && (
+            <>
+              <div className="bg-white p-6 rounded-lg shadow mb-6">
+                <UserForm onAddUser={handleAddUser} />
+              </div>
+              <UsersList users={users} />
+            </>
+          )}
+
+          {activeTab === "subscription" && <SubscriptionDetails />}
+          {activeTab === "creditUsage" && <CreditUsage />}
+        </section>
       </main>
     </div>
   );

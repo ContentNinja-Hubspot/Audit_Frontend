@@ -5,6 +5,11 @@ import boundaryLogo from "../images/boundary.png";
 import Logo1 from "../images/image1.png";
 import { fetchReportList } from "../api";
 import { useUser } from "../context/UserContext";
+import {
+  ChartBarIcon,
+  ClockIcon,
+  WrenchScrewdriverIcon,
+} from "@heroicons/react/24/outline";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -33,7 +38,7 @@ const Sidebar = () => {
         const reports = response.data || [];
 
         const usedCredits = reports.length * 10;
-        const availableCredits = 100 - usedCredits; // Prevent negative credits
+        const availableCredits = 20 - usedCredits;
         setCredits(availableCredits);
       } catch (error) {
         console.error("Error fetching reports:", error);
@@ -91,34 +96,40 @@ const Sidebar = () => {
           <nav className="flex flex-col space-y-4 p-4 mt-5">
             <Link
               to="/dashboard"
-              className={`px-4 py-2 bg-inherit rounded-md transition text-start ${
+              className={`px-4 py-2 bg-inherit rounded-md flex gap-2 items-center transition text-start ${
                 location.pathname === "/dashboard"
                   ? "bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] text-black font-semibold"
                   : "hover:bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] hover:text-black"
               }`}
               onClick={() => setIsOpen(false)}
             >
-              Your Report
+              <ChartBarIcon className="w-5 h-5" />
+              <span>Your Report</span>
             </Link>
 
             <Link
               to="/past-reports"
-              className={`px-4 py-2 rounded-md transition text-start ${
+              className={`px-4 py-2 rounded-md transition text-start flex gap-2 items-center ${
                 location.pathname === "/past-reports"
                   ? "bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] text-black font-semibold"
                   : "hover:bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] hover:text-black"
               }`}
               onClick={() => setIsOpen(false)}
             >
-              Past Reports
+              <ClockIcon className="w-5 h-5" />
+              <span>Past Reports</span>
             </Link>
             {/* Clean Up Tools Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="bg-inherit text-black w-full text-start flex justify-between"
+                className="bg-inherit text-black w-full text-start flex justify-between gap-2"
               >
-                Clean Up Tools
+                <span className="flex items-center gap-2">
+                  <WrenchScrewdriverIcon className="w-5 h-5" />
+                  <span>Clean Up Tools</span>
+                </span>
+
                 <span>{dropdownOpen ? "-" : "+"}</span>
               </button>
               {dropdownOpen && (
@@ -149,14 +160,16 @@ const Sidebar = () => {
           <div className="mt-auto pb-4 text-center rounded-lg items-center justify-center mx-auto flex flex-col">
             <p className="text-lg font-md">Available Credits</p>
             <p className="text-lg font-semibold tracking-wide mb-3">
-              {credits}/100
+              {credits}/20
             </p>
-            <Link
-              to="/plans"
-              className="flex items-center justify-center px-4 py-2 bg-black text-white transition"
-            >
-              <FiPlus className="mr-2" size={16} /> Add Credits
-            </Link>
+            <button>
+              <Link
+                to="/plans"
+                className="flex items-center justify-center transition"
+              >
+                <FiPlus className="mr-2" size={16} /> Add Credits
+              </Link>
+            </button>
           </div>
         </aside>
       </div>

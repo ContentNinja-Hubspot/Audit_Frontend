@@ -25,6 +25,7 @@ button {
   padding: 8px 15px;
   cursor: pointer;
   font-size: medium;
+  border-radius: 0.5rem;
 }
 
 h1,
