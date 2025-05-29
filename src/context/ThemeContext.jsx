@@ -1,5 +1,3 @@
-// src/context/ThemeContext.js
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { fetchPartnerThemeAndLogo } from "../api";
 import { THEME_COLORS, DEFAULT_THEME } from "../config/theme.config";
@@ -16,12 +14,18 @@ export const ThemeProvider = ({ children }) => {
 
   const { token } = useUser();
 
-  // Inject CSS variables globally
   const applyCSSVariables = (theme) => {
     const root = document.documentElement;
     root.style.setProperty("--color-primary", theme.primary);
     root.style.setProperty("--color-secondary", theme.secondary);
     root.style.setProperty("--color-tertiary", theme.tertiary);
+  };
+
+  const updateTheme = (newThemeId) => {
+    const selectedTheme = THEME_COLORS[newThemeId] || DEFAULT_THEME;
+    setThemeId(newThemeId);
+    setColors(selectedTheme);
+    applyCSSVariables(selectedTheme);
   };
 
   useEffect(() => {
@@ -31,20 +35,14 @@ export const ThemeProvider = ({ children }) => {
 
         if (response.success) {
           const id = response?.theme_id || "default";
-          const selectedTheme = THEME_COLORS[id] || DEFAULT_THEME;
-
-          setThemeId(id);
+          updateTheme(id);
           setLogoPath(response.logo_path);
-          setColors(selectedTheme);
-          applyCSSVariables(selectedTheme);
         } else {
-          setColors(DEFAULT_THEME);
-          applyCSSVariables(DEFAULT_THEME);
+          updateTheme("default");
           setError(response.error || "Theme not found.");
         }
       } catch (err) {
-        setColors(DEFAULT_THEME);
-        applyCSSVariables(DEFAULT_THEME);
+        updateTheme("default");
         setError("Theme fetch failed.");
       } finally {
         setLoading(false);
@@ -54,15 +52,22 @@ export const ThemeProvider = ({ children }) => {
     if (token) {
       loadTheme();
     } else {
-      setColors(DEFAULT_THEME);
-      applyCSSVariables(DEFAULT_THEME);
+      updateTheme("default");
       setLoading(false);
     }
   }, [token]);
 
   return (
     <ThemeContext.Provider
-      value={{ themeId, colors, logoPath, loading, error }}
+      value={{
+        themeId,
+        colors,
+        logoPath,
+        loading,
+        error,
+        setThemeId,
+        updateTheme,
+      }}
     >
       {children}
     </ThemeContext.Provider>

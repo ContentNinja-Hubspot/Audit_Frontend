@@ -13,11 +13,13 @@ import NormalSettingsForm from "./forms/NormalSettingsForm";
 import FormRow from "./forms/FormRow";
 import SubmitButton from "./forms/SubmitButton";
 import PartnerProfileView from "./PartnerProfileView";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function PartnerRegistration() {
   const [themes, setThemes] = useState([]);
   const [fonts, setFonts] = useState([]);
   const [userType, setUserType] = useState(null);
+  const { updateTheme } = useTheme();
   const [form, setForm] = useState({
     agency_name: "",
     agency_domain: "",
@@ -260,12 +262,13 @@ export default function PartnerRegistration() {
                     <button
                       key={theme.theme_id}
                       type="button"
-                      onClick={() =>
+                      onClick={() => {
                         setForm((prev) => ({
                           ...prev,
                           theme_id: theme.theme_id,
-                        }))
-                      }
+                        }));
+                        updateTheme(theme.theme_id);
+                      }}
                       className={`w-8 h-8 rounded-full border-2 ${
                         form.theme_id === theme.theme_id
                           ? "border-purple-500"
