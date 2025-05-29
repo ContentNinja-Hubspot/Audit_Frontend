@@ -22,7 +22,9 @@ const AccountPage = () => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddPartnerModal, setShowAddPartnerModal] = useState(false);
 
-  const modalRef = useRef(null);
+  const userModalRef = useRef(null);
+  const partnerModalRef = useRef(null);
+
   const { userType, token } = useUser();
   const { success, error } = useNotify();
 
@@ -32,71 +34,33 @@ const AccountPage = () => {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+      if (
+        showAddUserModal &&
+        userModalRef.current &&
+        !userModalRef.current.contains(event.target)
+      ) {
         setShowAddUserModal(false);
       }
-    }
-
-    if (showAddUserModal) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showAddUserModal]);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+      if (
+        showAddPartnerModal &&
+        partnerModalRef.current &&
+        !partnerModalRef.current.contains(event.target)
+      ) {
         setShowAddPartnerModal(false);
       }
     }
 
-    if (showAddPartnerModal) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showAddPartnerModal]);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const fetchedUsers = [
-          {
-            id: 1,
-            name: "Jane Cooper",
-            email: "jane.cooper@example.com",
-            status: "Active",
-          },
-          {
-            id: 2,
-            name: "Cody Fisher",
-            email: "cody.fisher@example.com",
-            status: "Pending",
-          },
-          {
-            id: 3,
-            name: "John Doe",
-            email: "john.doe@example.com",
-            status: "Active",
-          },
-        ];
-        setUsers(fetchedUsers);
-      } catch (err) {
-        console.error("Failed to fetch users", err);
-      }
-    };
-
-    fetchUsers();
-  }, []);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showAddUserModal, showAddPartnerModal]);
 
   const handleAddUser = async (newUser) => {
+    const emailToCheck = newUser.email?.toLowerCase();
+
     const isDuplicate = users.some(
-      (user) => user.email.toLowerCase() === newUser.email.toLowerCase()
+      (user) =>
+        (user.email?.toLowerCase() || user.email_id?.toLowerCase()) ===
+        emailToCheck
     );
 
     if (isDuplicate) {
@@ -127,8 +91,12 @@ const AccountPage = () => {
   };
 
   const handleAddPartner = async (newUser) => {
+    const emailToCheck = newUser.email?.toLowerCase();
+
     const isDuplicate = users.some(
-      (user) => user.email.toLowerCase() === newUser.email.toLowerCase()
+      (user) =>
+        (user.email?.toLowerCase() || user.email_id?.toLowerCase()) ===
+        emailToCheck
     );
 
     if (isDuplicate) {
@@ -207,17 +175,19 @@ const AccountPage = () => {
                   + Add Partner
                 </button>
               </div>
-              <UsersList users={users} />
+              <UsersList users={users} setUsers={setUsers} />
             </>
           )}
 
           {activeTab === "subscription" && <SubscriptionDetails />}
           {activeTab === "creditUsage" && <CreditUsage />}
         </section>
+
+        {/* Modals */}
         {showAddUserModal && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center">
             <div
-              ref={modalRef}
+              ref={userModalRef}
               className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative"
             >
               <UserForm
@@ -229,10 +199,11 @@ const AccountPage = () => {
             </div>
           </div>
         )}
+
         {showAddPartnerModal && (
           <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center">
             <div
-              ref={modalRef}
+              ref={partnerModalRef}
               className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative"
             >
               <PartnerForm

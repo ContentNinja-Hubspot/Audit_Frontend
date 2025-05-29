@@ -749,3 +749,51 @@ export const fetchThemeSettings = async (token) => {
     throw error;
   }
 };
+
+export const fetchUsersOfPartner = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getusersofpartner`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching user of partner: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user of partner:", error);
+    throw error;
+  }
+};
+
+export const fetchPartnerData = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getpartnerdata`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching partner details: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner details:", error);
+    throw error;
+  }
+};

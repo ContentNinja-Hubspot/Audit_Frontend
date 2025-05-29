@@ -1,4 +1,4 @@
-import PartnerRegistration from "../components/PartnerRegistration";
+import PartnerRegistration from "../components/profile/PartnerRegistration";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
 

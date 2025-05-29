@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { fetchUsersOfPartner } from "../../api";
+import { useUser } from "../../context/UserContext";
 
 const statusClasses = {
   Active: "bg-green-100 text-green-800",
   Pending: "bg-yellow-100 text-yellow-800",
 };
 
-const UsersList = ({ users }) => {
+const UsersList = ({ users, setUsers }) => {
   const [search, setSearch] = useState("");
+  const { token } = useUser();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetchUsersOfPartner(token);
+        console.log("Fetched users:", response.users);
+        const fetchedUsers = response.users || [];
+        setUsers(fetchedUsers);
+      } catch (err) {
+        console.error("Failed to fetch users", err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(
     (u) =>
-      u.name.toLowerCase().includes(search.toLowerCase()) ||
-      u.email.toLowerCase().includes(search.toLowerCase())
+      (u.name || "").toLowerCase().includes(search.toLowerCase()) ||
+      (u.email || u.email_id || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -39,22 +57,29 @@ const UsersList = ({ users }) => {
           </thead>
           <tbody>
             {filteredUsers.map((user) => (
-              <tr key={user.id} className="border-b hover:bg-gray-50">
-                <td className="py-2 font-medium">{user.name}</td>
-                <td>{user.email}</td>
+              <tr
+                key={user.user_id || user.id}
+                className="border-b hover:bg-gray-50"
+              >
+                <td className="py-2 font-medium">{user.name || "N/A"}</td>
+                <td>{user.email || user.email_id || "N/A"}</td>
                 <td>
                   <span
                     className={`px-2 py-1 text-sm rounded-full font-medium ${
                       statusClasses[user.status] || "bg-gray-200 text-gray-800"
                     }`}
                   >
-                    {user.status}
+                    {user.status || "N/A"}
                   </span>
                 </td>
                 <td>
                   <button
                     onClick={() =>
-                      console.log(`Resend invite to ${user.email}`)
+                      console.log(
+                        `Resend invite to ${
+                          user.email || user.email_id || "unknown"
+                        }`
+                      )
                     }
                     className="p-1 hover:bg-gray-100 rounded bg-inherit"
                     title="Resend invite"

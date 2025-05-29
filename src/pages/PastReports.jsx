@@ -7,6 +7,7 @@ import { useNotify } from "../context/NotificationContext";
 import CryptoJS from "crypto-js";
 import PastReportHeader from "../components/header/PastReportHeader";
 import ShareReportModal from "../components/ShareReportModal";
+import { ClockIcon, ShareIcon } from "@heroicons/react/24/outline";
 
 const PastReports = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
@@ -115,50 +116,30 @@ const PastReports = () => {
         <div className="p-6 mt-20">
           <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
             {/* Toggle Tabs */}
-            <div className="flex space-x-2">
-              <button
+            {/* Toggle Tabs */}
+            <div className="flex justify-start mt-2 w-full items-center gap-6 border-b border-gray-200 mb-6">
+              <div
                 onClick={() => setActiveTab("past")}
-                className={`px-4 py-2 rounded-md font-medium ${
-                  activeTab === "past" ? "" : "bg-gray-100 text-black"
+                className={`pb-2 text-sm font-medium cursor-pointer flex gap-1 items-center border-b-2 transition ${
+                  activeTab === "past"
+                    ? "border-black text-black"
+                    : "border-transparent text-gray-400 hover:text-black"
                 }`}
               >
+                <ClockIcon className="h-4 w-4" />
                 Past Reports
-              </button>
-              <button
+              </div>
+              <div
                 onClick={() => setActiveTab("shared")}
-                className={`px-4 py-2 rounded-md font-medium ${
-                  activeTab === "shared" ? "" : "bg-gray-100 text-black"
+                className={`pb-2 text-sm font-medium cursor-pointer border-b-2 flex gap-1 items-center transition ${
+                  activeTab === "shared"
+                    ? "border-black text-black"
+                    : "border-transparent text-gray-400 hover:text-black"
                 }`}
               >
+                <ShareIcon className="h-4 w-4" />
                 Shared With Me
-              </button>
-            </div>
-
-            {/* Pagination */}
-            <div className="flex items-center text-sm text-gray-700">
-              <p
-                className={`underline mr-4 ${
-                  currentPage === 1
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                onClick={goToPreviousPage}
-              >
-                Previous
-              </p>
-              <span className="mr-4">
-                Page {currentPage} of {totalPages}
-              </span>
-              <p
-                className={`underline ${
-                  currentPage === totalPages
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-                onClick={goToNextPage}
-              >
-                Next
-              </p>
+              </div>
             </div>
           </div>
 
@@ -223,6 +204,36 @@ const PastReports = () => {
             </table>
           </div>
         </div>
+        {/* Pagination */}
+        {activeTab === "past" && totalPages > 0 && (
+          <div className="mt-6 flex justify-center items-center space-x-6 text-sm text-gray-700">
+            <p
+              disabled={currentPage === 1}
+              onClick={goToPreviousPage}
+              className={`underline ${
+                currentPage === 1
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              Previous
+            </p>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <p
+              disabled={currentPage === totalPages}
+              onClick={goToNextPage}
+              className={`underline ${
+                currentPage === totalPages
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              Next
+            </p>
+          </div>
+        )}
       </main>
       {/* Share Modal */}
       <ShareReportModal
