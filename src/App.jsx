@@ -8,6 +8,7 @@ import {
 import { UserProvider } from "./context/UserContext";
 import { ReportProvider } from "./context/ReportContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -62,6 +63,7 @@ function App() {
     <ErrorBoundary FallbackComponent={FallbackErrorPage}>
       <NotificationProvider>
         <UserProvider>
+          <ThemeProvider token={paramToken}>
           <ReportProvider paramToken={paramToken}>
             <Router>
               <ToastContainer
@@ -106,6 +108,7 @@ function App() {
               </Routes>
             </Router>
           </ReportProvider>
+          </ThemeProvider>
         </UserProvider>
       </NotificationProvider>
     </ErrorBoundary>

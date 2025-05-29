@@ -19,7 +19,7 @@ body {
 
 button {
   border-color: transparent;
-  background-color: #000;
+  background-color: var(--color-primary);
   color: #fff;
   transform: translate3d(0, -2px, 0);
   padding: 8px 15px;

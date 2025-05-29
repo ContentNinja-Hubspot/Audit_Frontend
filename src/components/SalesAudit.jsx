@@ -4,6 +4,7 @@ import { getBorderColor, findRiskImage } from "../utils";
 import UsageScoreCard from "./sales/UsageScorecard";
 import SalesPerformance from "./sales/SalesPerformance";
 import ToggleSection from "./utils/ToggleSection";
+import { useTheme } from "../context/ThemeContext";
 
 const SalesAudit = ({
   salesReportData,
@@ -16,6 +17,7 @@ const SalesAudit = ({
 }) => {
   const [selectedItem, setSelectedItem] = useState("usage_scorecard");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
+  const { themeId } = useTheme();
 
   if (!salesInUse) {
     return (
@@ -75,7 +77,7 @@ const SalesAudit = ({
               const borderColor = getBorderColor(item.risk);
               const riskImage = findRiskImage(item.risk);
               const bgColor = isSelected
-                ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                ? `bg-partner-gradient-${themeId}`
                 : "bg-white";
 
               return (

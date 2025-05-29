@@ -5,6 +5,7 @@ import { findRiskImage, getBorderColor } from "../../utils";
 import { Tooltip } from "../utils/Tooltip";
 import ToggleSection from "../utils/ToggleSection";
 import { CheckboxGroup, ActionButton } from "../utils/TakeAction";
+import { useTheme } from "../../context/ThemeContext";
 
 const Contact = ({
   token,
@@ -20,6 +21,8 @@ const Contact = ({
     total_contacts,
     total_contact_oppurtunity_customer,
   } = scoreData;
+
+  const { themeId } = useTheme();
 
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
   const [isDeletingDataExpanded, setIsDeletingDataExpanded] = useState(true);
@@ -162,7 +165,7 @@ const Contact = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       firstRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -248,7 +251,7 @@ const Contact = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       secondRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -339,7 +342,7 @@ const Contact = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       thirdRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -423,7 +426,7 @@ const Contact = ({
                   key={item.key}
                   className={`relative p-3 border rounded-lg cursor-pointer transition-transform duration-300 ${
                     lastDataPoint === item.key
-                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                      ? `bg-partner-gradient-${themeId}`
                       : "bg-white"
                   } ${getBorderColor(junk_data[item.key]?.risk)}`}
                   onClick={() => {

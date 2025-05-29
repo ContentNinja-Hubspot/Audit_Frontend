@@ -6,6 +6,7 @@ import { Tooltip } from "../utils/Tooltip";
 import ToggleSection from "../utils/ToggleSection";
 import { CheckboxGroup, ActionButton } from "../utils/TakeAction";
 import { useNotify } from "../../context/NotificationContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const Deal = ({
   token,
@@ -16,6 +17,7 @@ const Deal = ({
   completeReportGenerated,
 }) => {
   const { success, error } = useNotify();
+  const { themeId } = useTheme();
   const { missing_data, junk_data, total_deals } = scoreData;
   const [firstDatapoint, setFirstDatapoint] = useState("dealname");
   const [secondDataPoint, setSecondDataPoint] = useState("closedate");
@@ -176,7 +178,7 @@ const Deal = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       firstRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -262,7 +264,7 @@ const Deal = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       secondRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -344,7 +346,7 @@ const Deal = ({
                   key={item.key}
                   className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                     lastDataPoint === item.key
-                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                      ? `bg-partner-gradient-${themeId}`
                       : "bg-white"
                   } ${getBorderColor(junk_data[item.key]?.risk)}`}
                   onClick={() => {
@@ -400,7 +402,9 @@ const Deal = ({
       {/* Take Action for Deals */}
       <section
         className={`${
-          page === "past" ? "backdrop-blur-3xl pointer-events-none relative" : ""
+          page === "past"
+            ? "backdrop-blur-3xl pointer-events-none relative"
+            : ""
         }`}
       >
         {page === "past" && (

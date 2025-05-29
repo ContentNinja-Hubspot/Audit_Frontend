@@ -6,6 +6,7 @@ import { Tooltip } from "../utils/Tooltip";
 import ToggleSection from "../utils/ToggleSection";
 import { CheckboxGroup, ActionButton } from "../utils/TakeAction";
 import { useNotify } from "../../context/NotificationContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const Company = ({
   token,
@@ -16,6 +17,7 @@ const Company = ({
   completeReportGenerated,
 }) => {
   const { success, error } = useNotify();
+  const { themeId } = useTheme();
   const { missing_data, junk_data, total_companies } = scoreData;
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
   const [isDeletingDataExpanded, setIsDeletingDataExpanded] = useState(true);
@@ -202,7 +204,7 @@ const Company = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg cursor-pointer transition-transform duration-300  ${
                       firstRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data?.[item.key]?.risk)}`}
                     onClick={() => {
@@ -289,7 +291,7 @@ const Company = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       secondRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -375,7 +377,7 @@ const Company = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       thirdRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -457,7 +459,7 @@ const Company = ({
                   key={item.key}
                   className={`relative p-3 border rounded-lg cursor-pointer transition-transform duration-300 ${
                     lastDataPoint === item.key
-                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                      ? `bg-partner-gradient-${themeId}`
                       : "bg-white"
                   } ${getBorderColor(junk_data[item.key]?.risk)}`}
                   onClick={() => {
@@ -513,7 +515,9 @@ const Company = ({
       {/* Take Action Section */}
       <section
         className={`${
-          page === "past" ? "backdrop-blur-3xl pointer-events-none relative" : ""
+          page === "past"
+            ? "backdrop-blur-3xl pointer-events-none relative"
+            : ""
         }`}
       >
         {page === "past" && (

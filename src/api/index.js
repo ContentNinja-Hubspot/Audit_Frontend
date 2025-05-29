@@ -797,3 +797,27 @@ export const fetchPartnerData = async (token) => {
     throw error;
   }
 };
+
+export const fetchPartnerThemeAndLogo = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getpartnerthemeandlogo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching partner theme and logo: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner theme and logo:", error);
+    throw error;
+  }
+};

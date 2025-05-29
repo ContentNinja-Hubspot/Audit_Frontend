@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { findBorderColor, getScoreColor } from "../utils";
+import { useTheme } from "../context/ThemeContext";
 
 const ScoreBreakdown = ({
   selectedBreakdown,
@@ -20,6 +21,8 @@ const ScoreBreakdown = ({
   };
 
   const customOrder = ["Data Quality", "Sales", "Marketing", "Services"];
+
+  const {themeId} = useTheme();
 
   const scores = Object.entries(scoreBreakdown).map(([key, value]) => {
     const isSales = key === "sales";
@@ -101,7 +104,7 @@ const ScoreBreakdown = ({
                   )} transition duration-300 w-[85%] mx-auto
                   ${
                     selectedScore.title === item.title
-                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef] font-semibold transition-transform"
+                      ? `bg-partner-gradient-${themeId} font-semibold transition-transform`
                       : "bg-white hover:bg-gray-100"
                   }
                   ${

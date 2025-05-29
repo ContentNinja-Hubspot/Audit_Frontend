@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MissingData from "../components/MissingData";
 import ToggleSection from "./utils/ToggleSection";
 import { getBorderColor, findRiskImage, getRiskLevel } from "../utils";
+import { useTheme } from "../context/ThemeContext";
 
 const DataAudit = ({
   auditObjectScore,
@@ -14,6 +15,10 @@ const DataAudit = ({
 }) => {
   const [selectedItem, setSelectedItem] = useState("Contacts");
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
+
+  const { themeId } = useTheme();
+
+  console.log("DataAudit Component Rendered with themeId:", themeId);
 
   const titleMap = {
     contacts: "Contacts",
@@ -56,7 +61,7 @@ const DataAudit = ({
               const borderColor = getBorderColor(item.risk);
               const riskImage = findRiskImage(item.risk); // get the risk image based on the score
               const bgColor = isSelected
-                ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                ? `bg-partner-gradient-${themeId}`
                 : "bg-white";
 
               return (

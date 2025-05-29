@@ -4,6 +4,7 @@ import UsageScorecardChart from "../utils/UsageScorecardChart";
 import ToggleSection from "../utils/ToggleSection";
 import { findRiskImage, getBorderColor } from "../../utils";
 import BulkActionTable from "./BulkActionSection";
+import { useTheme } from "../../context/ThemeContext";
 
 const UsageScoreCard = ({
   graphData,
@@ -12,6 +13,7 @@ const UsageScoreCard = ({
   page,
   completeReportGenerated,
 }) => {
+  const { themeId } = useTheme();
   const [days, setDays] = useState(7);
   const [isMissingDataExpanded, setIsMissingDataExpanded] = useState(true);
   const [isDeletingDataExpanded, setIsDeletingDataExpanded] = useState(true);
@@ -163,7 +165,7 @@ const UsageScoreCard = ({
                   key={item.key}
                   className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                     firstRowSelectedItem === item.key
-                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                      ? `bg-partner-gradient-${themeId}`
                       : "bg-white"
                   } ${getBorderColor(item?.risk)}`}
                   onClick={() => {
@@ -222,7 +224,7 @@ const UsageScoreCard = ({
                   key={item.key}
                   className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                     secondRowSelectedItem === item.key
-                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                      ? `bg-partner-gradient-${themeId}`
                       : "bg-white"
                   } ${getBorderColor(item?.risk)}`}
                   onClick={() => {
