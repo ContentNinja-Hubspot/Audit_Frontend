@@ -72,16 +72,16 @@ const CreditUsage = () => {
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left text-gray-600 min-w-[500px]">
-          <thead className="text-xs text-gray-500 bg-gray-200 uppercase border-b">
+          <thead className="text-xs text-center text-gray-500 bg-gray-200 uppercase border-b">
             <tr>
-              <th className="px-4 py-2">Transaction Name</th>
+              <th className="py-2">Transaction Name</th>
               <th className="py-2">Date Generated</th>
               <th className="py-2">Credits Used</th>
             </tr>
           </thead>
           <tbody>
             {paginatedReports.map((report, index) => (
-              <tr key={index} className="border-b">
+              <tr key={index} className="border-b text-center">
                 <td className="px-4 py-3 font-semibold">{report.name}</td>
                 <td className="py-3">{report.date}</td>
                 <td className="py-3">{report.credits}</td>

@@ -46,9 +46,9 @@ const UsersList = ({ users, setUsers }) => {
         />
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full table-auto text-left text-sm min-w-[500px]">
+        <table className="w-full  table-auto text-left text-sm min-w-[500px]">
           <thead>
-            <tr className="text-gray-600 border-b">
+            <tr className="text-gray-500 border-b text-center bg-gray-200 ">
               <th className="py-2">Name</th>
               <th>Email</th>
               <th>Status</th>
@@ -59,7 +59,7 @@ const UsersList = ({ users, setUsers }) => {
             {filteredUsers.map((user) => (
               <tr
                 key={user.user_id || user.id}
-                className="border-b hover:bg-gray-50"
+                className="border-b hover:bg-gray-50 text-center"
               >
                 <td className="py-2 font-medium">{user.name || "N/A"}</td>
                 <td>{user.email || user.email_id || "N/A"}</td>

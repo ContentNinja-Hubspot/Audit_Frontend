@@ -17,7 +17,7 @@ const Sidebar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024); // Open by default on large screens
   const { token } = useUser(); // Assuming you have a user context to get the token
-  const [credits, setCredits] = useState(100); // assuming max is 100
+  const [credits, setCredits] = useState(""); // assuming max is 100
 
   const { themeId } = useTheme();
 

@@ -146,7 +146,7 @@ const PastReports = () => {
           <div className="bg-white shadow rounded-md overflow-x-auto">
             <table className="min-w-full border-collapse">
               <thead>
-                <tr className="bg-black text-white">
+                <tr className="bg-gray-200 text-gray-500">
                   <th className="text-center px-4 py-3 text-sm">S. No.</th>
                   <th className="text-center px-4 py-3 text-sm">Hub Domain</th>
                   <th className="text-center px-4 py-3 text-sm">Create Date</th>
