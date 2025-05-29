@@ -33,8 +33,17 @@ export const ThemeProvider = ({ children }) => {
       try {
         const response = await fetchPartnerThemeAndLogo(token);
 
+        console.log("Theme fetch response:", response);
+
         if (response.success) {
           const id = response?.theme_id || "default";
+          const fontName =
+            response?.font_name?.replace(" (Default)", "") || "Lexend";
+          console.log("Font name:", fontName);
+          document.documentElement.style.setProperty(
+            "--app-font-family",
+            `'${fontName}', sans-serif`
+          );
           updateTheme(id);
           setLogoPath(response.logo_path);
         } else {
