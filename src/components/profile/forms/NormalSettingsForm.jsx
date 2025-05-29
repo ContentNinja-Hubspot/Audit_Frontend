@@ -1,4 +1,6 @@
 import React from "react";
+import FormRow from "./FormRow";
+import SubmitButton from "./SubmitButton";
 
 function NormalSettingsForm({ form, handleChange, handleSubmit, loading }) {
   return (

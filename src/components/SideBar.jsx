@@ -19,7 +19,7 @@ const Sidebar = () => {
   const { token } = useUser(); // Assuming you have a user context to get the token
   const [credits, setCredits] = useState(""); // assuming max is 100
 
-  const { themeId } = useTheme();
+  const { themeId, logoPath, loading } = useTheme();
 
   useEffect(() => {
     const handleResize = () => {
@@ -83,16 +83,26 @@ const Sidebar = () => {
             onClick={() => setIsOpen(false)}
             className="flex items-center justify-start space-x-2 p-3 mt-6 lg:mt-3 mx-auto"
           >
-            <img
-              src={Logo1}
-              alt="New Logo"
-              className="h-8 w-8 object-contain"
-            />
-            <img
-              src={boundaryLogo}
-              alt="Boundary Logo"
-              className="h-8 w-auto object-contain"
-            />
+            {!loading && logoPath ? (
+              <img
+                src={logoPath}
+                alt="Partner Logo"
+                className="h-8 w-auto object-contain"
+              />
+            ) : (
+              <>
+                <img
+                  src={Logo1}
+                  alt="New Logo"
+                  className="h-8 w-8 object-contain"
+                />
+                <img
+                  src={boundaryLogo}
+                  alt="Boundary Logo"
+                  className="h-8 w-auto object-contain"
+                />
+              </>
+            )}
           </Link>
 
           {/* Navigation */}
