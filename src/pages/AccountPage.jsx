@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import UserForm from "../components/account/UserForm";
+import PartnerForm from "../components/account/PartnerForm";
 import UsersList from "../components/account/UserList";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
-import { addUsertoPartner } from "../api";
+import { addUsertoPartner, addPartnertoPartner } from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import SubscriptionDetails from "../components/account/SubscriptionDetail";
@@ -19,6 +20,7 @@ const AccountPage = () => {
   const [users, setUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("users");
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [showAddPartnerModal, setShowAddPartnerModal] = useState(false);
 
   const modalRef = useRef(null);
   const { userType, token } = useUser();
@@ -43,6 +45,22 @@ const AccountPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showAddUserModal]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setShowAddPartnerModal(false);
+      }
+    }
+
+    if (showAddPartnerModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showAddPartnerModal]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -108,6 +126,39 @@ const AccountPage = () => {
     }
   };
 
+  const handleAddPartner = async (newUser) => {
+    const isDuplicate = users.some(
+      (user) => user.email.toLowerCase() === newUser.email.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      error("Partner with this email already exists.");
+      return;
+    }
+
+    try {
+      const response = await addPartnertoPartner(token, {
+        email_id: newUser.email,
+        role: newUser.role || "user",
+      });
+
+      if (response.success) {
+        success("Partner added successfully.");
+        const addedUser = {
+          ...newUser,
+          id: Date.now(),
+          status: "Pending",
+        };
+        setUsers((prev) => [...prev, addedUser]);
+      } else {
+        error(response.error || "Failed to add partner.");
+      }
+    } catch (err) {
+      console.error("Error adding partner:", err);
+      error("An error occurred while adding the partner.");
+    }
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -148,9 +199,12 @@ const AccountPage = () => {
           {/* Tab Content */}
           {activeTab === "users" && (
             <>
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-end gap-2 mb-4">
                 <button onClick={() => setShowAddUserModal(true)}>
                   + Add User
+                </button>
+                <button onClick={() => setShowAddPartnerModal(true)}>
+                  + Add Partner
                 </button>
               </div>
               <UsersList users={users} />
@@ -170,6 +224,21 @@ const AccountPage = () => {
                 onAddUser={(newUser) => {
                   handleAddUser(newUser);
                   setShowAddUserModal(false);
+                }}
+              />
+            </div>
+          </div>
+        )}
+        {showAddPartnerModal && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center">
+            <div
+              ref={modalRef}
+              className="bg-white rounded-lg shadow-lg w-full max-w-md mx-4 p-6 relative"
+            >
+              <PartnerForm
+                onAddUser={(newUser) => {
+                  handleAddPartner(newUser);
+                  setShowAddPartnerModal(false);
                 }}
               />
             </div>

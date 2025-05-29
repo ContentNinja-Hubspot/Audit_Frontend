@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 
 const statusClasses = {
   Active: "bg-green-100 text-green-800",
@@ -33,6 +34,7 @@ const UsersList = ({ users }) => {
               <th className="py-2">Name</th>
               <th>Email</th>
               <th>Status</th>
+              <th>Resend</th>
             </tr>
           </thead>
           <tbody>
@@ -48,6 +50,17 @@ const UsersList = ({ users }) => {
                   >
                     {user.status}
                   </span>
+                </td>
+                <td>
+                  <button
+                    onClick={() =>
+                      console.log(`Resend invite to ${user.email}`)
+                    }
+                    className="p-1 hover:bg-gray-100 rounded bg-inherit"
+                    title="Resend invite"
+                  >
+                    <PaperAirplaneIcon className="h-5 w-5 text-gray-600 hover:text-indigo-600" />
+                  </button>
                 </td>
               </tr>
             ))}

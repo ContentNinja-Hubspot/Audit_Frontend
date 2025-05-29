@@ -663,6 +663,29 @@ export const addUsertoPartner = async (token, userData) => {
   }
 };
 
+export const addPartnertoPartner = async (token, userData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/addpartner`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error adding user to partner:", error);
+    throw error;
+  }
+};
+
 export const shareReport = async (token, reportId, email) => {
   try {
     const response = await fetch(`${BASE_URL}/sharereport`, {
@@ -703,34 +726,9 @@ export const fetchSharedReports = async (token) => {
   }
 };
 
-
-export const fetchUserFontAndTheme = async (token) => {
-  try {
-    const response = await fetch(`${BASE_URL}/user-font`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        state: token, // send user token if required for auth
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Error fetching font: ${response.status} - ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-    return data.font;
-  } catch (error) {
-    console.error("Error fetching user font:", error);
-    throw error;
-  }
-};
-
 export const fetchThemeSettings = async (token) => {
   try {
-    const response = await fetch(`${BASE_URL}/getlogo`, {
+    const response = await fetch(`${BASE_URL}/getthemeandlogo`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
