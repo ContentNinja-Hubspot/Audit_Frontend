@@ -10,6 +10,7 @@ import {
   ClockIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
+import { useTheme } from "../context/ThemeContext";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -17,6 +18,8 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024); // Open by default on large screens
   const { token } = useUser(); // Assuming you have a user context to get the token
   const [credits, setCredits] = useState(100); // assuming max is 100
+
+  const { themeId } = useTheme();
 
   useEffect(() => {
     const handleResize = () => {
@@ -98,8 +101,8 @@ const Sidebar = () => {
               to="/dashboard"
               className={`px-4 py-2 bg-inherit rounded-md flex gap-2 items-center transition text-start ${
                 location.pathname === "/dashboard"
-                  ? "bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] text-black font-semibold"
-                  : "hover:bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] hover:text-black"
+                  ? `bg-partner-tertiary-${themeId} text-black font-semibold`
+                  : `hover:bg-partner-tertiary-hover-${themeId} hover:text-black`
               }`}
               onClick={() => setIsOpen(false)}
             >
@@ -111,8 +114,8 @@ const Sidebar = () => {
               to="/past-reports"
               className={`px-4 py-2 rounded-md transition text-start flex gap-2 items-center ${
                 location.pathname === "/past-reports"
-                  ? "bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] text-black font-semibold"
-                  : "hover:bg-gradient-to-r from-[#9b87f51a] to-[#7e69ab1a] hover:text-black"
+                  ? `bg-partner-tertiary-${themeId} text-black font-semibold`
+                  : `hover:bg-partner-tertiary-hover-${themeId} hover:text-black`
               }`}
               onClick={() => setIsOpen(false)}
             >

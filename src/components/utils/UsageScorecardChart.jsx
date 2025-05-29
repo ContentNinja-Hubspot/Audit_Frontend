@@ -10,6 +10,8 @@ import {
   Legend,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useTheme } from "../../context/ThemeContext";
+import { THEME_COLORS } from "../../config/theme.config";
 
 ChartJS.register(
   CategoryScale,
@@ -47,6 +49,10 @@ const metricKeyToDataArrayMap = {
 
 const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
   const [chartData, setChartData] = useState(null);
+
+  const { themeId } = useTheme();
+
+  const theme = THEME_COLORS[themeId];
 
   const getChartTitle = (selectedMetric) => {
     const titleMap = {
@@ -101,7 +107,7 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
         {
           label: metricLabelMap[selectedMetric] || "Selected Metric",
           data: values,
-          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          backgroundColor: theme?.secondary || "rgba(54, 162, 235, 0.6)",
           barThickness: 20,
         },
       ],
