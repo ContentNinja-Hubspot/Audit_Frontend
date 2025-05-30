@@ -3,7 +3,7 @@ import { FiMenu, FiPlus, FiX } from "react-icons/fi";
 import { Link, useLocation } from "react-router-dom";
 import boundaryLogo from "../images/boundary.png";
 import Logo1 from "../images/image1.png";
-import { fetchReportList } from "../api";
+import { fetchReportList, fetchUserCredits } from "../api";
 import { useUser } from "../context/UserContext";
 import {
   ChartBarIcon,
@@ -18,6 +18,7 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024); // Open by default on large screens
   const { token } = useUser(); // Assuming you have a user context to get the token
   const [credits, setCredits] = useState(""); // assuming max is 100
+  const [totalCredits, setTotalCredits] = useState("");
 
   const { themeId, logoPath, loading } = useTheme();
 
@@ -35,20 +36,20 @@ const Sidebar = () => {
   }, []);
 
   useEffect(() => {
-    const fetchReports = async () => {
+    const getUserCredits = async () => {
       try {
-        const response = await fetchReportList(token);
-        const reports = response.data || [];
+        const response = await fetchUserCredits(token);
+        const availableCredits = response?.credits_remaining ?? 0;
+        const total = response?.total_credits ?? 20;
 
-        const usedCredits = reports.length * 10;
-        const availableCredits = 20 - usedCredits;
         setCredits(availableCredits);
+        setTotalCredits(total);
       } catch (error) {
-        console.error("Error fetching reports:", error);
+        console.error("Error fetching user credits:", error);
       }
     };
 
-    fetchReports();
+    getUserCredits();
   }, [token]);
 
   return (
@@ -173,7 +174,7 @@ const Sidebar = () => {
           <div className="mt-auto pb-4 text-center rounded-lg items-center justify-center mx-auto flex flex-col">
             <p className="text-lg font-md">Available Credits</p>
             <p className="text-lg font-semibold tracking-wide mb-3">
-              {credits}/20
+              {credits}/{totalCredits}
             </p>
             <button>
               <Link

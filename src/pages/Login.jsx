@@ -13,6 +13,7 @@ const Login = () => {
   const { success, error, warn } = useNotify();
   const navigate = useNavigate();
   const [newUser, setNewUser] = useState(false);
+  const [newUserFlag, setNewUserFlag] = useState(false);
   const [userType, setUserType] = useState(""); // "" means not selected
 
   const handleGenerateOtp = async () => {
@@ -26,12 +27,16 @@ const Login = () => {
       const resp = await requestOTP(email);
       setIsOtpGenerated(true);
 
-      if (resp.status === 201) {
+      console.log("OTP response:", resp);
+
+      if (resp?.data?.is_new) {
         setNewUser(true);
         setUserType("");
       } else {
         setNewUser(false);
       }
+
+      setNewUserFlag(resp?.data?.has_logged_in || false);
 
       success("OTP sent successfully!");
     } catch (err) {
@@ -52,8 +57,8 @@ const Login = () => {
 
     try {
       const body = newUser
-        ? { email, otp, new_user: true, user_type: userType }
-        : { email, otp, new_user: false };
+        ? { email, otp, new_user: !newUserFlag, user_type: userType }
+        : { email, otp, new_user: !newUserFlag };
       const response = await validateOTP(body);
       if (response.success && response.state) {
         Cookies.set("state", response.state, { expires: 7 });

@@ -5,16 +5,22 @@ const PlanCard = ({ plan }) => {
 
   return (
     <div
-      className={`border rounded-lg p-6 shadow-md flex flex-col justify-between min-h-[460px] m-3 transition-all duration-200 ${
+      className={`relative  border rounded-lg p-6 shadow-md flex flex-col justify-between min-h-[460px] m-3 transition-all duration-200 ${
         highlight
           ? "border-purple-600 shadow-purple-200 scale-105 bg-[#f8f4ff]"
           : "border-gray-300 bg-white"
-      } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+      } ${disabled ? "pointer-events-none" : ""}`}
     >
+      {plan.isCurrent && (
+        <div className="absolute top-0 right-0 bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg z-10">
+          Your Plan
+        </div>
+      )}
+
       <div>
         <div className="mb-2 flex items-center">
           <h2 className="text-2xl font-bold">{plan.name}</h2>
-          {highlight && plan.name === "Agency+" && (
+          {highlight && plan.name === "Starter" && (
             <span className="ml-2 text-xs px-2 py-1 rounded bg-purple-100 text-purple-700 font-semibold">
               Most Popular
             </span>
@@ -22,6 +28,9 @@ const PlanCard = ({ plan }) => {
         </div>
         <div className="text-3xl font-bold text-purple-700 mb-3">
           {plan.price}
+        </div>
+        <div className="text-lg font-semibold text-gray-600 mb-3">
+          {plan.creditsLabel}
         </div>
         <div className="mb-3 text-gray-700">{plan.description}</div>
         <ul className="mb-4">

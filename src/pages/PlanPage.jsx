@@ -1,86 +1,125 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PlanCard from "../components/PlanCard";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
 import { useUser } from "../context/UserContext";
-
-const clientPlans = [
-  {
-    name: "Free",
-    price: "Free",
-    features: ["10 one-time credits", "1 Hub", "Limited Actions"],
-    description: "Basic tools to get started with limited usage.",
-  },
-  {
-    name: "Starter",
-    price: "$49/mo",
-    features: [
-      "50 Credits/Month",
-      "Unlimited Hubs",
-      "Unlimited Actions",
-      "Up to 5 Audits/Month",
-      "Access to Cleanup tools",
-      "PDF Download",
-    ],
-    description: "Perfect for small teams who want consistent insights.",
-  },
-  {
-    name: "Growth",
-    price: "$129/mo",
-    features: [
-      "150 Credits/Month",
-      "Unlimited Hubs",
-      "Unlimited Actions",
-      "Up to 15 Audits/Month",
-      "Access to Cleanup tools",
-      "PDF & CSV Download",
-    ],
-    description: "Grow faster with expanded limits and advanced tools.",
-  },
-];
-
-const agencyPlans = [
-  {
-    name: "Free",
-    price: "Free",
-    features: ["25 one-time credits", "Up to 2 Hubs", "Basic white-labeling"],
-    description: "Great for testing tools before onboarding clients.",
-  },
-  {
-    name: "Starter",
-    price: "$99/mo",
-    features: [
-      "100 Credits/Month",
-      "Unlimited Hubs",
-      "Full white-labeling",
-      "Up to 10 Audits/Month",
-      "Access to Cleanup tools",
-      "PDF Download",
-    ],
-    description: "Ideal for small agencies managing multiple accounts.",
-  },
-  {
-    name: "Agency+",
-    price: "$249/mo",
-    features: [
-      "300 Credits/Month",
-      "Unlimited Hubs",
-      "Full white-labeling",
-      "Up to 30 Audits/Month",
-      "Access to Cleanup tools",
-      "PDF & CSV Download",
-    ],
-    description: "Maximum capacity, flexibility, and branding options.",
-  },
-];
+import { fetchPricingDetails, fetchUserPlan } from "../api";
 
 const PlanPage = () => {
-  const { user } = useUser(); // { type: 'client' | 'agency', planName: 'Starter' }
-  const isClient = user?.type === "client";
-  const plans = isClient ? clientPlans : agencyPlans;
+  const { user, userType, token } = useUser();
+  const [plans, setPlans] = useState([]);
+  const [userPlan, setUserPlan] = useState(null);
+  const [billingCycle, setBillingCycle] = useState("monthly");
+  const [highlightedPlan, setHighlightedPlan] = useState(
+    user?.planName || "Free"
+  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const currentPlanIndex = plans.findIndex((p) => p.name === user?.planName);
-  const [highlightedPlan, setHighlightedPlan] = useState(user?.planName);
+  const descriptions = {
+    client: {
+      Free: "Basic tools to get started with limited usage.",
+      Starter: "Perfect for small teams who want consistent insights.",
+      Growth: "Grow faster with expanded limits and advanced tools.",
+    },
+    partner: {
+      Free: "Great for testing tools before onboarding clients.",
+      Starter: "Ideal for small agencies managing multiple accounts.",
+      "Agency+": "Maximum capacity, flexibility, and branding options.",
+    },
+  };
+
+  const transformPlan = (plan, billingCycle) => {
+    const isFree = parseFloat(plan.price) === 0;
+    const type = plan.plan_type;
+
+    const price =
+      billingCycle === "yearly"
+        ? isFree
+          ? "Free"
+          : `$${Math.round(plan.price * 12 * 0.8)}/yr`
+        : isFree
+        ? "Free"
+        : `$${plan.price}/mo`;
+
+    const creditsLabel = isFree
+      ? `${plan.monthly_credits} One-time Credits`
+      : `${plan.monthly_credits} Credits / Month`;
+
+    const features = [
+      `${
+        plan.max_hubs === 100000 ? "Unlimited" : `Up to ${plan.max_hubs}`
+      } Hubs`,
+      `Up to ${plan.max_audits} Audits/Month`,
+      plan.access_to_cleanup_tools && "Access to Cleanup tools",
+      plan.csv_pdf_download && (isFree ? "PDF Download" : "PDF & CSV Download"),
+      plan.white_labeling &&
+        (type === "partner" ? "Full white-labeling" : "Basic white-labeling"),
+    ].filter(Boolean);
+
+    return {
+      name: plan.plan_name,
+      price,
+      creditsLabel,
+      subheading:
+        plan.plan_name === "Free"
+          ? "Includes"
+          : `Everything in ${
+              plan.plan_name === "Starter" ? "Free" : "Starter"
+            }, plus`,
+      features,
+      description: descriptions[type][plan.plan_name] || "",
+    };
+  };
+
+  useEffect(() => {
+    const loadPlans = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchPricingDetails(token);
+
+        if (data.success) {
+          const tierOrder = ["Free", "Starter", "Growth", "Agency+"];
+          const filtered = data.plans.filter((p) => p.plan_type === userType);
+
+          const formattedPlans = filtered
+            .map(transformPlan)
+            .sort(
+              (a, b) => tierOrder.indexOf(a.name) - tierOrder.indexOf(b.name)
+            );
+
+          setPlans(formattedPlans);
+        } else {
+          setError("Failed to load plans.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const loadUserPlan = async () => {
+      try {
+        const data = await fetchUserPlan(token);
+
+        console.log("User Plan Data:", data);
+        const planName = data?.subscription?.plan_name;
+        if (planName) {
+          setUserPlan(planName);
+          setHighlightedPlan(planName);
+        }
+      } catch (err) {
+        console.error("Error fetching user plan", err);
+      }
+    };
+
+    loadUserPlan();
+    loadPlans();
+  }, [userType, token, billingCycle]);
+
+  const currentPlanIndex = plans.findIndex((p) => p.name === userPlan);
 
   const handleCardClick = (planName, index) => {
     if (index < currentPlanIndex) return;
@@ -94,36 +133,70 @@ const PlanPage = () => {
         <PastReportHeader />
         <div className="flex flex-col items-center mt-8 px-4">
           <h1 className="text-4xl font-extrabold mb-2">Choose Your Plan</h1>
-          <p className="mb-8 text-gray-600 max-w-xl text-center">
-            Pick the plan that fits your needs best.
+          <p className="mb-4 text-3xl font-medium max-w-xl text-center">
+            Pick the plan that fits your needs best
           </p>
-          <div className="flex flex-col md:flex-row items-stretch justify-center w-full max-w-5xl">
-            {plans.map((plan, index) => {
-              const isCurrent = plan.name === user?.planName;
-              const isLower = index < currentPlanIndex;
 
-              return (
-                <div
-                  key={plan.name}
-                  onClick={() => handleCardClick(plan.name, index)}
-                  className={`cursor-pointer flex-1 ${
-                    isLower ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                >
-                  <PlanCard
-                    plan={{
-                      ...plan,
-                      highlight: highlightedPlan === plan.name,
-                      disabled: isLower || isCurrent,
-                      buttonText: isCurrent
-                        ? "Existing Plan"
-                        : `Get ${plan.name}`,
-                    }}
-                  />
-                </div>
-              );
-            })}
+          {/* Toggle for billing cycle */}
+          <div className="flex mb-8 rounded-full p-1">
+            <button
+              onClick={() => setBillingCycle("monthly")}
+              className={`w-32 py-2 rounded-full font-semibold transition-colors duration-200 ${
+                billingCycle === "monthly"
+                  ? "bg-purple-700 text-white"
+                  : "bg-inherit text-gray-800  border border-gray-300"
+              }`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBillingCycle("yearly")}
+              className={`w-32 py-2 rounded-full font-semibold transition-colors duration-200 ${
+                billingCycle === "yearly"
+                  ? "bg-purple-700 text-white"
+                  : "bg-inherit text-gray-800 border border-gray-300"
+              }`}
+            >
+              Yearly
+            </button>
           </div>
+
+          {/* Plan Cards */}
+          {loading ? (
+            <p>Loading plans...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
+            <div className="flex flex-col md:flex-row items-stretch justify-center w-full max-w-5xl">
+              {plans.map((plan, index) => {
+                const isCurrent = plan.name === userPlan;
+              
+                const isLower = index < currentPlanIndex;
+
+                return (
+                  <div
+                    key={plan.name}
+                    onClick={() => handleCardClick(plan.name, index)}
+                    className={`cursor-pointer flex-1 ${
+                      isLower ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
+                  >
+                    <PlanCard
+                      plan={{
+                        ...plan,
+                        highlight: highlightedPlan === plan.name,
+                        disabled: isLower || isCurrent,
+                        isCurrent: isCurrent,
+                        buttonText: isCurrent
+                          ? "Existing Plan"
+                          : `Get ${plan.name}`,
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </main>
     </div>

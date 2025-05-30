@@ -1,19 +1,56 @@
-import React from "react";
-import { CreditCardIcon } from "@heroicons/react/24/outline";
+import React, { useEffect, useState } from "react";
+import { fetchUserPlan, fetchUserCredits } from "../../api";
+import { useUser } from "../../context/UserContext";
 
 const SubscriptionDetails = () => {
-  // Simulated API response
-  const subscriptionData = {
-    plan: "Starter",
-    price: 29,
-    credits: 1000,
-    renewalDate: "July 20, 2024",
-    paymentMethod: {
-      type: "Visa",
-      maskedNumber: "**** **** **** 1234",
-    },
-    supportEmail: "billing@example.com",
-  };
+  const [subscriptionData, setSubscriptionData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const { token } = useUser();
+
+  useEffect(() => {
+    const loadSubscription = async () => {
+      try {
+        const [planResponse, creditResponse] = await Promise.all([
+          fetchUserPlan(token),
+          fetchUserCredits(token),
+        ]);
+
+        if (planResponse.success && planResponse.subscription) {
+          const sub = planResponse.subscription;
+
+          const credits = creditResponse.success
+            ? {
+                remaining: creditResponse.credits_remaining,
+                used: creditResponse.credits_used,
+                total: creditResponse.total_credits,
+              }
+            : { remaining: 0, used: 0, total: 0 };
+
+          setSubscriptionData({
+            plan: sub.plan_name || "N/A",
+            price: sub.plan_name === "Free" ? 0 : 29,
+            credits,
+            renewalDate: new Date(sub.end_date).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }),
+            supportEmail: "billing@example.com",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to load subscription data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSubscription();
+  }, [token]);
+
+  if (loading) return <p>Loading subscription details...</p>;
+  if (!subscriptionData) return <p>Unable to load subscription data.</p>;
 
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-6 w-full max-w-2xl">
@@ -24,27 +61,33 @@ const SubscriptionDetails = () => {
         </div>
         <div>
           <p className="font-medium">Price</p>
-          <p className="font-bold text-xl">${subscriptionData.price}/month</p>
+          <p className="font-bold text-xl">
+            {subscriptionData.price === 0
+              ? "Free"
+              : `$${subscriptionData.price}/month`}
+          </p>
         </div>
         <div>
-          <p className="font-medium">Credits Included</p>
+          <p className="font-medium">Credits Used</p>
           <p className="font-bold text-xl">
-            {subscriptionData.credits} Credits
+            {subscriptionData.credits.used} Credits
+          </p>
+        </div>
+        <div>
+          <p className="font-medium">Credits Remaining</p>
+          <p className="font-bold text-xl">
+            {subscriptionData.credits.remaining} Credits
+          </p>
+        </div>
+        <div>
+          <p className="font-medium">Total Credits</p>
+          <p className="font-bold text-xl">
+            {subscriptionData.credits.total} Credits
           </p>
         </div>
         <div>
           <p className="font-medium">Renewal Date</p>
           <p className="font-bold text-xl">{subscriptionData.renewalDate}</p>
-        </div>
-        <div className="col-span-2">
-          <p className="font-medium">Payment Method</p>
-          <p className="flex items-center space-x-2">
-            <CreditCardIcon className="h-4 w-4" />
-            <span className="font-semibold text-md">
-              {subscriptionData.paymentMethod.type}{" "}
-              {subscriptionData.paymentMethod.maskedNumber}
-            </span>
-          </p>
         </div>
       </div>
 
@@ -52,8 +95,11 @@ const SubscriptionDetails = () => {
 
       <p className="text-xs text-center text-gray-500 mt-4">
         For billing inquiries, please contact{" "}
-        <a href={`mailto:billing@example.com`} className="text-indigo-500">
-          billing@example.com
+        <a
+          href={`mailto:${subscriptionData.supportEmail}`}
+          className="text-indigo-500"
+        >
+          {subscriptionData.supportEmail}
         </a>
       </p>
     </div>

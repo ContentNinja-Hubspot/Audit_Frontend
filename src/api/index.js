@@ -821,3 +821,75 @@ export const fetchPartnerThemeAndLogo = async (token) => {
     throw error;
   }
 };
+
+export const fetchPricingDetails = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/Subscription-plans`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching pricing details: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching pricing details:", error);
+    throw error;
+  }
+};
+
+export const fetchUserCredits = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getcredits`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching user credits: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user credits:", error);
+    throw error;
+  }
+};
+
+export const fetchUserPlan = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/get_users_subscription`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching user plan: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user plan:", error);
+    throw error;
+  }
+};
