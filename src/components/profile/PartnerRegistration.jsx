@@ -57,30 +57,37 @@ export default function PartnerRegistration() {
           });
           setFonts(sortedFonts);
 
-          const partnerRes = await fetchPartnerData(token);
-          if (partnerRes.success) {
-            const details = partnerRes.partner_details;
-            setPartnerDetails(details);
+          try {
+            const partnerRes = await fetchPartnerData(token);
+            if (partnerRes.success) {
+              const details = partnerRes.partner_details;
+              setPartnerDetails(details);
 
-            if (details.is_profile_complete) {
-              setIsEditing(false);
+              if (details.is_profile_complete) {
+                setIsEditing(false);
+              } else {
+                setIsEditing(true);
+                setForm({
+                  agency_name: details.agency_name || "",
+                  agency_domain: details.agency_domain || "",
+                  logo: null,
+                  theme_id: details.theme_id || "",
+                  font_id: details.font_id || "",
+                  name: "",
+                  email: "",
+                });
+              }
             } else {
-              setIsEditing(true);
-              setForm({
-                agency_name: details.agency_name || "",
-                agency_domain: details.agency_domain || "",
-                logo: null,
-                theme_id: details.theme_id || "",
-                font_id: details.font_id || "",
-                name: "",
-                email: "",
-              });
+              error("Failed to fetch partner details.");
             }
+          } catch (err) {
+            console.error("Partner fetch error:", err);
+            error("Could not fetch partner data.");
           }
         }
       } catch (err) {
         console.error(err);
-        error("Could not load partner data.");
+        error("Could not determine user type.");
         setUserType("normal");
       }
     };
