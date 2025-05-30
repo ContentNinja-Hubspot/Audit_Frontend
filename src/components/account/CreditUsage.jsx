@@ -1,25 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
-
-const reportData = [
-  { name: "Annual Financial Report", date: "2023-10-26", credits: 150 },
-  { name: "Q3 Marketing Analysis", date: "2023-09-15", credits: 75 },
-  { name: "Competitor Overview", date: "2023-08-01", credits: 220 },
-  { name: "Sales Performance Q2", date: "2023-07-10", credits: 120 },
-  { name: "User Engagement Metrics", date: "2023-06-22", credits: 90 },
-  { name: "Product Feedback Summary", date: "2023-05-18", credits: 180 },
-  { name: "Inventory Stock Levels", date: "2023-04-30", credits: 50 },
-  { name: "Website Traffic Analysis", date: "2023-03-12", credits: 300 },
-];
+import { fetchCreditUsage } from "../../api";
+import { useUser } from "../../context/UserContext";
 
 const ITEMS_PER_PAGE = 10;
 
 const CreditUsage = () => {
+  const { token } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [creditData, setCreditData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const filteredReports = reportData.filter((report) =>
-    report.name.toLowerCase().includes(searchTerm.toLowerCase())
+  useEffect(() => {
+    const loadCreditUsage = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchCreditUsage(token);
+        if (data && Array.isArray(data.credit_usage)) {
+          setCreditData(data.credit_usage);
+        } else {
+          setCreditData([]);
+        }
+      } catch (err) {
+        setError("Failed to fetch credit usage.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCreditUsage();
+  }, [token]);
+
+  const filteredReports = creditData.filter((report) =>
+    report.action_type.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
@@ -30,9 +46,14 @@ const CreditUsage = () => {
   );
 
   const handleExportCSV = () => {
-    const csvHeader = "Report Name,Date Generated,Credits Used\n";
-    const csvRows = reportData
-      .map((r) => `"${r.name}","${r.date}",${r.credits}`)
+    const csvHeader = "Transaction Type,Date Generated,Credits Used\n";
+    const csvRows = creditData
+      .map(
+        (r) =>
+          `"${r.action_type}","${new Date(
+            r.action_timestamp
+          ).toLocaleString()}","${r.credits_used}"`
+      )
       .join("\n");
 
     const csvContent = csvHeader + csvRows;
@@ -67,67 +88,85 @@ const CreditUsage = () => {
           />
         </div>
 
-        <button onClick={handleExportCSV}>Export CSV</button>
+        <button
+          onClick={handleExportCSV}
+        >
+          Export CSV
+        </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left text-gray-600 min-w-[500px]">
-          <thead className="text-xs text-center text-gray-500 bg-gray-200 uppercase border-b">
-            <tr>
-              <th className="py-2">Transaction Name</th>
-              <th className="py-2">Date Generated</th>
-              <th className="py-2">Credits Used</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedReports.map((report, index) => (
-              <tr key={index} className="border-b text-center">
-                <td className="px-4 py-3 font-semibold">{report.name}</td>
-                <td className="py-3">{report.date}</td>
-                <td className="py-3">{report.credits}</td>
-              </tr>
+      {loading ? (
+        <p>Loading credit usage...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left text-gray-600 min-w-[500px]">
+              <thead className="text-xs text-center text-gray-500 bg-gray-200 uppercase border-b">
+                <tr>
+                  <th className="py-2">Transaction Type</th>
+                  <th className="py-2">Date Generated</th>
+                  <th className="py-2">Credits Used</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedReports.map((report, index) => (
+                  <tr key={index} className="border-b text-center">
+                    <td className="px-4 py-3 font-semibold">
+                      {report.action_type}
+                    </td>
+                    <td className="py-3">
+                      {new Date(report.action_timestamp).toLocaleString()}
+                    </td>
+                    <td className="py-3">{report.credits_used}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-4 text-sm text-gray-500">
+            Showing {startIndex + 1} to{" "}
+            {Math.min(startIndex + ITEMS_PER_PAGE, filteredReports.length)} of{" "}
+            {filteredReports.length} results
+          </div>
+
+          <div className="mt-2 flex flex-wrap justify-center gap-2 text-sm">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1 rounded-md bg-gray-400 disabled:opacity-50 text-white"
+            >
+              Previous
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+              <button
+                key={num}
+                onClick={() => setCurrentPage(num)}
+                className={`px-3 py-1 rounded-md ${
+                  num === currentPage
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-100"
+                }`}
+              >
+                {num}
+              </button>
             ))}
-          </tbody>
-        </table>
-      </div>
 
-      <div className="mt-4 text-sm text-gray-500">
-        Showing {startIndex + 1} to{" "}
-        {Math.min(startIndex + ITEMS_PER_PAGE, filteredReports.length)} of{" "}
-        {filteredReports.length} results
-      </div>
-
-      <div className="mt-2 flex flex-wrap justify-center gap-2 text-sm">
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className="px-3 py-1 rounded-md bg-gray-400 disabled:opacity-50 text-white"
-        >
-          Previous
-        </button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
-          <button
-            key={num}
-            onClick={() => setCurrentPage(num)}
-            className={`px-3 py-1 rounded-md ${
-              num === currentPage ? "bg-indigo-600 text-white" : "bg-gray-100"
-            }`}
-          >
-            {num}
-          </button>
-        ))}
-
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded-md bg-gray-400 disabled:opacity-50 text-white"
-        >
-          Next
-        </button>
-      </div>
+            <button
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+              className="px-3 py-1 rounded-md bg-gray-400 disabled:opacity-50 text-white"
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

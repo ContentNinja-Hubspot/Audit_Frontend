@@ -893,3 +893,27 @@ export const fetchUserPlan = async (token) => {
     throw error;
   }
 };
+
+export const fetchCreditUsage = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/get_credit_usage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching credit usage: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching credit usage:", error);
+    throw error;
+  }
+};

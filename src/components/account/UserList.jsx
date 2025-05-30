@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { fetchUsersOfPartner } from "../../api";
 import { useUser } from "../../context/UserContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const statusClasses = {
   Active: "bg-green-100 text-green-800",
@@ -11,6 +12,7 @@ const statusClasses = {
 const UsersList = ({ users, setUsers }) => {
   const [search, setSearch] = useState("");
   const { token } = useUser();
+  const { themeId } = useTheme();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -67,7 +69,11 @@ const UsersList = ({ users, setUsers }) => {
                 <td>
                   <span
                     className={`px-2 py-1 text-sm rounded-full font-medium ${
-                      statusClasses[user.status] || "bg-gray-200 text-gray-800"
+                      user.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : user.status === "Accepted"
+                        ? `bg-partner-secondary-${themeId}`
+                        : ` text-gray-800`
                     }`}
                   >
                     {user.status || "N/A"}

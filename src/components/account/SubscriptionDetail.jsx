@@ -68,18 +68,6 @@ const SubscriptionDetails = () => {
           </p>
         </div>
         <div>
-          <p className="font-medium">Credits Used</p>
-          <p className="font-bold text-xl">
-            {subscriptionData.credits.used} Credits
-          </p>
-        </div>
-        <div>
-          <p className="font-medium">Credits Remaining</p>
-          <p className="font-bold text-xl">
-            {subscriptionData.credits.remaining} Credits
-          </p>
-        </div>
-        <div>
           <p className="font-medium">Total Credits</p>
           <p className="font-bold text-xl">
             {subscriptionData.credits.total} Credits
