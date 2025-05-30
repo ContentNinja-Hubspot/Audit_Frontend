@@ -11,6 +11,7 @@ export const ThemeProvider = ({ children }) => {
   const [colors, setColors] = useState(DEFAULT_THEME);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userTheme, setUserTheme] = useState(null);
 
   const { token } = useUser();
 
@@ -45,13 +46,16 @@ export const ThemeProvider = ({ children }) => {
             `'${fontName}', sans-serif`
           );
           updateTheme(id);
+          setUserTheme(id);
           setLogoPath(response.logo_path);
         } else {
           updateTheme("default");
+          setUserTheme("default");
           setError(response.error || "Theme not found.");
         }
       } catch (err) {
         updateTheme("default");
+        setUserTheme("default");
         setError("Theme fetch failed.");
       } finally {
         setLoading(false);
@@ -70,6 +74,7 @@ export const ThemeProvider = ({ children }) => {
     <ThemeContext.Provider
       value={{
         themeId,
+        userTheme,
         colors,
         logoPath,
         loading,

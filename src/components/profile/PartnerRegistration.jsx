@@ -19,7 +19,7 @@ export default function PartnerRegistration() {
   const [themes, setThemes] = useState([]);
   const [fonts, setFonts] = useState([]);
   const [userType, setUserType] = useState(null);
-  const { updateTheme } = useTheme();
+  const { updateTheme, userTheme } = useTheme();
   const [form, setForm] = useState({
     agency_name: "",
     agency_domain: "",
@@ -99,6 +99,24 @@ export default function PartnerRegistration() {
         [name]: files ? files[0] : value,
       }));
     }
+  };
+
+  const handleSkip = () => {
+    setForm({
+      agency_name: "",
+      agency_domain: "",
+      logo: null,
+      theme_id: "",
+      font_id: "",
+      name: "",
+      email: "",
+    });
+
+    setCroppedImageURL(null);
+
+    updateTheme(userTheme);
+
+    navigate("/dashboard");
   };
 
   const handleSubmit = async (e) => {
@@ -309,7 +327,16 @@ export default function PartnerRegistration() {
                 </div>
               </FormRow>
 
-              <SubmitButton loading={loading} text="Submit" />
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  className="text-sm px-4 py-2 border bg-inherit text-black border-gray-300 rounded-lg transition"
+                >
+                  Skip
+                </button>
+                <SubmitButton loading={loading} text="Submit" />
+              </div>
             </form>
           </>
         ) : null}
