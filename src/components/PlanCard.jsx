@@ -1,14 +1,16 @@
 import React from "react";
+import { useTheme } from "../context/ThemeContext";
 
 const PlanCard = ({ plan }) => {
   const { highlight, disabled } = plan;
+  const { themeId } = useTheme();
 
   return (
     <div
-      className={`relative  border rounded-lg p-6 shadow-md flex flex-col justify-between min-h-[460px] m-3 transition-all duration-200 ${
+      className={`relative border rounded-lg p-6 shadow-md flex flex-col justify-between min-h-[460px] m-3 transition-all duration-200 ${
         highlight
-          ? "border-purple-600 shadow-purple-200 scale-105 bg-[#f8f4ff]"
-          : "border-gray-300 bg-white"
+          ? `bg-partner-tertiary-${themeId} scale-105`
+          : `border-gray-300 bg-white`
       } ${disabled ? "pointer-events-none" : ""}`}
     >
       {plan.isCurrent && (
@@ -48,7 +50,7 @@ const PlanCard = ({ plan }) => {
           plan.disabled
             ? "bg-gray-300 text-gray-600 cursor-not-allowed"
             : plan.highlight
-            ? "bg-purple-700 text-white hover:bg-purple-800"
+            ? ""
             : "bg-gray-200 text-gray-800 hover:bg-gray-300"
         }`}
       >

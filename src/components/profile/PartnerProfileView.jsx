@@ -1,7 +1,9 @@
 import React from "react";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function PartnerProfileView({ partnerDetails, onEdit }) {
   const themeHex = partnerDetails.theme_hex || "#ccc";
+  const { themeId } = useTheme();
   const themeName = partnerDetails.theme_name || partnerDetails.theme_id;
 
   const fontName = partnerDetails.font_name || partnerDetails.font_id;
@@ -10,7 +12,7 @@ export default function PartnerProfileView({ partnerDetails, onEdit }) {
     <div className="p-4 text-start bg-white rounded-2xl relative">
       <button
         onClick={onEdit}
-        className="absolute top-4 right-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition"
+        className={`absolute top-4 right-4 px-4 py-2 text-sm font-medium rounded-lg transition`}
       >
         ✏️ Edit Information
       </button>
