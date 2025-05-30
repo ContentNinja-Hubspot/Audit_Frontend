@@ -13,6 +13,7 @@ import NormalSettingsForm from "./forms/NormalSettingsForm";
 import FormRow from "./forms/FormRow";
 import SubmitButton from "./forms/SubmitButton";
 import PartnerProfileView from "./PartnerProfileView";
+import ApplyProgressAnimation from "../utils/ApplyProgressAnimation";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function PartnerRegistration() {
@@ -39,6 +40,7 @@ export default function PartnerRegistration() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [croppedImageURL, setCroppedImageURL] = useState(null);
   const [partnerDetails, setPartnerDetails] = useState(null);
+  const [showApplyAnimation, setShowApplyAnimation] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -140,7 +142,6 @@ export default function PartnerRegistration() {
 
       try {
         await uploadPartnerData(formData, token);
-        success("Form submitted! 🎉");
         setForm({
           agency_name: "",
           agency_domain: "",
@@ -151,7 +152,8 @@ export default function PartnerRegistration() {
           email: "",
         });
         setCroppedImageURL(null);
-        navigate("/dashboard");
+        setShowApplyAnimation(true);
+        // navigate("/dashboard");
       } catch (err) {
         error(err?.message || "Something went wrong.");
       } finally {
@@ -380,6 +382,11 @@ export default function PartnerRegistration() {
             setCropModalOpen(false);
             URL.revokeObjectURL(selectedImage);
           }}
+        />
+      )}
+      {showApplyAnimation && (
+        <ApplyProgressAnimation
+          onComplete={() => (window.location.href = "/dashboard")}
         />
       )}
     </div>
