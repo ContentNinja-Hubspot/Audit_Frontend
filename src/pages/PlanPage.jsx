@@ -4,9 +4,12 @@ import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
 import { useUser } from "../context/UserContext";
 import { fetchPricingDetails, fetchUserPlan } from "../api";
+import { useTheme } from "../context/ThemeContext";
 
 const PlanPage = () => {
   const { user, userType, token } = useUser();
+  const { themeId } = useTheme();
+
   const [plans, setPlans] = useState([]);
   const [userPlan, setUserPlan] = useState(null);
   const [billingCycle, setBillingCycle] = useState("monthly");
@@ -33,14 +36,18 @@ const PlanPage = () => {
     const isFree = parseFloat(plan.price) === 0;
     const type = plan.plan_type;
 
-    const price =
-      billingCycle === "yearly"
-        ? isFree
-          ? "Free"
-          : `$${Math.round(plan.price * 12 * 0.8)}/yr`
-        : isFree
-        ? "Free"
-        : `$${plan.price}/mo`;
+    let price;
+    if (billingCycle === "yearly") {
+      if (isFree) {
+        price = "Free";
+      } else {
+        const yearlyPrice = plan.price * 12 * 0.9;
+        const monthlyEquivalent = Math.round(yearlyPrice / 12);
+        price = `$${monthlyEquivalent}/mo`;
+      }
+    } else {
+      price = isFree ? "Free" : `$${Math.round(plan.price)}/mo`;
+    }
 
     const creditsLabel = isFree
       ? `${plan.monthly_credits} One-time Credits`
@@ -80,15 +87,14 @@ const PlanPage = () => {
 
         if (data.success) {
           const tierOrder = ["Free", "Starter", "Growth", "Agency+"];
-          const filtered = data.plans.filter((p) => p.plan_type === userType);
-
-          const formattedPlans = filtered
-            .map(transformPlan)
+          const filtered = data.plans
+            .filter((p) => p.plan_type === userType)
             .sort(
-              (a, b) => tierOrder.indexOf(a.name) - tierOrder.indexOf(b.name)
+              (a, b) =>
+                tierOrder.indexOf(a.plan_name) - tierOrder.indexOf(b.plan_name)
             );
 
-          setPlans(formattedPlans);
+          setPlans(filtered); // ⬅️ Store raw plans
         } else {
           setError("Failed to load plans.");
         }
@@ -103,8 +109,6 @@ const PlanPage = () => {
     const loadUserPlan = async () => {
       try {
         const data = await fetchUserPlan(token);
-
-        console.log("User Plan Data:", data);
         const planName = data?.subscription?.plan_name;
         if (planName) {
           setUserPlan(planName);
@@ -117,9 +121,12 @@ const PlanPage = () => {
 
     loadUserPlan();
     loadPlans();
-  }, [userType, token, billingCycle]);
+  }, [userType, token]); // ✅ removed billingCycle
 
   const currentPlanIndex = plans.findIndex((p) => p.name === userPlan);
+  const transformedPlans = plans.map((plan) =>
+    transformPlan(plan, billingCycle)
+  );
 
   const handleCardClick = (planName, index) => {
     if (index < currentPlanIndex) return;
@@ -131,34 +138,35 @@ const PlanPage = () => {
       <Sidebar />
       <main className="flex-1 overflow-auto h-screen">
         <PastReportHeader />
-        <div className="flex flex-col items-center mt-8 px-4">
-          <h1 className="text-4xl font-extrabold mb-2">Choose Your Plan</h1>
-          <p className="mb-4 text-3xl font-medium max-w-xl text-center">
+        <div className="flex flex-col items-center mt-24 px-4">
+          <p className="mb-4 text-3xl font-medium max-w-xl mt-2 text-center">
             Pick the plan that fits your needs best
           </p>
 
           {/* Toggle for billing cycle */}
-          <div className="flex mb-8 rounded-full p-1">
-            <button
+          <div
+            className={`flex mb-8 items-center rounded-full bg-partner-tertiary-${themeId} w-min p-1 border-2 border-gray-600`}
+          >
+            <p
               onClick={() => setBillingCycle("monthly")}
-              className={`w-32 py-2 rounded-full font-semibold transition-colors duration-200 ${
+              className={`w-32 h-10 rounded-full cursor-pointer font-medium text-sm flex items-center justify-center transition-colors duration-200 ${
                 billingCycle === "monthly"
-                  ? "bg-purple-700 text-white"
-                  : "bg-inherit text-gray-800  border border-gray-300"
+                  ? `bg-partner-secondary-${themeId} text-black`
+                  : "bg-transparent text-black"
               }`}
             >
-              Monthly
-            </button>
-            <button
+              MONTHLY
+            </p>
+            <p
               onClick={() => setBillingCycle("yearly")}
-              className={`w-32 py-2 rounded-full font-semibold transition-colors duration-200 ${
+              className={`w-36 h-10 rounded-full cursor-pointer font-medium text-sm flex items-center justify-center transition-colors duration-200 whitespace-nowrap ${
                 billingCycle === "yearly"
-                  ? "bg-purple-700 text-white"
-                  : "bg-inherit text-gray-800 border border-gray-300"
+                  ? `bg-partner-secondary-${themeId} text-black`
+                  : "bg-transparent text-black"
               }`}
             >
-              Yearly
-            </button>
+              YEARLY (SAVE 10%)
+            </p>
           </div>
 
           {/* Plan Cards */}
@@ -168,9 +176,8 @@ const PlanPage = () => {
             <p className="text-red-500">{error}</p>
           ) : (
             <div className="flex flex-col md:flex-row items-stretch justify-center w-full max-w-5xl">
-              {plans.map((plan, index) => {
+              {transformedPlans.map((plan, index) => {
                 const isCurrent = plan.name === userPlan;
-              
                 const isLower = index < currentPlanIndex;
 
                 return (
