@@ -650,7 +650,7 @@ const Company = ({
                 />
               </div>
 
-              <div className="flex flex-col gap-3 shadow p-4 rounded-lg h-[16rem] relative w-full">
+              {/* <div className="flex flex-col gap-3 shadow p-4 rounded-lg h-[16rem] relative w-full">
                 <h5 className="font-bold text-black text-base mb-1">
                   Consider Deleting
                 </h5>
@@ -696,7 +696,7 @@ const Company = ({
                   disabled={!completeReportGenerated}
                   label="Delete Junk"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

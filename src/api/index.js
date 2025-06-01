@@ -267,12 +267,11 @@ export const triggerEmailNotification = async (token) => {
     throw error;
   }
 };
-
 export const handleJunkDataAction = async ({
   actionType,
   token,
   hubId,
-  item,
+  items,
   objectname = "deals",
 }) => {
   const url =
@@ -289,31 +288,43 @@ export const handleJunkDataAction = async ({
       },
       body: JSON.stringify({
         objectname,
-        propertynames: [item],
+        propertynames: items,
         hubId,
       }),
     });
 
     const data = await response.json();
 
-    if (response.ok) {
-      return {
-        success: data[item]?.success,
-        message: data[item]?.message || data.message || "Success",
+    // Use "result" object from API response
+    const resultsFromApi = data.result || {};
+
+    const results = {};
+    items.forEach((item) => {
+      const itemResult = resultsFromApi[item];
+
+      results[item] = {
+        success: itemResult?.success ?? false,
+        message: itemResult?.message || "Unknown error",
       };
-    } else {
-      return {
-        success: false,
-        message:
-          data[item]?.error?.message ||
-          data.error?.message ||
-          "Something went wrong",
-      };
-    }
+    });
+
+    return {
+      success: response.ok,
+      results,
+    };
   } catch (err) {
+    const results = {};
+    items.forEach((item) => {
+      results[item] = {
+        success: false,
+        message: err.message || "Network or server error",
+        listData: null,
+      };
+    });
+
     return {
       success: false,
-      message: err.message || "Network or server error",
+      results,
     };
   }
 };

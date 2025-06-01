@@ -22,33 +22,42 @@ const RequestModal = ({
   const processRequests = async (itemsToProcess) => {
     setIsProcessing(true);
 
-    await Promise.all(
-      itemsToProcess.map(async (item) => {
-        setLoadingStatus((prev) => ({
-          ...prev,
-          [item]: { status: "loading", message: "" },
-        }));
+    // Set all to loading initially
+    const initialStatus = {};
+    itemsToProcess.forEach((item) => {
+      initialStatus[item] = { status: "loading", message: "" };
+    });
+    setLoadingStatus(initialStatus);
 
-        const response = await handleJunkDataAction({
-          actionType,
-          token,
-          hubId,
-          item,
-          objectname,
-        });
+    try {
+      const response = await handleJunkDataAction({
+        actionType,
+        token,
+        hubId,
+        items: itemsToProcess,
+        objectname,
+      });
 
-        const isSuccess = response?.success;
-        const message = response?.message || "Unknown error";
+      const { results = {} } = response;
 
-        setLoadingStatus((prev) => ({
-          ...prev,
-          [item]: {
-            status: isSuccess ? "success" : "failed",
-            message,
-          },
-        }));
-      })
-    );
+      const updatedStatus = {};
+      itemsToProcess.forEach((item) => {
+        const res = results[item] || {};
+        const success = res.success ?? false;
+        updatedStatus[item] = {
+          status: success ? "success" : "failed",
+          message: res.message || "Unknown error",
+        };
+      });
+
+      setLoadingStatus(updatedStatus);
+    } catch (err) {
+      const errorStatus = {};
+      itemsToProcess.forEach((item) => {
+        errorStatus[item] = { status: "failed", message: "Request failed" };
+      });
+      setLoadingStatus(errorStatus);
+    }
 
     setIsProcessing(false);
   };
