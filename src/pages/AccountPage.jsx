@@ -18,7 +18,6 @@ import {
 
 const AccountPage = () => {
   const [users, setUsers] = useState([]);
-  const [activeTab, setActiveTab] = useState("users");
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddPartnerModal, setShowAddPartnerModal] = useState(false);
 
@@ -26,11 +25,9 @@ const AccountPage = () => {
   const partnerModalRef = useRef(null);
 
   const { userType, token } = useUser();
+  const defaultTab = userType === "partner" ? "users" : "subscription";
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const { success, error } = useNotify();
-
-  if (userType !== "partner") {
-    return <Navigate to="/not-found" replace />;
-  }
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -141,7 +138,9 @@ const AccountPage = () => {
           {/* Tab Navigation */}
           <div className="flex overflow-x-auto space-x-6 border-b border-gray-200 mb-6 pb-2 sm:overflow-visible">
             {[
-              { key: "users", label: "Users", Icon: UserGroupIcon },
+              ...(userType === "partner"
+                ? [{ key: "users", label: "Users", Icon: UserGroupIcon }]
+                : []),
               { key: "subscription", label: "Subscription", Icon: WalletIcon },
               {
                 key: "creditUsage",
@@ -165,7 +164,7 @@ const AccountPage = () => {
           </div>
 
           {/* Tab Content */}
-          {activeTab === "users" && (
+          {activeTab === "users" && userType === "partner" && (
             <>
               <div className="flex justify-end gap-2 mb-4">
                 <button onClick={() => setShowAddUserModal(true)}>

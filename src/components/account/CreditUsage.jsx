@@ -69,6 +69,10 @@ const CreditUsage = () => {
     URL.revokeObjectURL(url);
   };
 
+  const POSITIVE_TRANSACTIONS = ["Plan Subscribed"];
+
+  const isPositiveTransaction = (type) => POSITIVE_TRANSACTIONS.includes(type);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-6 w-full max-w-5xl">
       <div className="border-b border-gray-200 pb-4 mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
@@ -88,11 +92,7 @@ const CreditUsage = () => {
           />
         </div>
 
-        <button
-          onClick={handleExportCSV}
-        >
-          Export CSV
-        </button>
+        <button onClick={handleExportCSV}>Export CSV</button>
       </div>
 
       {loading ? (
@@ -119,7 +119,18 @@ const CreditUsage = () => {
                     <td className="py-3">
                       {new Date(report.action_timestamp).toLocaleString()}
                     </td>
-                    <td className="py-3">{report.credits_used}</td>
+                    <td className="py-3">
+                      <span
+                        className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                          isPositiveTransaction(report.action_type)
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {isPositiveTransaction(report.action_type) ? "+" : "-"}
+                        {report.credits_used}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
