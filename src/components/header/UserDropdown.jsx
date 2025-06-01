@@ -9,12 +9,14 @@ const UserDropdown = ({ onLogout }) => {
 
   return (
     <div className="absolute right-0 text-start mt-4 w-40 rounded-lg bg-white shadow-lg z-10">
-      <Link
-        to="/profile"
-        className="block px-4 py-2 mb-1 text-sm text-gray-700 hover:bg-purple-50 transition border-b border-gray-100"
-      >
-        Profile
-      </Link>
+      {userType === "partner" && (
+        <Link
+          to="/profile"
+          className="block px-4 py-2 mb-1 text-sm text-gray-700 hover:bg-purple-50 transition border-b border-gray-100"
+        >
+          Profile
+        </Link>
+      )}
       <Link
         to="/account"
         className="block px-4 py-2 mb-1 text-sm text-gray-700 hover:bg-purple-50 transition border-b border-gray-100"

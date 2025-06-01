@@ -1,8 +1,13 @@
 import PartnerRegistration from "../components/profile/PartnerRegistration";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
+import { useUser } from "../context/UserContext";
 
 export default function PartnerRegistrationPage() {
+  const { userType } = useUser();
+  if (userType !== "partner") {
+    return <Navigate to="/not-found" replace />;
+  }
   return (
     <div className="flex">
       <Sidebar />
