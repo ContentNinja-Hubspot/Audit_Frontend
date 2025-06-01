@@ -4,19 +4,28 @@ import { FaUserCircle } from "react-icons/fa";
 import UserDropdown from "./UserDropdown";
 import { useUser } from "../../context/UserContext";
 import { useAudit } from "../../context/ReportContext";
+import { useNotify } from "../../context/NotificationContext";
 import { DisabledTooltip } from "../utils/Tooltip";
 import GenerateReportModal from "./GenerateReportModal";
 
 const PastReportHeader = ({ completeReportGenerated = true }) => {
-  const { user, logout } = useUser();
+  const { user, logout, userCredits } = useUser();
   const { selectedHub } = useAudit();
   const [searchParams] = useSearchParams();
   const [showModal, setShowModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const pastReportDomain = searchParams.get("hub_domain");
 
+  const { warn } = useNotify();
+
   const handleLogout = () => logout();
-  const handleGenerateReport = () => setShowModal(true);
+  const handleGenerateReport = () => {
+    if (!userCredits || userCredits.remaining <= 10) {
+      warn("You do not have enough credits to generate a report.");
+      return;
+    }
+    setShowModal(true);
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full z-10 bg-[#f8fafd] px-4 py-4 md:py-5 flex items-center justify-between flex-wrap lg:flex-nowrap lg:left-72 lg:w-[calc(100%-18rem)]">

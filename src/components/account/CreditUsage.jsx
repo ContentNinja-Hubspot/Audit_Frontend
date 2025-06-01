@@ -147,7 +147,7 @@ const CreditUsage = () => {
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1 rounded-md bg-gray-400 disabled:opacity-50 text-white"
+              className="px-3 py-1 rounded-md disabled:opacity-50 text-white"
             >
               Previous
             </button>
@@ -171,7 +171,7 @@ const CreditUsage = () => {
                 setCurrentPage((prev) => Math.min(prev + 1, totalPages))
               }
               disabled={currentPage === totalPages}
-              className="px-3 py-1 rounded-md bg-gray-400 disabled:opacity-50 text-white"
+              className="px-3 py-1 rounded-md disabled:opacity-50 text-white"
             >
               Next
             </button>

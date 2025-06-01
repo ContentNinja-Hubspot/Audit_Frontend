@@ -22,8 +22,8 @@ import {
 import Cookies from "js-cookie";
 
 const Dashboard = () => {
-  const { token } = useUser();
-  const { success } = useNotify();
+  const { token, userCredits } = useUser();
+  const { success, warn } = useNotify();
   const {
     selectedHub,
     latestReportData,
@@ -116,6 +116,10 @@ const Dashboard = () => {
         // Start polling for sales report
         pollSalesReportGeneration(data.report_details.report_id);
       } else if (data.generate_report && checkTriggerReportGeneration) {
+        if (!userCredits || userCredits.remaining <= 10) {
+          warn("You do not have enough credits to generate a report.");
+          return;
+        }
         setReportProgress(2);
         if (!hasTriggeredReport.current) {
           hasTriggeredReport.current = true;
@@ -245,6 +249,10 @@ const Dashboard = () => {
         setLatestReportId(firstReportId);
 
         if (checkTriggerReportGeneration) {
+          if (!userCredits || userCredits.remaining <= 10) {
+            warn("You do not have enough credits to generate a report.");
+            return;
+          }
           setReportProgress(2);
           if (!hasTriggeredReport.current) {
             hasTriggeredReport.current = true;
