@@ -70,12 +70,7 @@ const PartnerForm = ({ onAddUser }) => {
         </div>
 
         <div className="flex justify-center">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-          >
-            + Add Partner
-          </button>
+          <button type="submit">+ Add Partner</button>
         </div>
       </form>
 

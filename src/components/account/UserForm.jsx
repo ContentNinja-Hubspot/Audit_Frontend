@@ -58,12 +58,7 @@ const UserForm = ({ onAddUser }) => {
         </div>
 
         <div className="flex justify-center">
-          <button
-            type="submit"
-            className="px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
-          >
-            + Add User
-          </button>
+          <button type="submit">+ Add User</button>
         </div>
       </form>
 
