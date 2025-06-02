@@ -11,6 +11,9 @@ import ShareReportModal from "../components/ShareReportModal";
 import { shareReport } from "../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShare } from "@fortawesome/free-solid-svg-icons";
+import CryptoJS from "crypto-js";
+
+const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
 
 const MainContent = ({
   reportData,
@@ -43,10 +46,36 @@ const MainContent = ({
   } = scores || {};
 
   const handleShareReport = async (email) => {
-    if (!email) return;
+    if (!email || !latestReportId) return;
+
+    const encryptedId = CryptoJS.AES.encrypt(
+      latestReportId.toString(),
+      CRYPTO_SECRET_KEY
+    ).toString();
+    const encodedId = encodeURIComponent(encryptedId);
+
+    const hubDomain = user?.hub_details?.data?.hub_domain || "unknown-hub";
+    const reportLink = `${window.location.origin}/past-reports/${encodedId}?hub_domain=${hubDomain}`;
+
+    const auditScore =
+      overall_score && !isNaN(overall_score)
+        ? Number(overall_score.toFixed(1))
+        : "N/A";
+
+    const auditDate = updated_at
+      ? new Date(updated_at).toISOString().split("T")[0]
+      : "N/A";
 
     try {
-      const response = await shareReport(token, latestReportId, email);
+      const response = await shareReport(
+        token,
+        latestReportId,
+        email,
+        hubId,
+        auditDate,
+        auditScore,
+        reportLink
+      );
 
       return response;
     } catch (e) {

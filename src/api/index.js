@@ -697,7 +697,15 @@ export const addPartnertoPartner = async (token, userData) => {
   }
 };
 
-export const shareReport = async (token, reportId, email) => {
+export const shareReport = async (
+  token,
+  report_id,
+  email,
+  hub_id,
+  audit_date,
+  audit_score,
+  report_link
+) => {
   try {
     const response = await fetch(`${BASE_URL}/sharereport`, {
       method: "POST",
@@ -706,16 +714,18 @@ export const shareReport = async (token, reportId, email) => {
         state: token,
       },
       body: JSON.stringify({
-        report_id: reportId,
-        email: email,
+        report_id,
+        email,
+        hub_id,
+        audit_date,
+        audit_score,
+        report_link,
       }),
     });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error sharing report:", error);
-    throw error;
+    return await response.json();
+  } catch (err) {
+    console.error("API error in shareReport:", err);
+    return { success: false, message: "API call failed." };
   }
 };
 

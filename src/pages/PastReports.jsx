@@ -14,6 +14,8 @@ import {
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
+
 const PastReports = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
   const navigate = useNavigate();
@@ -92,20 +94,37 @@ const PastReports = () => {
   const handleShareReport = async (email) => {
     if (!email || !selectedReport) return;
 
+    const { report_id, hub_id, created_at, overall_score, hub_domain } =
+      selectedReport;
+
+    const encryptedId = CryptoJS.AES.encrypt(
+      report_id.toString(),
+      CRYPTO_SECRET_KEY
+    ).toString();
+    const encodedId = encodeURIComponent(encryptedId);
+
+    const report_link = `${BASE_URL}/past-reports/${encodedId}?hub_domain=${hub_domain}`;
+    const audit_date = formatDate(created_at);
+    const audit_score = getSafeScore(overall_score);
+
     try {
       const response = await shareReport(
         token,
-        selectedReport.report_id,
-        email
+        report_id,
+        email,
+        hub_id,
+        audit_date,
+        audit_score,
+        report_link
       );
 
+      if (response.status !== "success") {
+        error(response.message || "Failed to share report.");
+      }
       return response;
     } catch (e) {
       console.error("Share report error:", e);
-      return {
-        status: "error",
-        message: "Something went wrong while sharing the report.",
-      };
+      error("Something went wrong while sharing the report.");
     }
   };
 
