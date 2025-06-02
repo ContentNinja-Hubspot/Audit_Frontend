@@ -7,7 +7,12 @@ import { useNotify } from "../context/NotificationContext";
 import CryptoJS from "crypto-js";
 import PastReportHeader from "../components/header/PastReportHeader";
 import ShareReportModal from "../components/ShareReportModal";
-import { ClockIcon, ShareIcon } from "@heroicons/react/24/outline";
+import {
+  ClockIcon,
+  ShareIcon,
+  EyeIcon,
+  PaperAirplaneIcon,
+} from "@heroicons/react/24/outline";
 
 const PastReports = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
@@ -181,8 +186,10 @@ const PastReports = () => {
                               report.report_id
                             )
                           }
+                          className="hover:text-blue-600 text-black bg-inherit transition"
+                          title="View Report"
                         >
-                          View Report
+                          <EyeIcon className="h-5 w-5 inline" />
                         </button>
                       </td>
                       {activeTab === "past" && (
@@ -192,8 +199,10 @@ const PastReports = () => {
                               setSelectedReport(report);
                               setShowShareModal(true);
                             }}
+                            className="hover:text-green-600 text-black bg-inherit transition"
+                            title="Share Report"
                           >
-                            Share Report
+                            <PaperAirplaneIcon className="h-5 w-5 inline" />
                           </button>
                         </td>
                       )}
