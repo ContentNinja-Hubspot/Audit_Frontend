@@ -50,7 +50,6 @@ const UsersList = ({ users, setUsers }) => {
         <table className="w-full  table-auto text-left text-sm min-w-[500px]">
           <thead>
             <tr className="text-gray-500 border-b text-center bg-gray-200">
-              <th className="py-2">Name</th>
               <th>Email</th>
               <th>Role</th>
               <th>Status</th>
@@ -63,16 +62,15 @@ const UsersList = ({ users, setUsers }) => {
                 key={user.user_id || user.id}
                 className="border-b hover:bg-gray-50 text-center"
               >
-                <td className="py-2 font-medium">{user.name || "N/A"}</td>
                 <td>{user.email || user.email_id || "N/A"}</td>
-                <td className="capitalize">{user.role || "N/A"}</td>
+                <td className="capitalize">{user.role || "Client"}</td>
                 <td>
                   <span
                     className={`px-2 py-1 text-sm rounded-full font-medium ${
                       user.status === "Pending"
                         ? "bg-yellow-100 text-yellow-800"
                         : user.status === "Accepted"
-                        ? `bg-partner-secondary-${themeId}`
+                        ? `bg-green-200`
                         : ` text-gray-800`
                     }`}
                   >

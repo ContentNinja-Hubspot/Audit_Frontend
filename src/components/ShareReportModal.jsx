@@ -60,7 +60,7 @@ const ShareReportModal = ({ visible, onClose, onShare }) => {
 
     for (const email of validEmails) {
       try {
-        const result = await onShare(email); 
+        const result = await onShare(email);
         if (result?.status !== "success") {
           allSuccessful = false;
           error(result?.message || `Failed to share with ${email}`);
@@ -134,12 +134,7 @@ const ShareReportModal = ({ visible, onClose, onShare }) => {
           >
             <FiPlus /> Add
           </button>
-          <button
-            onClick={handleShare}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
-          >
-            Share
-          </button>
+          <button onClick={handleShare}>Share</button>
         </div>
       </div>
     </div>

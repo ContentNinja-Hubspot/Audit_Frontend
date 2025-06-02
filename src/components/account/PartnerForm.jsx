@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const PartnerForm = ({ onAddUser }) => {
-  const [form, setForm] = useState({ name: "", email: "", role: "user" });
+  const [form, setForm] = useState({ email: "", role: "user" });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -10,12 +10,12 @@ const PartnerForm = ({ onAddUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.email) {
-      setError("Both name and email are required.");
+    if (!form.email) {
+      setError("Email is required.");
       return;
     }
     onAddUser(form);
-    setForm({ name: "", email: "" });
+    setForm({ email: "", role: "user" });
     setError("");
   };
 
@@ -23,26 +23,7 @@ const PartnerForm = ({ onAddUser }) => {
     <>
       <h2 className="text-lg text-start font-semibold mb-4">Add New Partner</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* First row: inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col">
-            <label
-              htmlFor="name"
-              className="mb-1 text-sm font-bold text-gray-700"
-            >
-              Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Enter full name"
-              className="border border-gray-300 px-3 py-2 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            />
-          </div>
-
           <div className="flex flex-col">
             <label
               htmlFor="email"
@@ -80,7 +61,6 @@ const PartnerForm = ({ onAddUser }) => {
           </div>
         </div>
 
-        {/* Second row: button centered */}
         <div className="flex justify-center">
           <button type="submit">+ Add Partner</button>
         </div>

@@ -89,17 +89,14 @@ const Login = () => {
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-gray-100 to-purple-100 w-[100vw]">
       <div className="bg-white shadow-lg w-96 p-6 text-center">
         <div className="flex justify-center items-center gap-4 mb-10">
-          <img src={image1} alt="Image 1" className="w-7 h-9 mb-2" />
-          <img
-            src={boundarylogo}
-            alt="Boundary Logo"
-            className="w-22 h-9 mb-2"
-          />
+          <img src={image1} alt="Image 1" className="w-8" />
+
+          <h2 className="text-4xl font-bold bg-gradient-to-r from-[#5bc8f1] to-[#a076f9] bg-clip-text text-transparent">
+            HubSpot Audit
+          </h2>
         </div>
 
-        <h2 className="text-xl font-semibold text-black mb-16">
-          Audit App | Sign In
-        </h2>
+        <h2 className="text-xl font-semibold text-black mb-16">Sign In</h2>
 
         <div className="mt-6 text-left">
           <input

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const UserForm = ({ onAddUser }) => {
-  const [form, setForm] = useState({ name: "", email: "" });
+  const [form, setForm] = useState({ email: "" });
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -10,12 +10,12 @@ const UserForm = ({ onAddUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.name || !form.email) {
-      setError("Both name and email are required.");
+    if (!form.email) {
+      setError("Email is required.");
       return;
     }
     onAddUser(form);
-    setForm({ name: "", email: "" });
+    setForm({ email: "" });
     setError("");
   };
 
@@ -23,26 +23,8 @@ const UserForm = ({ onAddUser }) => {
     <>
       <h2 className="text-lg text-start font-semibold mb-4">Add New User</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* First row: inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col">
-            <label
-              htmlFor="name"
-              className="mb-1 text-sm font-bold text-gray-700"
-            >
-              Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Enter full name"
-              className="border border-gray-300 px-3 py-2 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            />
-          </div>
-
+        {/* Email input */}
+        <div className="grid grid-cols-1 gap-4">
           <div className="flex flex-col">
             <label
               htmlFor="email"
@@ -62,9 +44,14 @@ const UserForm = ({ onAddUser }) => {
           </div>
         </div>
 
-        {/* Second row: button centered */}
+        {/* Submit button */}
         <div className="flex justify-center">
-          <button type="submit">+ Add User</button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-sm font-semibold bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+          >
+            + Add User
+          </button>
         </div>
       </form>
 

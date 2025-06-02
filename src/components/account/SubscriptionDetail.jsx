@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { fetchUserPlan, fetchUserCredits } from "../../api";
 import { useUser } from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const SubscriptionDetails = () => {
   const [subscriptionData, setSubscriptionData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const { token } = useUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadSubscription = async () => {
@@ -79,9 +81,16 @@ const SubscriptionDetails = () => {
         </div>
       </div>
 
-      <button className="mt-6 w-full">↑ Upgrade Plan</button>
+      <button
+        className="mt-6 w-full"
+        onClick={() => {
+          navigate("/plans");
+        }}
+      >
+        ↑ Upgrade Plan
+      </button>
 
-      <p className="text-xs text-center text-gray-500 mt-4">
+      {/* <p className="text-xs text-center text-gray-500 mt-4">
         For billing inquiries, please contact{" "}
         <a
           href={`mailto:${subscriptionData.supportEmail}`}
@@ -89,7 +98,7 @@ const SubscriptionDetails = () => {
         >
           {subscriptionData.supportEmail}
         </a>
-      </p>
+      </p> */}
     </div>
   );
 };
