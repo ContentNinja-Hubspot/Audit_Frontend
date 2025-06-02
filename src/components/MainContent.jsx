@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import AuditScore from "../components/AuditScore";
 import ScoreBreakdown from "../components/ScoreBreakdown";
 import DataAudit from "../components/DataAudit";
@@ -7,6 +6,9 @@ import SalesAudit from "../components/SalesAudit";
 import { useUser } from "../context/UserContext";
 import HubSelector from "./header/HubSelector";
 import { useAudit } from "../context/ReportContext";
+import { ShareIcon } from "@heroicons/react/24/outline";
+import ShareReportModal from "../components/ShareReportModal";
+import { shareReport } from "../api";
 
 const MainContent = ({
   reportData,
@@ -22,9 +24,10 @@ const MainContent = ({
 }) => {
   const [selectedBreakdown, setSelectedBreakdown] = useState("Data Quality");
   const { user } = useUser();
+  const [showShareModal, setShowShareModal] = useState(false);
 
   if (!reportData) return <div>Loading report...</div>;
-  const { salesInUse } = useAudit();
+  const { salesInUse, latestReportId } = useAudit();
 
   const { result, updated_at } = reportData;
   const { data_audit, object_scores, overall_audit_score, score_breakdown } =
@@ -36,6 +39,22 @@ const MainContent = ({
     sales_performance_score,
     usage_score,
   } = scores || {};
+
+  const handleShareReport = async (email) => {
+    if (!email) return;
+
+    try {
+      const response = await shareReport(token, latestReportId, email);
+
+      return response;
+    } catch (e) {
+      console.error("Share report error:", e);
+      return {
+        status: "error",
+        message: "Something went wrong while sharing the report.",
+      };
+    }
+  };
 
   return (
     <div
@@ -51,10 +70,15 @@ const MainContent = ({
           <HubSelector completeReportGenerated={completeReportGenerated} />
         </div>
       </div>
-      <div>
-        <p className="text-start lg:text-end ml-5 md:mr-10 text-xs">
-          Last Updated: {updated_at}
-        </p>
+      <div className="flex justify-end items-center gap-2 ml-5 md:mr-10 text-xs">
+        <p>Last Updated: {updated_at}</p>
+        <button
+          onClick={() => setShowShareModal(true)}
+          className="hover:text-blue-600 transition bg-inherit text-black"
+          title="Share Report"
+        >
+          <ShareIcon className="h-5 w-5" />
+        </button>
       </div>
 
       <AuditScore
@@ -93,6 +117,11 @@ const MainContent = ({
           salesInUse={salesInUse}
         />
       )}
+      <ShareReportModal
+        visible={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        onShare={handleShareReport}
+      />
     </div>
   );
 };
