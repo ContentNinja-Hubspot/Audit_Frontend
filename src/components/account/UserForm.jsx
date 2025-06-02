@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useAudit } from "../../context/ReportContext";
 
 const UserForm = ({ onAddUser }) => {
-  const [form, setForm] = useState({ email: "" });
+  const [form, setForm] = useState({ email: "", name: "" });
   const [error, setError] = useState("");
+  const { selectedHub } = useAudit();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -10,12 +12,18 @@ const UserForm = ({ onAddUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.email) {
-      setError("Email is required.");
+    if (!form.email || !form.name) {
+      setError("All fields are required.");
       return;
     }
-    onAddUser(form);
-    setForm({ email: "" });
+
+    const payload = {
+      ...form,
+      hub_id: selectedHub?.hub_id,
+    };
+
+    onAddUser(payload);
+    setForm({ email: "", name: "" });
     setError("");
   };
 
@@ -23,28 +31,32 @@ const UserForm = ({ onAddUser }) => {
     <>
       <h2 className="text-lg text-start font-semibold mb-4">Add New User</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Email input */}
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
-            <label
-              htmlFor="email"
-              className="mb-1 text-sm font-bold text-gray-700"
-            >
+            <label className="mb-1 text-sm font-bold text-gray-700">Name</label>
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Enter full name"
+              className="border border-gray-300 px-3 py-2 rounded-md text-sm"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-bold text-gray-700">
               Email
             </label>
             <input
-              id="email"
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
               placeholder="Enter email address"
-              className="border border-gray-300 px-3 py-2 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="border border-gray-300 px-3 py-2 rounded-md text-sm"
             />
           </div>
         </div>
 
-        {/* Submit button */}
         <div className="flex justify-center">
           <button
             type="submit"

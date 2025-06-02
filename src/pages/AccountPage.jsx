@@ -15,6 +15,7 @@ import {
   CreditCardIcon,
   WalletIcon,
 } from "@heroicons/react/24/outline";
+import { useAudit } from "../context/ReportContext";
 
 const AccountPage = () => {
   const [users, setUsers] = useState([]);
@@ -25,6 +26,7 @@ const AccountPage = () => {
   const partnerModalRef = useRef(null);
 
   const { userType, token } = useUser();
+  const { selectedHub } = useAudit();
   const defaultTab = userType === "partner" ? "users" : "subscription";
   const [activeTab, setActiveTab] = useState(defaultTab);
   const { success, error } = useNotify();
@@ -68,6 +70,8 @@ const AccountPage = () => {
     try {
       const response = await addUsertoPartner(token, {
         email_id: newUser.email,
+        name: newUser.name,
+        hub_id: selectedHub.hub_id,
       });
 
       if (response.success) {
@@ -104,6 +108,8 @@ const AccountPage = () => {
     try {
       const response = await addPartnertoPartner(token, {
         email_id: newUser.email,
+        name: newUser.name,
+        hub_id: newUser.hub_id,
         role: newUser.role || "user",
       });
 
