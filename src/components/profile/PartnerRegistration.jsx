@@ -70,8 +70,14 @@ export default function PartnerRegistration() {
               } else {
                 setIsEditing(true);
                 setForm({
-                  agency_name: details.agency_name || "",
-                  agency_domain: details.agency_domain || "",
+                  agency_name:
+                    details.agency_name !== "default"
+                      ? details.agency_name
+                      : "",
+                  agency_domain:
+                    details.agency_domain !== "default"
+                      ? details.agency_domain
+                      : "",
                   logo: null,
                   theme_id: details.theme_id || "",
                   font_id: details.font_id || "",
