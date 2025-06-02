@@ -7,9 +7,9 @@ const PlanCard = ({ plan }) => {
 
   return (
     <div
-      className={`relative border rounded-lg p-6 shadow-md flex flex-col justify-between min-h-[460px] m-3 transition-all duration-200 ${
+      className={`relative border rounded-lg p-6 shadow-md flex flex-col justify-between min-h-[460px] m-3 transition-all duration-200 transform hover:scale-105 ${
         highlight
-          ? `bg-partner-tertiary-${themeId} scale-105`
+          ? `bg-partner-tertiary-${themeId}`
           : `border-gray-300 bg-white`
       } ${disabled ? "pointer-events-none" : ""}`}
     >
@@ -46,6 +46,7 @@ const PlanCard = ({ plan }) => {
       </div>
       <button
         disabled={plan.disabled}
+        onClick={plan.onClick}
         className={`w-full py-2 px-4 rounded font-semibold ${
           plan.disabled
             ? "bg-gray-300 text-gray-600 cursor-not-allowed"

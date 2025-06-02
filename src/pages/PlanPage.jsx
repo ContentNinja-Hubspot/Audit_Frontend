@@ -5,6 +5,7 @@ import PastReportHeader from "../components/header/PastReportHeader";
 import { useUser } from "../context/UserContext";
 import { fetchPricingDetails, fetchUserPlan } from "../api";
 import { useTheme } from "../context/ThemeContext";
+import { HubSpotModal } from "../components/utils/HubSpotModal";
 
 const PlanPage = () => {
   const { user, userType, token } = useUser();
@@ -13,6 +14,7 @@ const PlanPage = () => {
   const [plans, setPlans] = useState([]);
   const [userPlan, setUserPlan] = useState(null);
   const [billingCycle, setBillingCycle] = useState("monthly");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [highlightedPlan, setHighlightedPlan] = useState(
     user?.planName || "Free"
   );
@@ -131,6 +133,9 @@ const PlanPage = () => {
   const handleCardClick = (planName, index) => {
     if (index < currentPlanIndex) return;
     setHighlightedPlan(planName);
+    if (planName !== userPlan) {
+      setIsModalOpen(true);
+    }
   };
 
   return (
@@ -183,8 +188,7 @@ const PlanPage = () => {
                 return (
                   <div
                     key={plan.name}
-                    onClick={() => handleCardClick(plan.name, index)}
-                    className={`cursor-pointer flex-1 ${
+                    className={`flex-1 ${
                       isLower ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >
@@ -197,6 +201,7 @@ const PlanPage = () => {
                         buttonText: isCurrent
                           ? "Existing Plan"
                           : `Get ${plan.name}`,
+                        onClick: () => handleCardClick(plan.name, index),
                       }}
                     />
                   </div>
@@ -206,6 +211,10 @@ const PlanPage = () => {
           )}
         </div>
       </main>
+      <HubSpotModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
