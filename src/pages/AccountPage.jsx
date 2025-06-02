@@ -71,7 +71,7 @@ const AccountPage = () => {
       const response = await addUsertoPartner(token, {
         email_id: newUser.email,
         name: newUser.name,
-        hub_id: selectedHub.hub_id,
+        hub_id: selectedHub?.hub_id,
       });
 
       if (response.success) {
@@ -107,9 +107,9 @@ const AccountPage = () => {
 
     try {
       const response = await addPartnertoPartner(token, {
-        email_id: newUser.email,
-        name: newUser.name,
-        hub_id: newUser.hub_id,
+        email_id: newUser?.email,
+        name: newUser?.name,
+        hub_id: newUser?.hub_id,
         role: newUser.role || "user",
       });
 
