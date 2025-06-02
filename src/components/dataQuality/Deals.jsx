@@ -450,16 +450,12 @@ const Deal = ({
                       value: "deals_without_name",
                     },
                     {
-                      label: "Deals without Stage",
-                      value: "deals_without_pipeline_stage",
+                      label: "Deals without Owner",
+                      value: "deals_without_owner",
                     },
                     {
-                      label: "Deals without Amount",
-                      value: "deals_without_amount",
-                    },
-                    {
-                      label: "Deals without Close Date",
-                      value: "deals_without_close_date",
+                      label: "Deals without Associated Contacts",
+                      value: "deals_without_num_associated_con",
                     },
                   ]}
                 />
@@ -481,20 +477,20 @@ const Deal = ({
                   groupKey="group2"
                   options={[
                     {
-                      label: "Deals without Associated Company",
-                      value: "deals_without_associated_company",
+                      label: "Deals without Close Date",
+                      value: "deals_without_closing_date",
                     },
                     {
-                      label: "Deals without Owner",
-                      value: "deals_without_owner",
+                      label: "Deals without Amount",
+                      value: "deals_without_amount",
                     },
                     {
-                      label: "Deals without Create Date",
-                      value: "deals_without_created_date",
+                      label: "Lost Deals without Lost Reason",
+                      value: "deals_lost_without_lost_reason",
                     },
                     {
-                      label: "Deals without Stage Probability",
-                      value: "deals_without_stage_probability",
+                      label: "Deals without Deal Type",
+                      value: "deals_without_deal_type",
                     },
                   ]}
                 />
