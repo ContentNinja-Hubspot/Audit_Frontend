@@ -14,8 +14,6 @@ import {
   PaperAirplaneIcon,
 } from "@heroicons/react/24/outline";
 
-const BASE_URL = import.meta.env.VITE_BACKEND_API_URL;
-
 const PastReports = () => {
   const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
   const navigate = useNavigate();
@@ -103,7 +101,7 @@ const PastReports = () => {
     ).toString();
     const encodedId = encodeURIComponent(encryptedId);
 
-    const report_link = `${BASE_URL}/past-reports/${encodedId}?hub_domain=${hub_domain}`;
+    const report_link = `${window.location.origin}/past-reports/${encodedId}?hub_domain=${hub_domain}`;
     const audit_date = formatDate(created_at);
     const audit_score = getSafeScore(overall_score);
 
