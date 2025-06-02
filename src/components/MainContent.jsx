@@ -9,6 +9,8 @@ import { useAudit } from "../context/ReportContext";
 import { ShareIcon } from "@heroicons/react/24/outline";
 import ShareReportModal from "../components/ShareReportModal";
 import { shareReport } from "../api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare } from "@fortawesome/free-solid-svg-icons";
 
 const MainContent = ({
   reportData,
@@ -72,13 +74,15 @@ const MainContent = ({
       </div>
       <div className="flex justify-end items-center gap-2 ml-5 md:mr-10 text-xs">
         <p>Last Updated: {updated_at}</p>
-        <button
-          onClick={() => setShowShareModal(true)}
-          className="hover:text-blue-600 transition bg-inherit text-black"
-          title="Share Report"
-        >
-          <ShareIcon className="h-5 w-5" />
-        </button>
+        {page !== "past" && (
+          <button
+            onClick={() => setShowShareModal(true)}
+            className="bg-inherit text-black"
+            title="Share Report"
+          >
+            Share <FontAwesomeIcon icon={faShare} className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       <AuditScore
