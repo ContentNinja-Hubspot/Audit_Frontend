@@ -4,6 +4,7 @@ import {
   fetchThemeDetails,
   checkUserType,
   fetchPartnerData,
+  fetchPartnerRole,
 } from "../../api";
 import { useUser } from "../../context/UserContext";
 import { useNotify } from "../../context/NotificationContext";
@@ -21,6 +22,7 @@ export default function PartnerRegistration() {
   const [fonts, setFonts] = useState([]);
   const [userType, setUserType] = useState(null);
   const { updateTheme, userTheme } = useTheme();
+  const [partnerRole, setPartnerRole] = useState(null);
   const [form, setForm] = useState({
     agency_name: "",
     agency_domain: "",
@@ -50,55 +52,58 @@ export default function PartnerRegistration() {
         setUserType(user_type);
 
         if (user_type === "partner") {
-          const data = await fetchThemeDetails(token);
-          setThemes(data.themes || []);
-          const sortedFonts = (data.fonts || []).sort((a, b) => {
+          const [themeData, partnerRes, roleData] = await Promise.all([
+            fetchThemeDetails(token),
+            fetchPartnerData(token),
+            fetchPartnerRole(token),
+          ]);
+
+          setThemes(themeData.themes || []);
+          const sortedFonts = (themeData.fonts || []).sort((a, b) => {
             if (a.font_name === "Lexend (Default)") return -1;
             if (b.font_name === "Lexend (Default)") return 1;
             return 0;
           });
           setFonts(sortedFonts);
 
-          try {
-            const partnerRes = await fetchPartnerData(token);
-            if (partnerRes.success) {
-              const details = partnerRes.partner_details;
-              setPartnerDetails(details);
+          if (partnerRes.success) {
+            const details = partnerRes.partner_details;
+            setPartnerDetails(details);
 
-              if (details.is_profile_complete) {
-                setIsEditing(false);
-              } else {
-                setIsEditing(true);
-                setForm({
-                  agency_name:
-                    details.agency_name !== "default"
-                      ? details.agency_name
-                      : "",
-                  agency_domain:
-                    details.agency_domain !== "default"
-                      ? details.agency_domain
-                      : "",
-                  logo: null,
-                  theme_id: details.theme_id || "",
-                  font_id: details.font_id || "",
-                  name: "",
-                  email: "",
-                });
-              }
+            const role = roleData?.role || "user";
+            setPartnerRole(role);
+
+            if (details.is_profile_complete && role !== "admin") {
+              setIsEditing(false);
+            } else if (!details.is_profile_complete) {
+              setIsEditing(true);
+              setForm({
+                agency_name:
+                  details.agency_name !== "default" ? details.agency_name : "",
+                agency_domain:
+                  details.agency_domain !== "default"
+                    ? details.agency_domain
+                    : "",
+                logo: null,
+                theme_id: details.theme_id || "",
+                font_id: details.font_id || "",
+                name: "",
+                email: "",
+              });
             } else {
-              error("Failed to fetch partner details.");
+              setIsEditing(false);
             }
-          } catch (err) {
-            console.error("Partner fetch error:", err);
-            error("Could not fetch partner data.");
+          } else {
+            error("Failed to fetch partner details.");
           }
         }
       } catch (err) {
         console.error(err);
-        error("Could not determine user type.");
+        error("Could not determine user type or role.");
         setUserType("normal");
       }
     };
+
     checkType();
   }, [token]);
 
@@ -138,6 +143,12 @@ export default function PartnerRegistration() {
     e.preventDefault();
     setLoading(true);
 
+    if (partnerRole !== "admin") {
+      error("You do not have permission to edit this profile.");
+      setLoading(false);
+      return;
+    }
+
     if (userType === "partner") {
       const formData = new FormData();
       ["agency_name", "agency_domain", "logo", "theme_id", "font_id"].forEach(
@@ -159,7 +170,6 @@ export default function PartnerRegistration() {
         });
         setCroppedImageURL(null);
         setShowApplyAnimation(true);
-        // navigate("/dashboard");
       } catch (err) {
         error(err?.message || "Something went wrong.");
       } finally {
@@ -190,27 +200,31 @@ export default function PartnerRegistration() {
             partnerDetails={partnerDetails}
             themes={themes}
             fonts={fonts}
-            onEdit={() => {
-              const matchedTheme = themes.find(
-                (t) => t.hex === partnerDetails.theme_hex
-              );
-              const matchedFont = fonts.find(
-                (f) => f.font_name === partnerDetails.font_name
-              );
+            onEdit={
+              partnerRole === "admin"
+                ? () => {
+                    const matchedTheme = themes.find(
+                      (t) => t.hex === partnerDetails.theme_hex
+                    );
+                    const matchedFont = fonts.find(
+                      (f) => f.font_name === partnerDetails.font_name
+                    );
 
-              setForm({
-                agency_name: partnerDetails.agency_name || "",
-                agency_domain: partnerDetails.agency_domain || "",
-                logo: null,
-                theme_id: matchedTheme?.theme_id || "",
-                font_id: matchedFont?.font_id || "",
-                name: "",
-                email: "",
-              });
+                    setForm({
+                      agency_name: partnerDetails.agency_name || "",
+                      agency_domain: partnerDetails.agency_domain || "",
+                      logo: null,
+                      theme_id: matchedTheme?.theme_id || "",
+                      font_id: matchedFont?.font_id || "",
+                      name: "",
+                      email: "",
+                    });
 
-              setCroppedImageURL(partnerDetails.logo_url || null);
-              setIsEditing(true);
-            }}
+                    setCroppedImageURL(partnerDetails.logo_url || null);
+                    setIsEditing(true);
+                  }
+                : () => error("You do not have permission to edit this profile.")
+            }
           />
         )}
 

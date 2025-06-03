@@ -938,3 +938,27 @@ export const fetchCreditUsage = async (token) => {
     throw error;
   }
 };
+
+export const fetchPartnerRole = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getpartnerrole`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching partner role: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner role:", error);
+    throw error;
+  }
+};
