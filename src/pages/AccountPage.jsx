@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Navigate } from "react-router-dom";
 import UserForm from "../components/account/UserForm";
 import PartnerForm from "../components/account/PartnerForm";
 import UsersList from "../components/account/UserList";

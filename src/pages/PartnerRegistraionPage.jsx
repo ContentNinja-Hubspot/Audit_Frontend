@@ -2,6 +2,7 @@ import PartnerRegistration from "../components/profile/PartnerRegistration";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
 import { useUser } from "../context/UserContext";
+import { Navigate } from "react-router-dom";
 
 export default function PartnerRegistrationPage() {
   const { userType } = useUser();
