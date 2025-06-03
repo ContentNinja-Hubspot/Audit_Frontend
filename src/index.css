@@ -113,6 +113,10 @@ body {
   accent-color: #3b82f6;
 }
 
+.hs-error-msg{
+  display: none;
+}
+
 .hs-form input.hs-button {
   background-color: #111827;
   color: white;
