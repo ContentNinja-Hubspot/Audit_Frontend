@@ -144,7 +144,7 @@ const PlanPage = () => {
       <main className="flex-1 overflow-auto h-screen">
         <PastReportHeader />
         <div className="flex flex-col items-center mt-24 px-4">
-          <p className="mb-4 text-3xl font-medium max-w-xl mt-2 text-center">
+          <p className="mb-4 text-2xl font-medium max-w-xl mt-2 text-center">
             Pick the plan that fits your needs best
           </p>
 
@@ -180,7 +180,7 @@ const PlanPage = () => {
           ) : error ? (
             <p className="text-red-500">{error}</p>
           ) : (
-            <div className="flex flex-col md:flex-row items-stretch justify-center w-full max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch justify-center w-full max-w-5xl">
               {transformedPlans.map((plan, index) => {
                 const isCurrent = plan.name === userPlan;
                 const isLower = index < currentPlanIndex;
