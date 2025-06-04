@@ -1,6 +1,8 @@
 import React from "react";
+import { useUser } from "../../context/UserContext";
 
 const ReportGenerate = ({ progress }) => {
+  const { userType } = useUser();
   return (
     <>
       <div className="flex flex-col items-center justify-center mt-32">
@@ -46,18 +48,20 @@ const ReportGenerate = ({ progress }) => {
         <p className="text-sm italic text-gray-600 mb-4">
           <em>This automated HubSpot auditor is currently in beta.</em>
         </p>
-        <p className="text-center text-sm">
-          We’re a small team working hard to build value-driven products for the
-          HubSpot ecosystem. If you face any challenges, please{" "}
-          <a
-            href="https://boundary.agency/contact/"
-            target="_blank"
-            className="text-blue-500 hover:underline"
-          >
-            drop us a note
-          </a>
-          .
-        </p>
+        {userType === "partner" && (
+          <p className="text-center text-sm">
+            We’re a small team working hard to build value-driven products for
+            the HubSpot ecosystem. If you face any challenges, please{" "}
+            <a
+              href="https://boundary.agency/contact/"
+              target="_blank"
+              className="text-blue-500 hover:underline"
+            >
+              drop us a note
+            </a>
+            .
+          </p>
+        )}
       </div>
     </>
   );
