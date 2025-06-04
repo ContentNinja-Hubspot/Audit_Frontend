@@ -4,12 +4,14 @@ import { useAudit } from "../../context/ReportContext";
 import { useNotify } from "../../context/NotificationContext";
 import { addNewAccount } from "../../api";
 import Cookies from "js-cookie";
+import { useTheme } from "../../context/ThemeContext";
 
 const HubSelector = ({ completeReportGenerated }) => {
-  const { user, token } = useUser();
+  const { user, token, userCredits } = useUser();
+  const { themeId } = useTheme();
   const { selectedHub, setSelectedHub } = useAudit();
   const [showDropdown, setShowDropdown] = useState(false);
-  const { success } = useNotify();
+  const { warn, success } = useNotify();
   const dropdownRef = useRef(null);
 
   const mainHubDomain = user?.hub_details?.data?.hub_domain;
@@ -26,6 +28,10 @@ const HubSelector = ({ completeReportGenerated }) => {
   };
 
   const handleAddNewAccount = async () => {
+    if (!userCredits || userCredits.remaining <= 10) {
+      warn("You do not have enough credits to add a new hub.");
+      return;
+    }
     const result = await addNewAccount(token);
     Cookies.set("state", result?.state, {
       path: "/",
@@ -54,7 +60,7 @@ const HubSelector = ({ completeReportGenerated }) => {
   return (
     <div
       ref={dropdownRef}
-      className="relative bg-gray-200 text-gray-600 p-4 md:p-3 text-xs mt-1 sm:mt-0 cursor-pointer h-10 min-w-60"
+      className={`relative bg-partner-tertiary-${themeId} text-gray-600 p-4 md:p-3 text-xs mt-1 sm:mt-0 cursor-pointer h-10 min-w-60`}
       onClick={() => setShowDropdown((prev) => !prev)}
     >
       Hub ID: {mainHub?.hub_id}{" "}

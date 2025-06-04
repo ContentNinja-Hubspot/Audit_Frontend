@@ -8,6 +8,7 @@ import { fetchLastActivityDate, sendBulkEmailToReps } from "../../api";
 import { useUser } from "../../context/UserContext";
 import { useAudit } from "../../context/ReportContext";
 import { useNotify } from "../../context/NotificationContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const SalesPerformance = ({
   sales_performance_metrics = [],
@@ -20,6 +21,7 @@ const SalesPerformance = ({
 }) => {
   const timeRanges = [7, 30];
   const { token } = useUser();
+  const { themeId } = useTheme();
   const { success } = useNotify();
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedDays, setSelectedDays] = useState(30);
@@ -674,7 +676,7 @@ const SalesPerformance = ({
             key={key}
             className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
               firstRowSelectedItem === key
-                ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                ? `bg-partner-gradient-${themeId}`
                 : "bg-white"
             } ${getBorderColor(getRiskLevel(key))}`}
             onClick={() => {
@@ -755,7 +757,7 @@ const SalesPerformance = ({
             key={key}
             className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
               secondRowSelectedItem === key
-                ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                ? `bg-partner-gradient-${themeId}`
                 : "bg-white"
             } ${getBorderColor(getRiskLevel(key))}`}
             onClick={() => {
@@ -857,7 +859,7 @@ const SalesPerformance = ({
             key={key}
             className={`relative px-3 pt-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
               thirdRowSelectedItem === key
-                ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                ? `bg-partner-gradient-${themeId}`
                 : "bg-white"
             } ${getBorderColor(getRiskLevel(key))}`}
             onClick={() => {

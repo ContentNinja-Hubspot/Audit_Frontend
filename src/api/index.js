@@ -15,21 +15,24 @@ export const requestOTP = async (email) => {
     }
 
     const data = await response.json();
-    return data;
+    return {
+      status: response.status,
+      data,
+    };
   } catch (error) {
     console.error("Error requesting OTP:", error);
     throw error;
   }
 };
 
-export const validateOTP = async (email, otp) => {
+export const validateOTP = async (body) => {
   try {
     const response = await fetch(`${BASE_URL}/validate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: email, otp: otp, page: "signin" }),
+      body: JSON.stringify({ ...body, page: "signin" }),
     });
 
     if (!response.ok) {
@@ -264,12 +267,11 @@ export const triggerEmailNotification = async (token) => {
     throw error;
   }
 };
-
 export const handleJunkDataAction = async ({
   actionType,
   token,
   hubId,
-  item,
+  items,
   objectname = "deals",
 }) => {
   const url =
@@ -286,31 +288,43 @@ export const handleJunkDataAction = async ({
       },
       body: JSON.stringify({
         objectname,
-        propertynames: [item],
+        propertynames: items,
         hubId,
       }),
     });
 
     const data = await response.json();
 
-    if (response.ok) {
-      return {
-        success: data[item]?.success,
-        message: data[item]?.message || data.message || "Success",
+    // Use "result" object from API response
+    const resultsFromApi = data.result || {};
+
+    const results = {};
+    items.forEach((item) => {
+      const itemResult = resultsFromApi[item];
+
+      results[item] = {
+        success: itemResult?.success ?? false,
+        message: itemResult?.message || "Unknown error",
       };
-    } else {
-      return {
-        success: false,
-        message:
-          data[item]?.error?.message ||
-          data.error?.message ||
-          "Something went wrong",
-      };
-    }
+    });
+
+    return {
+      success: response.ok,
+      results,
+    };
   } catch (err) {
+    const results = {};
+    items.forEach((item) => {
+      results[item] = {
+        success: false,
+        message: err.message || "Network or server error",
+        listData: null,
+      };
+    });
+
     return {
       success: false,
-      message: err.message || "Network or server error",
+      results,
     };
   }
 };
@@ -567,6 +581,384 @@ export const checkAdminStatus = async (token) => {
     return data;
   } catch (error) {
     console.error("Error checking admin status:", error);
+    throw error;
+  }
+};
+
+export const uploadPartnerData = async (formData, token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/submit_partner_details`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error uploading partner data:", error);
+    throw error;
+  }
+};
+
+export const fetchThemeDetails = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/get_themes_and_fonts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner details:", error);
+    throw error;
+  }
+};
+
+export const checkUserType = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getusertype`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error checking user type:", error);
+    throw error;
+  }
+};
+
+export const addUsertoPartner = async (token, userData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/addusertopartner`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error adding user to partner:", error);
+    throw error;
+  }
+};
+
+export const addPartnertoPartner = async (token, userData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/addpartner`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error adding user to partner:", error);
+    throw error;
+  }
+};
+
+export const shareReport = async (
+  token,
+  report_id,
+  email,
+  hub_id,
+  audit_date,
+  audit_score,
+  report_link
+) => {
+  try {
+    const response = await fetch(`${BASE_URL}/sharereport`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify({
+        report_id,
+        email,
+        hub_id,
+        audit_date,
+        audit_score,
+        report_link,
+      }),
+    });
+    return await response.json();
+  } catch (err) {
+    console.error("API error in shareReport:", err);
+    return { success: false, message: "API call failed." };
+  }
+};
+
+export const fetchSharedReports = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/fetchsharedreport`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching shared reports:", error);
+    throw error;
+  }
+};
+
+export const fetchThemeSettings = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getthemeandlogo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token, // send user token if required for auth
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching theme settings: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching theme settings:", error);
+    throw error;
+  }
+};
+
+export const fetchUsersOfPartner = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getusersofpartner`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching user of partner: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user of partner:", error);
+    throw error;
+  }
+};
+
+export const fetchPartnerData = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getpartnerdata`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching partner details: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner details:", error);
+    throw error;
+  }
+};
+
+export const fetchPartnerThemeAndLogo = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getpartnerthemeandlogo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching partner theme and logo: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner theme and logo:", error);
+    throw error;
+  }
+};
+
+export const fetchPricingDetails = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/Subscription-plans`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching pricing details: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching pricing details:", error);
+    throw error;
+  }
+};
+
+export const fetchUserCredits = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getcredits`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching user credits: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user credits:", error);
+    throw error;
+  }
+};
+
+export const fetchUserPlan = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/get_users_subscription`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching user plan: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching user plan:", error);
+    throw error;
+  }
+};
+
+export const fetchCreditUsage = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/get_credit_usage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching credit usage: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching credit usage:", error);
+    throw error;
+  }
+};
+
+export const fetchPartnerRole = async (token) => {
+  try {
+    const response = await fetch(`${BASE_URL}/getpartnerrole`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error fetching partner role: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching partner role:", error);
     throw error;
   }
 };

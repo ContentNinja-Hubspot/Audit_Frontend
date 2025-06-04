@@ -22,8 +22,8 @@ import {
 import Cookies from "js-cookie";
 
 const Dashboard = () => {
-  const { token } = useUser();
-  const { success } = useNotify();
+  const { token, userCredits } = useUser();
+  const { success, warn } = useNotify();
   const {
     selectedHub,
     latestReportData,
@@ -116,6 +116,10 @@ const Dashboard = () => {
         // Start polling for sales report
         pollSalesReportGeneration(data.report_details.report_id);
       } else if (data.generate_report && checkTriggerReportGeneration) {
+        if (!userCredits || userCredits.remaining <= 10) {
+          warn("You do not have enough credits to generate a report.");
+          return;
+        }
         setReportProgress(2);
         if (!hasTriggeredReport.current) {
           hasTriggeredReport.current = true;
@@ -245,6 +249,10 @@ const Dashboard = () => {
         setLatestReportId(firstReportId);
 
         if (checkTriggerReportGeneration) {
+          if (!userCredits || userCredits.remaining <= 10) {
+            warn("You do not have enough credits to generate a report.");
+            return;
+          }
           setReportProgress(2);
           if (!hasTriggeredReport.current) {
             hasTriggeredReport.current = true;
@@ -357,11 +365,10 @@ const Dashboard = () => {
           <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] text-center px-4">
             <div className="bg-inherit border bg-white border-black text-black px-6 py-4 rounded shadow-md max-w-lg mx-auto">
               <p className="text-lg font-medium">
-                Looks like you haven’t added any Hub yet.
+                Looks like you haven’t added any hub yet.
               </p>
               <p className="mt-2 text-sm">
-                Please select a Hub by adding a new portal using the Add New
-                Portal Button.
+                Please add a new hub using the button below.
               </p>
               <button onClick={handleAddNewAccount} className="my-4 p-2">
                 + Add New Portal

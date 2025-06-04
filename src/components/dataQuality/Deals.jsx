@@ -6,6 +6,7 @@ import { Tooltip } from "../utils/Tooltip";
 import ToggleSection from "../utils/ToggleSection";
 import { CheckboxGroup, ActionButton } from "../utils/TakeAction";
 import { useNotify } from "../../context/NotificationContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const Deal = ({
   token,
@@ -16,6 +17,7 @@ const Deal = ({
   completeReportGenerated,
 }) => {
   const { success, error } = useNotify();
+  const { themeId } = useTheme();
   const { missing_data, junk_data, total_deals } = scoreData;
   const [firstDatapoint, setFirstDatapoint] = useState("dealname");
   const [secondDataPoint, setSecondDataPoint] = useState("closedate");
@@ -176,7 +178,7 @@ const Deal = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       firstRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -262,7 +264,7 @@ const Deal = ({
                     key={item.key}
                     className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                       secondRowSelectedItem === item.key
-                        ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                        ? `bg-partner-gradient-${themeId}`
                         : "bg-white"
                     } ${getBorderColor(missing_data[item.key]?.risk)}`}
                     onClick={() => {
@@ -344,7 +346,7 @@ const Deal = ({
                   key={item.key}
                   className={`relative p-3 border rounded-lg shadow cursor-pointer transition-transform duration-300 ${
                     lastDataPoint === item.key
-                      ? "bg-gradient-to-r from-[#e3ffff] to-[#e6e4ef]"
+                      ? `bg-partner-gradient-${themeId}`
                       : "bg-white"
                   } ${getBorderColor(junk_data[item.key]?.risk)}`}
                   onClick={() => {
@@ -400,7 +402,9 @@ const Deal = ({
       {/* Take Action for Deals */}
       <section
         className={`${
-          page === "past" ? "backdrop-blur-3xl pointer-events-none relative" : ""
+          page === "past"
+            ? "backdrop-blur-3xl pointer-events-none relative"
+            : ""
         }`}
       >
         {page === "past" && (
@@ -446,16 +450,12 @@ const Deal = ({
                       value: "deals_without_name",
                     },
                     {
-                      label: "Deals without Stage",
-                      value: "deals_without_pipeline_stage",
+                      label: "Deals without Owner",
+                      value: "deals_without_owner",
                     },
                     {
-                      label: "Deals without Amount",
-                      value: "deals_without_amount",
-                    },
-                    {
-                      label: "Deals without Close Date",
-                      value: "deals_without_close_date",
+                      label: "Deals without Associated Contacts",
+                      value: "deals_without_num_associated_con",
                     },
                   ]}
                 />
@@ -477,20 +477,20 @@ const Deal = ({
                   groupKey="group2"
                   options={[
                     {
-                      label: "Deals without Associated Company",
-                      value: "deals_without_associated_company",
+                      label: "Deals without Close Date",
+                      value: "deals_without_closing_date",
                     },
                     {
-                      label: "Deals without Owner",
-                      value: "deals_without_owner",
+                      label: "Deals without Amount",
+                      value: "deals_without_amount",
                     },
                     {
-                      label: "Deals without Create Date",
-                      value: "deals_without_created_date",
+                      label: "Lost Deals without Lost Reason",
+                      value: "deals_lost_without_lost_reason",
                     },
                     {
-                      label: "Deals without Stage Probability",
-                      value: "deals_without_stage_probability",
+                      label: "Deals without Deal Type",
+                      value: "deals_without_deal_type",
                     },
                   ]}
                 />
@@ -502,7 +502,7 @@ const Deal = ({
               </div>
 
               {/* Group 3: Consider Deleting */}
-              <div className="flex flex-col gap-3 shadow p-4 rounded-lg h-[16rem] relative w-full">
+              {/* <div className="flex flex-col gap-3 shadow p-4 rounded-lg h-[16rem] relative w-full">
                 <h5 className="font-bold text-black text-base mb-1">
                   Consider Deleting
                 </h5>
@@ -524,7 +524,7 @@ const Deal = ({
                 />
               </div>
 
-              {/* Group 4: Delete Junk */}
+          
               <div className="flex flex-col gap-3 shadow p-4 rounded-lg h-[16rem] relative w-full">
                 <h5 className="font-bold text-black text-base mb-1">
                   Delete Junk
@@ -549,7 +549,7 @@ const Deal = ({
                   disabled={!completeReportGenerated}
                   label="Delete Junk"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -12,6 +12,9 @@ const Login = () => {
   const [isOtpGenerated, setIsOtpGenerated] = useState(false);
   const { success, error, warn } = useNotify();
   const navigate = useNavigate();
+  const [newUser, setNewUser] = useState(false);
+  const [newUserFlag, setNewUserFlag] = useState(false);
+  const [userType, setUserType] = useState(""); // "" means not selected
 
   const handleGenerateOtp = async () => {
     if (!email) {
@@ -21,8 +24,20 @@ const Login = () => {
 
     try {
       success("OTP will be sent to your email shortly!");
-      await requestOTP(email);
+      const resp = await requestOTP(email);
       setIsOtpGenerated(true);
+
+      console.log("OTP response:", resp);
+
+      if (resp?.data?.is_new) {
+        setNewUser(true);
+        setUserType("");
+      } else {
+        setNewUser(false);
+      }
+
+      setNewUserFlag(resp?.data?.has_logged_in || false);
+
       success("OTP sent successfully!");
     } catch (err) {
       error("Failed to send OTP. Please try again.");
@@ -35,12 +50,24 @@ const Login = () => {
       return;
     }
 
+    if (newUser && !userType) {
+      warn("Please select Client or Partner before submitting.");
+      return;
+    }
+
     try {
-      const response = await validateOTP(email, otp);
+      const body = newUser
+        ? { email, otp, new_user: !newUserFlag, user_type: userType }
+        : { email, otp, new_user: !newUserFlag };
+      const response = await validateOTP(body);
       if (response.success && response.state) {
         Cookies.set("state", response.state, { expires: 7 });
-        window.location.href = "/dashboard";
         success("Login successful!");
+        if (response.redirect_url) {
+          window.location.href = response.redirect_url;
+        } else {
+          window.location.href = "/dashboard";
+        }
       } else {
         error("Invalid OTP! Try again.");
       }
@@ -62,17 +89,14 @@ const Login = () => {
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-gray-100 to-purple-100 w-[100vw]">
       <div className="bg-white shadow-lg w-96 p-6 text-center">
         <div className="flex justify-center items-center gap-4 mb-10">
-          <img src={image1} alt="Image 1" className="w-7 h-9 mb-2" />
-          <img
-            src={boundarylogo}
-            alt="Boundary Logo"
-            className="w-22 h-9 mb-2"
-          />
+          <img src={image1} alt="Image 1" className="w-7" />
+
+          <h1 className="text-3xl font-bold">
+            HubSpot Audit
+          </h1>
         </div>
 
-        <h2 className="text-xl font-semibold text-black mb-16">
-          Audit App | Sign In
-        </h2>
+        <h2 className="text-2xl font-semibold text-black mb-16">Sign In</h2>
 
         <div className="mt-6 text-left">
           <input
@@ -86,7 +110,7 @@ const Login = () => {
         </div>
 
         {/* OTP Field: always rendered to preserve height */}
-        <div className="mt-4 text-left mb-10 min-h-[60px]">
+        <div className="mt-4 text-left  min-h-[60px]">
           <input
             type="text"
             placeholder="Enter OTP"
@@ -97,11 +121,35 @@ const Login = () => {
             onChange={(e) => setOtp(e.target.value)}
           />
         </div>
+        {newUser && (
+          <div className="flex gap-2 justify-center ">
+            <button
+              className={`px-6 py-2 rounded-lg border-2 text-black ${
+                userType === "client"
+                  ? "border-purple-500 bg-purple-100"
+                  : "border-purple-200 bg-purple-50"
+              }`}
+              onClick={() => setUserType("client")}
+            >
+              Client
+            </button>
+            <button
+              className={`px-6 py-2 rounded-lg border-2 text-black ${
+                userType === "partner"
+                  ? "border-purple-500 bg-purple-100"
+                  : "border-purple-200 bg-purple-50"
+              }`}
+              onClick={() => setUserType("partner")}
+            >
+              Partner
+            </button>
+          </div>
+        )}
 
         {/* Buttons: aligned side by side if OTP is generated */}
         {isOtpGenerated ? (
           <>
-            <div className="flex justify-center gap-3 mb-6">
+            <div className="flex justify-center gap-3 mb-6 mt-10 ">
               <button
                 onClick={handleLogin}
                 className="w-1/2 bg-white text-purple-500 border border-purple-500 py-2 hover:bg-gray-100 transition shadow-none"

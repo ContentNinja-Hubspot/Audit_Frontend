@@ -6,14 +6,16 @@ import HubSelector from "./HubSelector";
 import UserDropdown from "./UserDropdown";
 import GenerateReportModal from "./GenerateReportModal";
 import { DisabledTooltip } from "../utils/Tooltip";
+import { useNotify } from "../../context/NotificationContext";
 
 const Header = ({ completeReportGenerated }) => {
-  const { user, logout } = useUser();
+  const { user, logout, userCredits } = useUser();
   const { selectedHub } = useAudit();
   const [showModal, setShowModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const userDropdownRef = useRef(null);
+  const { warn } = useNotify();
 
   const handleLogout = () => logout();
 
@@ -32,6 +34,10 @@ const Header = ({ completeReportGenerated }) => {
   }, []);
 
   const handleGenerateReport = () => {
+    if (!userCredits || userCredits.remaining <= 10) {
+      warn("You do not have enough credits to generate a report.");
+      return;
+    }
     setShowModal(true);
   };
 

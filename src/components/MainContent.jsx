@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import AuditScore from "../components/AuditScore";
 import ScoreBreakdown from "../components/ScoreBreakdown";
 import DataAudit from "../components/DataAudit";
@@ -7,6 +6,14 @@ import SalesAudit from "../components/SalesAudit";
 import { useUser } from "../context/UserContext";
 import HubSelector from "./header/HubSelector";
 import { useAudit } from "../context/ReportContext";
+import { ShareIcon } from "@heroicons/react/24/outline";
+import ShareReportModal from "../components/ShareReportModal";
+import { shareReport } from "../api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShare } from "@fortawesome/free-solid-svg-icons";
+import CryptoJS from "crypto-js";
+
+const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
 
 const MainContent = ({
   reportData,
@@ -22,9 +29,10 @@ const MainContent = ({
 }) => {
   const [selectedBreakdown, setSelectedBreakdown] = useState("Data Quality");
   const { user } = useUser();
+  const [showShareModal, setShowShareModal] = useState(false);
 
   if (!reportData) return <div>Loading report...</div>;
-  const { salesInUse } = useAudit();
+  const { salesInUse, latestReportId } = useAudit();
 
   const { result, updated_at } = reportData;
   const { data_audit, object_scores, overall_audit_score, score_breakdown } =
@@ -36,6 +44,48 @@ const MainContent = ({
     sales_performance_score,
     usage_score,
   } = scores || {};
+
+  const handleShareReport = async (email) => {
+    if (!email || !latestReportId) return;
+
+    const encryptedId = CryptoJS.AES.encrypt(
+      latestReportId.toString(),
+      CRYPTO_SECRET_KEY
+    ).toString();
+    const encodedId = encodeURIComponent(encryptedId);
+
+    const hubDomain = user?.hub_details?.data?.hub_domain || "unknown-hub";
+    const reportLink = `${window.location.origin}/past-reports/${encodedId}?hub_domain=${hubDomain}`;
+
+    const auditScore =
+      overall_score && !isNaN(overall_score)
+        ? Number(overall_score.toFixed(1))
+        : "N/A";
+
+    const auditDate = updated_at
+      ? new Date(updated_at).toISOString().split("T")[0]
+      : "N/A";
+
+    try {
+      const response = await shareReport(
+        token,
+        latestReportId,
+        email,
+        hubId,
+        auditDate,
+        auditScore,
+        reportLink
+      );
+
+      return response;
+    } catch (e) {
+      console.error("Share report error:", e);
+      return {
+        status: "error",
+        message: "Something went wrong while sharing the report.",
+      };
+    }
+  };
 
   return (
     <div
@@ -51,10 +101,17 @@ const MainContent = ({
           <HubSelector completeReportGenerated={completeReportGenerated} />
         </div>
       </div>
-      <div>
-        <p className="text-start lg:text-end ml-5 md:mr-10 text-xs">
-          Last Updated: {updated_at}
-        </p>
+      <div className="flex justify-end items-center gap-2 ml-5 md:mr-10 text-xs">
+        <p>Last Updated: {updated_at}</p>
+        {page !== "past" && (
+          <button
+            onClick={() => setShowShareModal(true)}
+            className="bg-inherit text-black"
+            title="Share Report"
+          >
+            Share <FontAwesomeIcon icon={faShare} className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       <AuditScore
@@ -93,6 +150,11 @@ const MainContent = ({
           salesInUse={salesInUse}
         />
       )}
+      <ShareReportModal
+        visible={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        onShare={handleShareReport}
+      />
     </div>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useTheme } from "../../context/ThemeContext";
+import { THEME_COLORS } from "../../config/theme.config";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -40,7 +42,6 @@ const dummyDataBySource = {
     {
       label: "By Source",
       data: [23, 87, 59, 75, 11, 55, 1, 95, 62, 51],
-      backgroundColor: "rgba(200, 200, 200, 0.5)",
     },
   ],
 };
@@ -62,7 +63,6 @@ const dummyDataByOwners = {
     {
       label: "By Owners",
       data: [40, 65, 75, 50, 90, 33, 28, 66, 77, 45],
-      backgroundColor: "rgba(200, 200, 200, 0.5)",
     },
   ],
 };
@@ -78,6 +78,10 @@ const BarChart = ({
   const [chartDataByOwners, setChartDataByOwners] = useState(null);
   const [inference, setInference] = useState(null);
   const [view, setView] = useState("source");
+
+  const { themeId } = useTheme();
+
+  const theme = THEME_COLORS[themeId];
 
   const noDataPoints = [
     "internal_team_members",
@@ -100,7 +104,7 @@ const BarChart = ({
           {
             label: `${dataPoint}`,
             data: valuesBySource,
-            backgroundColor: "rgba(54, 162, 235, 0.5)",
+            backgroundColor: theme?.secondary || "rgba(54, 162, 235, 0.5)",
             barThickness: 20,
           },
         ],
@@ -121,7 +125,7 @@ const BarChart = ({
         {
           label: `${dataPoint}`,
           data: valuesByOwners,
-          backgroundColor: "rgba(100, 181, 246, 0.5)",
+          backgroundColor: theme?.secondary || "rgba(54, 162, 235, 0.5)",
           barThickness: 20,
         },
       ],

@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { UserProvider } from "./context/UserContext";
 import { ReportProvider } from "./context/ReportContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -13,9 +19,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import AdminRoute from "./components/AdminRoute";
 import AdminPortal from "./pages/AdminPortal";
-
+import PartnerRegistrationPage from "./pages/PartnerRegistraionPage";
 import { ErrorBoundary } from "react-error-boundary";
 import FallbackErrorPage from "./components/FallbackErrorPage";
+import AccountPage from "./pages/AccountPage";
+import PlanPage from "./pages/PlanPage";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
@@ -52,10 +60,11 @@ function App() {
   }
 
   return (
-    <NotificationProvider>
-      <UserProvider>
-        <ReportProvider paramToken={paramToken}>
-          <ErrorBoundary FallbackComponent={FallbackErrorPage}>
+    <ErrorBoundary FallbackComponent={FallbackErrorPage}>
+      <NotificationProvider>
+        <UserProvider>
+          <ThemeProvider token={paramToken}>
+          <ReportProvider paramToken={paramToken}>
             <Router>
               <ToastContainer
                 position="top-right"
@@ -78,6 +87,16 @@ function App() {
                     path="/past-reports/:reportID"
                     element={<PastReportDetail />}
                   />
+                  <Route
+                    path="/profile"
+                    element={<PartnerRegistrationPage />}
+                  />
+                  <Route
+                    path="/partner_registration"
+                    element={<Navigate to="/profile" replace />}
+                  />
+                  <Route path="/plans" element={<PlanPage />} />
+                  <Route path="/account" element={<AccountPage />} />
                 </Route>
 
                 <Route element={<AdminRoute />}>
@@ -88,10 +107,11 @@ function App() {
                 <Route path="/not-found" element={<NotFound />} />
               </Routes>
             </Router>
-          </ErrorBoundary>
-        </ReportProvider>
-      </UserProvider>
-    </NotificationProvider>
+          </ReportProvider>
+          </ThemeProvider>
+        </UserProvider>
+      </NotificationProvider>
+    </ErrorBoundary>
   );
 }
 

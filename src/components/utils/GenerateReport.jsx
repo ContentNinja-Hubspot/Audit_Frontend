@@ -4,7 +4,7 @@ const ReportGenerate = ({ progress }) => {
   return (
     <>
       <div className="flex flex-col items-center justify-center mt-32">
-        <p className="text-lg font-semibold bg-gradient-to-r from-teal-400 via-purple-500 to-indigo-600 bg-clip-text text-transparent mb-2">
+        <p className="text-lg font-semibold mb-2">
           Generating Report: {progress}%
         </p>
         <div className="w-4/5 max-w-3xl h-3 bg-gray-300 rounded-full relative">

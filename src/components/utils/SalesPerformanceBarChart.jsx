@@ -10,6 +10,8 @@ import {
   Legend,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useTheme } from "../../context/ThemeContext";
+import { THEME_COLORS } from "../../config/theme.config";
 
 ChartJS.register(
   CategoryScale,
@@ -30,6 +32,9 @@ const SalesPerformanceBarChart = ({
   companyAverage,
 }) => {
   const [chartData, setChartData] = useState(null);
+  const { themeId } = useTheme();
+
+  const theme = THEME_COLORS[themeId];
 
   const metricLabelMap = {
     dealClosure: `Count of Won Deals  [Company Average - ${companyAverage}]`,
@@ -97,9 +102,6 @@ const SalesPerformanceBarChart = ({
     const labels = combined.map((item) => item.email);
     const rawValues = combined.map((item) => item.value);
     const values = rawValues.map((val) => Math.abs(val));
-    const colors = rawValues.map((val) =>
-      val >= 0 ? "rgba(54, 162, 235, 0.6)" : "rgba(239,68,68,0.6)"
-    );
 
     setChartData({
       labels,
@@ -108,7 +110,7 @@ const SalesPerformanceBarChart = ({
         {
           label: metricLabelMap[selectedMetric] || "Selected Metric",
           data: values,
-          backgroundColor: colors,
+          backgroundColor: theme?.secondary || "rgba(54, 162, 235, 0.6)",
           barThickness: 20,
         },
       ],
