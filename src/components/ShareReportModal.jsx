@@ -57,6 +57,7 @@ const ShareReportModal = ({ visible, onClose, onShare }) => {
     }
 
     let allSuccessful = true;
+    success("Sharing report with provided emails.");
 
     for (const email of validEmails) {
       try {
