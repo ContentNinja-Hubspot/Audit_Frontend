@@ -53,7 +53,7 @@ const UsersList = ({ users, setUsers }) => {
               <th>Email</th>
               <th>Role</th>
               <th>Status</th>
-              <th>Resend</th>
+              {/* <th>Resend</th> */}
             </tr>
           </thead>
           <tbody>
@@ -77,7 +77,7 @@ const UsersList = ({ users, setUsers }) => {
                     {user.status || "N/A"}
                   </span>
                 </td>
-                <td>
+                {/* <td>
                   <button
                     onClick={() =>
                       console.log(
@@ -91,7 +91,7 @@ const UsersList = ({ users, setUsers }) => {
                   >
                     <PaperAirplaneIcon className="h-5 w-5 text-gray-600 hover:text-indigo-600" />
                   </button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
