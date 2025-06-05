@@ -962,3 +962,28 @@ export const fetchPartnerRole = async (token) => {
     throw error;
   }
 };
+
+export const resendInvitation = async (token, email, name) => {
+  try {
+    const response = await fetch(`${BASE_URL}/resendinvite`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify({ email_id: email, name: name }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error resending invitation: ${response.status} - ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error resending invitation:", error);
+    throw error;
+  }
+};

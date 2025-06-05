@@ -4,7 +4,11 @@ import PartnerForm from "../components/account/PartnerForm";
 import UsersList from "../components/account/UserList";
 import Sidebar from "../components/SideBar";
 import PastReportHeader from "../components/header/PastReportHeader";
-import { addUsertoPartner, addPartnertoPartner } from "../api";
+import {
+  addUsertoPartner,
+  addPartnertoPartner,
+  resendInvitation,
+} from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import SubscriptionDetails from "../components/account/SubscriptionDetail";
@@ -129,6 +133,23 @@ const AccountPage = () => {
     }
   };
 
+  const handleResendInvite = async (user) => {
+    try {
+      const email = user.email || user.email_id;
+      const name = user.name || "User";
+
+      const response = await resendInvitation(token, email, name);
+
+      if (response.success) {
+        success("Invitation resent successfully.");
+      } else {
+        error(response.error || "Failed to resend invitation.");
+      }
+    } catch (err) {
+      error("An error occurred while resending the invite.");
+    }
+  };
+
   return (
     <div className="flex">
       <Sidebar />
@@ -179,7 +200,11 @@ const AccountPage = () => {
                   + Add Agency
                 </button>
               </div>
-              <UsersList users={users} setUsers={setUsers} />
+              <UsersList
+                users={users}
+                setUsers={setUsers}
+                onResend={handleResendInvite}
+              />
             </>
           )}
 

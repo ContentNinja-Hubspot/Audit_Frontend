@@ -9,7 +9,7 @@ const statusClasses = {
   Pending: "bg-yellow-100 text-yellow-800",
 };
 
-const UsersList = ({ users, setUsers }) => {
+const UsersList = ({ users, setUsers, onResend }) => {
   const [search, setSearch] = useState("");
   const { token } = useUser();
   const { themeId } = useTheme();
@@ -53,7 +53,7 @@ const UsersList = ({ users, setUsers }) => {
               <th>Email</th>
               <th>Role</th>
               <th>Status</th>
-              {/* <th>Resend</th> */}
+              <th>Resend</th>
             </tr>
           </thead>
           <tbody>
@@ -77,21 +77,15 @@ const UsersList = ({ users, setUsers }) => {
                     {user.status || "N/A"}
                   </span>
                 </td>
-                {/* <td>
+                <td>
                   <button
-                    onClick={() =>
-                      console.log(
-                        `Resend invite to ${
-                          user.email || user.email_id || "unknown"
-                        }`
-                      )
-                    }
+                    onClick={() => onResend(user)}
                     className="p-1 hover:bg-gray-100 rounded bg-inherit"
                     title="Resend invite"
                   >
                     <PaperAirplaneIcon className="h-5 w-5 text-gray-600 hover:text-indigo-600" />
                   </button>
-                </td> */}
+                </td>
               </tr>
             ))}
           </tbody>
