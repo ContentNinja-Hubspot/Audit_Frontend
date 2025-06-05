@@ -8,9 +8,9 @@ import { useNotify } from "../../context/NotificationContext";
 import { DisabledTooltip } from "../utils/Tooltip";
 import GenerateReportModal from "./GenerateReportModal";
 
-const PastReportHeader = ({ completeReportGenerated = true }) => {
+const PastReportHeader = () => {
   const { user, logout, userCredits } = useUser();
-  const { selectedHub } = useAudit();
+  const { selectedHub, completeReportGenerated } = useAudit();
   const [searchParams] = useSearchParams();
   const [showModal, setShowModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -68,7 +68,7 @@ const PastReportHeader = ({ completeReportGenerated = true }) => {
             <DisabledTooltip tooltipText="Please wait while your report is generated">
               <button
                 disabled
-                className="text-xs md:text-sm h-10 w-48 truncate cursor-not-allowed"
+                className="text-xs md:text-sm h-10 w-42 truncate cursor-not-allowed"
               >
                 Take Bulk Action ↓
               </button>
@@ -76,7 +76,7 @@ const PastReportHeader = ({ completeReportGenerated = true }) => {
             <DisabledTooltip tooltipText="Please wait while your report is generated">
               <button
                 disabled
-                className="text-xs md:text-sm h-10 w-48 truncate cursor-not-allowed"
+                className="text-xs md:text-sm h-10 w-42 truncate cursor-not-allowed"
               >
                 Generate New Report
               </button>
