@@ -22,7 +22,7 @@ export default function PartnerProfileView({ partnerDetails, onEdit }) {
       <div className="space-y-6">
         <div>
           <p className="text-sm font-semibold text-black">
-            Partner Agency Name
+            Agency Name
           </p>
           <p className="bg-gray-50 p-3 rounded-md mt-1 text-black">
             {partnerDetails.agency_name}
@@ -31,7 +31,7 @@ export default function PartnerProfileView({ partnerDetails, onEdit }) {
 
         <div>
           <p className="text-sm font-semibold text-black">
-            Partner Agency Domain
+            Agency Domain
           </p>
           <p className="bg-gray-50 p-3 rounded-md mt-1 text-black">
             {partnerDetails.agency_domain}

@@ -29,7 +29,7 @@ const PartnerForm = ({ onAddUser }) => {
 
   return (
     <>
-      <h2 className="text-lg text-start font-semibold mb-4">Add New Partner</h2>
+      <h2 className="text-lg text-start font-semibold mb-4">Add New Agency</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
@@ -70,7 +70,7 @@ const PartnerForm = ({ onAddUser }) => {
         </div>
 
         <div className="flex justify-center">
-          <button type="submit">+ Add Partner</button>
+          <button type="submit">+ Add Agency</button>
         </div>
       </form>
 

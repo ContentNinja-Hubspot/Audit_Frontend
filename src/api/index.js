@@ -602,7 +602,7 @@ export const uploadPartnerData = async (formData, token) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error uploading partner data:", error);
+    console.error("Error uploading agency data:", error);
     throw error;
   }
 };
@@ -624,7 +624,7 @@ export const fetchThemeDetails = async (token) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching partner details:", error);
+    console.error("Error fetching agency details:", error);
     throw error;
   }
 };
@@ -669,7 +669,7 @@ export const addUsertoPartner = async (token, userData) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error adding user to partner:", error);
+    console.error("Error adding user to agency:", error);
     throw error;
   }
 };
@@ -692,7 +692,7 @@ export const addPartnertoPartner = async (token, userData) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error adding user to partner:", error);
+    console.error("Error adding user to agency:", error);
     throw error;
   }
 };
@@ -783,14 +783,14 @@ export const fetchUsersOfPartner = async (token) => {
 
     if (!response.ok) {
       throw new Error(
-        `Error fetching user of partner: ${response.status} - ${response.statusText}`
+        `Error fetching user of agency: ${response.status} - ${response.statusText}`
       );
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching user of partner:", error);
+    console.error("Error fetching user of agency:", error);
     throw error;
   }
 };
@@ -807,14 +807,14 @@ export const fetchPartnerData = async (token) => {
 
     if (!response.ok) {
       throw new Error(
-        `Error fetching partner details: ${response.status} - ${response.statusText}`
+        `Error fetching agency details: ${response.status} - ${response.statusText}`
       );
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching partner details:", error);
+    console.error("Error fetching agency details:", error);
     throw error;
   }
 };
@@ -831,14 +831,14 @@ export const fetchPartnerThemeAndLogo = async (token) => {
 
     if (!response.ok) {
       throw new Error(
-        `Error fetching partner theme and logo: ${response.status} - ${response.statusText}`
+        `Error fetching agency theme and logo: ${response.status} - ${response.statusText}`
       );
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching partner theme and logo:", error);
+    console.error("Error fetching agency theme and logo:", error);
     throw error;
   }
 };
@@ -951,14 +951,14 @@ export const fetchPartnerRole = async (token) => {
 
     if (!response.ok) {
       throw new Error(
-        `Error fetching partner role: ${response.status} - ${response.statusText}`
+        `Error fetching agency role: ${response.status} - ${response.statusText}`
       );
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error("Error fetching partner role:", error);
+    console.error("Error fetching agency role:", error);
     throw error;
   }
 };

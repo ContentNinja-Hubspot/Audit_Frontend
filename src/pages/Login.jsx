@@ -23,8 +23,9 @@ const Login = () => {
     }
 
     try {
+      const emailLower = email.toLowerCase();
       success("OTP will be sent to your email shortly!");
-      const resp = await requestOTP(email);
+      const resp = await requestOTP(emailLower);
       setIsOtpGenerated(true);
 
       console.log("OTP response:", resp);
@@ -51,14 +52,20 @@ const Login = () => {
     }
 
     if (newUser && !userType) {
-      warn("Please select Client or Partner before submitting.");
+      warn("Please select Client or Agency before submitting.");
       return;
     }
 
     try {
+      const emailLower = email.toLowerCase();
       const body = newUser
-        ? { email, otp, new_user: !newUserFlag, user_type: userType }
-        : { email, otp, new_user: !newUserFlag };
+        ? {
+            email: emailLower,
+            otp,
+            new_user: !newUserFlag,
+            user_type: userType,
+          }
+        : { email: emailLower, otp, new_user: !newUserFlag };
       const response = await validateOTP(body);
       if (response.success && response.state) {
         Cookies.set("state", response.state, { expires: 7 });
@@ -78,7 +85,8 @@ const Login = () => {
 
   const handleResendOtp = async () => {
     try {
-      await resendOTP(email);
+      const emailLower = email.toLowerCase();
+      await resendOTP(emailLower);
       success("OTP resent successfully!");
     } catch (err) {
       error("Failed to resend OTP. Please try again.");
@@ -91,9 +99,7 @@ const Login = () => {
         <div className="flex justify-center items-center gap-4 mb-10">
           <img src={image1} alt="Image 1" className="w-7" />
 
-          <h1 className="text-3xl font-bold">
-            HubSpot Audit
-          </h1>
+          <h1 className="text-3xl font-bold">HubSpot Audit</h1>
         </div>
 
         <h2 className="text-2xl font-semibold text-black mb-16">Sign In</h2>
@@ -141,7 +147,7 @@ const Login = () => {
               }`}
               onClick={() => setUserType("partner")}
             >
-              Partner
+              Agency
             </button>
           </div>
         )}
