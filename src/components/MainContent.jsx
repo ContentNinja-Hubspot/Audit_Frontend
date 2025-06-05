@@ -106,7 +106,8 @@ const MainContent = ({
         {page !== "past" && (
           <button
             onClick={() => setShowShareModal(true)}
-            className="bg-inherit text-black"
+            disabled={!completeReportGenerated}
+            className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50"
             title="Share Report"
           >
             Share <FontAwesomeIcon icon={faShare} className="h-5 w-5" />
