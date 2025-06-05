@@ -100,7 +100,7 @@ const AccountPage = () => {
     );
 
     if (isDuplicate) {
-      error("Partner with this email already exists.");
+      error("Agency with this email already exists.");
       return;
     }
 
@@ -113,7 +113,7 @@ const AccountPage = () => {
       });
 
       if (response.success) {
-        success("Partner added successfully.");
+        success("Agency added successfully.");
         const addedUser = {
           ...newUser,
           id: Date.now(),
@@ -176,7 +176,7 @@ const AccountPage = () => {
                   + Add User
                 </button>
                 <button onClick={() => setShowAddPartnerModal(true)}>
-                  + Add Partner
+                  + Add Agency
                 </button>
               </div>
               <UsersList users={users} setUsers={setUsers} />

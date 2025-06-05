@@ -233,11 +233,11 @@ export default function PartnerRegistration() {
           <>
             <h1 className="text-xl font-semibold mb-4 text-center text-gray-900">
               {userType === "partner"
-                ? "Partner Registration"
+                ? "Agency Registration"
                 : "Your Settings"}
             </h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <FormRow label="Partner Agency Name" required>
+              <FormRow label="Agency Name" required>
                 <input
                   name="agency_name"
                   value={form.agency_name}
@@ -248,7 +248,7 @@ export default function PartnerRegistration() {
                 />
               </FormRow>
 
-              <FormRow label="Partner Agency Domain" required>
+              <FormRow label="Agency Domain" required>
                 <input
                   name="agency_domain"
                   value={form.agency_domain}

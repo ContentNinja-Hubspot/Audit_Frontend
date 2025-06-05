@@ -52,7 +52,7 @@ const Login = () => {
     }
 
     if (newUser && !userType) {
-      warn("Please select Client or Partner before submitting.");
+      warn("Please select Client or Agency before submitting.");
       return;
     }
 
@@ -147,7 +147,7 @@ const Login = () => {
               }`}
               onClick={() => setUserType("partner")}
             >
-              Partner
+              Agency
             </button>
           </div>
         )}

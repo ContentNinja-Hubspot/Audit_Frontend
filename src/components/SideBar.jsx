@@ -70,7 +70,7 @@ const Sidebar = () => {
             {!loading && logoPath ? (
               <img
                 src={logoPath}
-                alt="Partner Logo"
+                alt="Agency Logo"
                 className="h-8 w-auto object-contain"
               />
             ) : (
