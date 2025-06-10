@@ -153,7 +153,8 @@ export default function PartnerRegistration() {
       const formData = new FormData();
       ["agency_name", "agency_domain", "logo", "theme_id", "font_id"].forEach(
         (key) => {
-          if (form[key]) formData.append(key, form[key]);
+          if (form[key] !== undefined && form[key] !== null)
+            formData.append(key, form[key]);
         }
       );
 
@@ -317,7 +318,7 @@ export default function PartnerRegistration() {
                         updateTheme(theme.theme_id);
                       }}
                       className={`w-8 h-8 rounded-full border-2 ${
-                        form.theme_id === theme.theme_id
+                        Number(form.theme_id) === Number(theme.theme_id)
                           ? "border-purple-500"
                           : "border-transparent"
                       }`}
