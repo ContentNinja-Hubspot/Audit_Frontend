@@ -67,7 +67,7 @@ const Sidebar = () => {
             onClick={() => setIsOpen(false)}
             className="flex items-center justify-start space-x-2 p-3 mt-6 lg:mt-3 mx-auto"
           >
-            {!loading && logoPath ? (
+            {!loading && logoPath && logoPath !== "default" ? (
               <img
                 src={logoPath}
                 alt="Agency Logo"
