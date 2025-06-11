@@ -5,12 +5,14 @@ import { fetchAuditReportData } from "../utils/reportUtils";
 export const useAuditReportPolling = ({
   token,
   selectedHubId,
-  setReportId,
+  setLatestReportId,
   setAuditReportData,
   setAuditGraphData,
   setReportScores,
   setAuditReportProgress,
   setAuditReportGenerated,
+  setLoading,
+  setShowProgress,
 }) => {
   const isPollingReport = useRef(false);
 
@@ -26,7 +28,6 @@ export const useAuditReportPolling = ({
         let reportProgress;
 
         if (manualReportId) {
-          // Use new API when reportId is known
           data = await checkReportProgressViaReportId(
             token,
             manualReportId,
@@ -36,7 +37,7 @@ export const useAuditReportPolling = ({
           reportStatus = data?.data?.status;
           reportProgress = data?.data?.progress;
         } else {
-          // Use default API when reportId is not known yet
+          // Use checkreport API when reportId is not known yet
           data = await triggerCheckReport(token, selectedHubId);
           reportId = data?.report_details?.report_id;
           reportStatus = data?.report_details?.status;
@@ -45,11 +46,12 @@ export const useAuditReportPolling = ({
 
         if (!reportId || !reportStatus) {
           console.warn("No report available to poll.");
+          setLoading(false);
           return;
         }
 
         if (reportStatus === "Completed") {
-          setReportId(reportId);
+          setLatestReportId(reportId);
           const { auditData, graph, scoreData } = await fetchAuditReportData({
             token,
             reportId,
@@ -60,15 +62,21 @@ export const useAuditReportPolling = ({
           setReportScores(scoreData);
           setAuditReportProgress(100);
           setAuditReportGenerated(true);
+          setShowProgress(false);
+          setLoading(false);
           return;
         }
 
         if (reportStatus === "Pending" || reportStatus === "In Progress") {
           setAuditReportProgress(reportProgress || 2);
-          setReportId(reportId);
+          setLatestReportId(reportId);
+          setShowProgress(true);
+          setLoading(false);
 
-          setTimeout(() => pollAuditReport(reportId), 60000); // Continue polling
+          setTimeout(() => pollAuditReport(reportId), 30000); // Continue polling
         }
+
+        setLoading(false);
       } catch (err) {
         console.error("Polling error:", err);
       } finally {

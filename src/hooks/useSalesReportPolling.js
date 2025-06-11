@@ -19,10 +19,6 @@ export const useSalesReportPolling = ({
   const isPollingSales = useRef(false);
 
   const pollSalesReport = async (reportId) => {
-    console.log("Polling sales report with reportId:", reportId);
-    console.log("token:", token);
-    console.log("selectedHubId:", selectedHubId);
-
     if (isPollingSales.current || !token || !selectedHubId) return;
     isPollingSales.current = true;
 

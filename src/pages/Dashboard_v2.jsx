@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/SideBar";
 import Header from "../components/header/Header";
 import MainContent from "../components/MainContent";
@@ -13,7 +13,9 @@ import { useAuditReportPolling } from "../hooks/useAuditReportPolling";
 import { useSalesReportPolling } from "../hooks/useSalesReportPolling";
 
 const Dashboard_v2 = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showProgress, setShowProgress] = useState(false);
+  const [showSalesProgress, setShowSalesProgress] = useState(false);
 
   const { user, token } = useUser();
 
@@ -46,7 +48,7 @@ const Dashboard_v2 = () => {
   } = useReportProgress();
 
   const [selectedHubId, setSelectedHubId] = useState(null);
-  const [reportId, setReportId] = useState(null);
+  const generationTriggered = useRef(false);
 
   /************** Initialize custom hooks for polling **************/
   const { pollAuditReport } = useAuditReportPolling({
@@ -55,9 +57,11 @@ const Dashboard_v2 = () => {
     setAuditReportData,
     setAuditGraphData,
     setReportScores,
-    setReportId,
+    setLatestReportId,
     setAuditReportProgress,
     setAuditReportGenerated,
+    setLoading,
+    setShowProgress,
   });
 
   const { pollSalesReport } = useSalesReportPolling({
@@ -69,6 +73,7 @@ const Dashboard_v2 = () => {
     setReportScores,
     setSalesReportProgress,
     setCompleteReportGenerated,
+    setShowSalesProgress,
   });
 
   /************** Check if a new report needs to be generated **************/
@@ -101,23 +106,24 @@ const Dashboard_v2 = () => {
         await handleSettingSelectedHub(user);
       const resultCheckReportGeneration = await handleCheckReportGeneration();
 
-      if (!loading && resultCheckReportGeneration === true && selectedHubId) {
+      if (
+        resultCheckReportGeneration === true &&
+        selectedHubId &&
+        !generationTriggered.current
+      ) {
+        generationTriggered.current = true;
         setAuditReportProgress(2);
-        // await triggerReportGeneration(token, selectedHubId);
+        await triggerReportGeneration(token, selectedHubId);
         setTimeout(() => {
           pollAuditReport();
         }, 30000);
       } else if (
-        !loading &&
         resultCheckReportGeneration === false &&
         userLatestReportId &&
         selectedHubId
       ) {
-        setAuditReportProgress(2);
         pollAuditReport(userLatestReportId);
       }
-
-      setLoading(false);
     };
 
     init();
@@ -153,7 +159,7 @@ const Dashboard_v2 = () => {
       <Sidebar />
       <main className="flex-1 overflow-auto h-screen">
         <Header />
-        {!auditReportGenerated ? (
+        {!showProgress && !auditReportGenerated ? (
           <ReportGenerate progress={auditReportProgress} />
         ) : (
           <MainContent

@@ -71,7 +71,7 @@ const Login = () => {
         if (response.redirect_url) {
           window.location.href = response.redirect_url;
         } else {
-          window.location.href = "/dashboard";
+          window.location.href = "/dashboard_v2";
         }
       } else {
         error("Invalid OTP! Try again.");
