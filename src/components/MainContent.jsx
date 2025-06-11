@@ -16,23 +16,24 @@ import CryptoJS from "crypto-js";
 const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
 
 const MainContent = ({
+  token,
+  hubId,
   reportData,
   salesReportData,
   graphData,
-  page,
-  token,
-  hubId,
+  salesInUse,
   salesReportProgress,
   scores,
   salesGraphData,
   completeReportGenerated,
+  page,
 }) => {
   const [selectedBreakdown, setSelectedBreakdown] = useState("Data Quality");
   const { user } = useUser();
   const [showShareModal, setShowShareModal] = useState(false);
 
   if (!reportData) return <div>Loading report...</div>;
-  const { salesInUse, latestReportId } = useAudit();
+  const { latestReportId } = useAudit();
 
   const { result, updated_at } = reportData;
   const { data_audit, object_scores, overall_audit_score, score_breakdown } =

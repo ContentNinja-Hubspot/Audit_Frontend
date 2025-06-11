@@ -9,9 +9,11 @@ import { UserProvider } from "./context/UserContext";
 import { ReportProvider } from "./context/ReportContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { ReportProvider_v2 } from "./context/ReportContext_v2";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import Dashboard_v2 from "./pages/Dashboard_v2";
 import PastReports from "./pages/PastReports";
 import NotFound from "./pages/NotFound";
 import PastReportDetail from "./pages/PastReportDetails";
@@ -26,6 +28,7 @@ import AccountPage from "./pages/AccountPage";
 import PlanPage from "./pages/PlanPage";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
+import { ReportProgressProvider_v2 } from "./context/ReportProgressContext";
 
 function App() {
   const [paramToken, setParamToken] = useState(null);
@@ -64,50 +67,58 @@ function App() {
       <NotificationProvider>
         <UserProvider>
           <ThemeProvider token={paramToken}>
-          <ReportProvider paramToken={paramToken}>
-            <Router>
-              <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                toastClassName="bg-white border border-purple-400 text-sm text-gray-800 shadow-lg"
-                bodyClassName="p-3"
-                hideProgressBar={false}
-                closeOnClick
-                pauseOnHover
-              />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
+            <ReportProvider paramToken={paramToken}>
+              <ReportProvider_v2>
+                <ReportProgressProvider_v2>
+                  <Router>
+                    <ToastContainer
+                      position="top-right"
+                      autoClose={3000}
+                      toastClassName="bg-white border border-purple-400 text-sm text-gray-800 shadow-lg"
+                      bodyClassName="p-3"
+                      hideProgressBar={false}
+                      closeOnClick
+                      pauseOnHover
+                    />
+                    <Routes>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/login" element={<Login />} />
 
-                {/* Protected routes */}
-                <Route element={<ProtectedRoute />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/past-reports" element={<PastReports />} />
-                  <Route
-                    path="/past-reports/:reportID"
-                    element={<PastReportDetail />}
-                  />
-                  <Route
-                    path="/profile"
-                    element={<PartnerRegistrationPage />}
-                  />
-                  <Route
-                    path="/partner_registration"
-                    element={<Navigate to="/profile" replace />}
-                  />
-                  <Route path="/plans" element={<PlanPage />} />
-                  <Route path="/account" element={<AccountPage />} />
-                </Route>
+                      {/* Protected routes */}
+                      <Route element={<ProtectedRoute />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route
+                          path="/dashboard_v2"
+                          element={<Dashboard_v2 />}
+                        />
+                        <Route path="/past-reports" element={<PastReports />} />
+                        <Route
+                          path="/past-reports/:reportID"
+                          element={<PastReportDetail />}
+                        />
+                        <Route
+                          path="/profile"
+                          element={<PartnerRegistrationPage />}
+                        />
+                        <Route
+                          path="/partner_registration"
+                          element={<Navigate to="/profile" replace />}
+                        />
+                        <Route path="/plans" element={<PlanPage />} />
+                        <Route path="/account" element={<AccountPage />} />
+                      </Route>
 
-                <Route element={<AdminRoute />}>
-                  <Route path="/admin-portal" element={<AdminPortal />} />
-                </Route>
+                      <Route element={<AdminRoute />}>
+                        <Route path="/admin-portal" element={<AdminPortal />} />
+                      </Route>
 
-                <Route path="*" element={<NotFound />} />
-                <Route path="/not-found" element={<NotFound />} />
-              </Routes>
-            </Router>
-          </ReportProvider>
+                      <Route path="*" element={<NotFound />} />
+                      <Route path="/not-found" element={<NotFound />} />
+                    </Routes>
+                  </Router>
+                </ReportProgressProvider_v2>
+              </ReportProvider_v2>
+            </ReportProvider>
           </ThemeProvider>
         </UserProvider>
       </NotificationProvider>

@@ -53,7 +53,9 @@ export const ReportProvider = ({ paramToken, children }) => {
         if (paramToken) {
           response = await checkReportGeneration(paramToken);
         } else {
-          response = await checkReportGeneration(token);
+          if (token) {
+            response = await checkReportGeneration(token);
+          }
         }
         if (response?.generate_report) {
           setCheckTriggerReportGeneration(true);
