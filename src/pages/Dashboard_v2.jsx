@@ -112,8 +112,9 @@ const Dashboard_v2 = () => {
         !generationTriggered.current
       ) {
         generationTriggered.current = true;
-        setAuditReportProgress(2);
         await triggerReportGeneration(token, selectedHubId);
+        setAuditReportProgress(2);
+        setShowProgress(true);
         setTimeout(() => {
           pollAuditReport();
         }, 30000);
@@ -159,7 +160,7 @@ const Dashboard_v2 = () => {
       <Sidebar />
       <main className="flex-1 overflow-auto h-screen">
         <Header />
-        {!showProgress && !auditReportGenerated ? (
+        {showProgress && !auditReportGenerated ? (
           <ReportGenerate progress={auditReportProgress} />
         ) : (
           <MainContent
