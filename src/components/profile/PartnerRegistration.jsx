@@ -110,7 +110,15 @@ export default function PartnerRegistration() {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "logo" && files && files[0]) {
-      const imageURL = URL.createObjectURL(files[0]);
+      const file = files[0];
+      const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+      if (!validTypes.includes(file.type)) {
+        error("Invalid file type. Please upload a JPG, JPEG or PNG image.");
+        return;
+      }
+
+      const imageURL = URL.createObjectURL(file);
       setSelectedImage(imageURL);
       setCropModalOpen(true);
     } else {
@@ -224,7 +232,8 @@ export default function PartnerRegistration() {
                     setCroppedImageURL(partnerDetails.logo_url || null);
                     setIsEditing(true);
                   }
-                : () => error("You do not have permission to edit this profile.")
+                : () =>
+                    error("You do not have permission to edit this profile.")
             }
           />
         )}
@@ -233,9 +242,7 @@ export default function PartnerRegistration() {
         {userType === "partner" && isEditing ? (
           <>
             <h1 className="text-xl font-semibold mb-4 text-center text-gray-900">
-              {userType === "partner"
-                ? "Agency Registration"
-                : "Your Settings"}
+              {userType === "partner" ? "Agency Registration" : "Your Settings"}
             </h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <FormRow label="Agency Name" required>
