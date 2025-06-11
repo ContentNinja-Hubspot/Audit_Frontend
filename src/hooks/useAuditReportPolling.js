@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { triggerCheckReport } from "../api";
+import { triggerCheckReport, checkReportProgressViaReportId } from "../api";
 import { fetchAuditReportData } from "../utils/reportUtils";
 
 export const useAuditReportPolling = ({
@@ -14,47 +14,69 @@ export const useAuditReportPolling = ({
 }) => {
   const isPollingReport = useRef(false);
 
-  const pollAuditReport = async () => {
+  const pollAuditReport = (manualReportId = null) => {
     if (isPollingReport.current || !token || !selectedHubId) return;
     isPollingReport.current = true;
 
-    try {
-      const data = await triggerCheckReport(token, selectedHubId);
-      console.log("check report data:", data);
+    const poll = async () => {
+      try {
+        let data;
+        let reportId;
+        let reportStatus;
+        let reportProgress;
 
-      const reportStatus = data?.report_details?.status;
-
-      if (reportStatus === "Completed") {
-        const reportId = data.report_details.report_id;
-        setReportId(reportId);
-
-        const { auditData, graph, scoreData } = await fetchAuditReportData({
-          token,
-          reportId,
-        });
-
-        setAuditReportData(auditData);
-        setAuditGraphData(graph);
-        setReportScores(scoreData);
-        setAuditReportProgress(100);
-        setAuditReportGenerated(true);
-        return;
-      }
-
-      if (reportStatus === "Pending" || reportStatus === "In Progress") {
-        setAuditReportProgress(data?.report_details?.progress || 2);
-
-        if (data?.report_details?.report_id) {
-          setReportId(data.report_details.report_id);
+        if (manualReportId) {
+          // Use new API when reportId is known
+          data = await checkReportProgressViaReportId(
+            token,
+            manualReportId,
+            selectedHubId
+          );
+          reportId = manualReportId;
+          reportStatus = data?.data?.status;
+          reportProgress = data?.data?.progress;
+        } else {
+          // Use default API when reportId is not known yet
+          data = await triggerCheckReport(token, selectedHubId);
+          reportId = data?.report_details?.report_id;
+          reportStatus = data?.report_details?.status;
+          reportProgress = data?.report_details?.progress;
         }
 
-        setTimeout(pollAuditReport, 60000);
+        if (!reportId || !reportStatus) {
+          console.warn("No report available to poll.");
+          return;
+        }
+
+        if (reportStatus === "Completed") {
+          setReportId(reportId);
+          const { auditData, graph, scoreData } = await fetchAuditReportData({
+            token,
+            reportId,
+          });
+
+          setAuditReportData(auditData);
+          setAuditGraphData(graph);
+          setReportScores(scoreData);
+          setAuditReportProgress(100);
+          setAuditReportGenerated(true);
+          return;
+        }
+
+        if (reportStatus === "Pending" || reportStatus === "In Progress") {
+          setAuditReportProgress(reportProgress || 2);
+          setReportId(reportId);
+
+          setTimeout(() => pollAuditReport(reportId), 60000); // Continue polling
+        }
+      } catch (err) {
+        console.error("Polling error:", err);
+      } finally {
+        isPollingReport.current = false;
       }
-    } catch (err) {
-      console.error("Polling error:", err);
-    } finally {
-      isPollingReport.current = false;
-    }
+    };
+
+    poll();
   };
 
   return { pollAuditReport };

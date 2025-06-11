@@ -8,7 +8,7 @@ import {
 
 export const useSalesReportPolling = ({
   token,
-  hubID,
+  selectedHubId,
   setSalesInUse,
   setSalesReportData,
   setSalesGraphData,
@@ -19,7 +19,11 @@ export const useSalesReportPolling = ({
   const isPollingSales = useRef(false);
 
   const pollSalesReport = async (reportId) => {
-    if (isPollingSales.current || !token || !hubID) return;
+    console.log("Polling sales report with reportId:", reportId);
+    console.log("token:", token);
+    console.log("selectedHubId:", selectedHubId);
+
+    if (isPollingSales.current || !token || !selectedHubId) return;
     isPollingSales.current = true;
 
     try {

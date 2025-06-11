@@ -76,10 +76,6 @@ export const ReportProvider = ({ paramToken, children }) => {
 
       try {
         if (checkTriggerReportGeneration) {
-          console.log(
-            "Triggering report generation...",
-            checkTriggerReportGeneration
-          );
           const auditStatus = await triggerCheckReport(
             token,
             selectedHub.hub_id

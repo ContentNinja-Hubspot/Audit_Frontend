@@ -3,15 +3,18 @@ import Sidebar from "../components/SideBar";
 import Header from "../components/header/Header";
 import MainContent from "../components/MainContent";
 import ReportGenerate from "../components/utils/GenerateReport";
+
 import { useUser } from "../context/UserContext";
 import { useReport } from "../context/ReportContext_v2";
 import { useReportProgress } from "../context/ReportProgressContext";
+
 import { checkReportGeneration, triggerReportGeneration } from "../api";
 import { useAuditReportPolling } from "../hooks/useAuditReportPolling";
 import { useSalesReportPolling } from "../hooks/useSalesReportPolling";
 
 const Dashboard_v2 = () => {
   const [loading, setLoading] = useState(false);
+
   const { user, token } = useUser();
 
   const {
@@ -42,12 +45,10 @@ const Dashboard_v2 = () => {
     setCompleteReportGenerated,
   } = useReportProgress();
 
-  //   console.log("User in Dashboard_v2:", user);
-
   const [selectedHubId, setSelectedHubId] = useState(null);
   const [reportId, setReportId] = useState(null);
 
-  /******************************* Initializing Report Custom Hooks ********************************/
+  /************** Initialize custom hooks for polling **************/
   const { pollAuditReport } = useAuditReportPolling({
     token,
     selectedHubId,
@@ -70,59 +71,66 @@ const Dashboard_v2 = () => {
     setCompleteReportGenerated,
   });
 
-  /******************************* Check Report Generation Status *****************************/
+  /************** Check if a new report needs to be generated **************/
   const handleCheckReportGeneration = async () => {
     const result = await checkReportGeneration(token);
-    console.log("Check Report Generation Result:", result);
-    if (result) {
-      return result?.generate_report;
-    }
-    return false;
+    return result?.generate_report ?? false;
   };
 
-  /******************************* Setting Selected Hub ***************************************/
-  const handleSettingSelectedHub = (user) => {
+  /************** Identify selected hub and set latest report ID **************/
+  const handleSettingSelectedHub = async (user) => {
     const selectedHubId = user?.hub_details?.data?.hub_id || null;
 
     const matchedHub = user?.unique_hub_ids?.find(
       (hub) => hub.hub_id === selectedHubId
     );
 
-    const latestReportId = matchedHub?.latest_report_id || null;
+    const userLatestReportId = matchedHub?.latest_report_id || null;
 
     setSelectedHubId(selectedHubId);
-    setLatestReportId(latestReportId);
+    setLatestReportId(userLatestReportId);
+
+    // Return both values immediately for use in logic
+    return { selectedHubId, userLatestReportId };
   };
 
-  /******************************* useEffect for Initial Setup *********************************/
+  /************** Main init effect — triggered once on load **************/
   useEffect(() => {
     const init = async () => {
-      handleSettingSelectedHub(user);
+      const { selectedHubId, userLatestReportId } =
+        await handleSettingSelectedHub(user);
       const resultCheckReportGeneration = await handleCheckReportGeneration();
 
       if (!loading && resultCheckReportGeneration === true && selectedHubId) {
-        // await triggerReportGeneration(token, hubId);
+        setAuditReportProgress(2);
+        // await triggerReportGeneration(token, selectedHubId);
         setTimeout(() => {
           pollAuditReport();
         }, 30000);
-      } else if (!loading && resultCheckReportGeneration === false) {
-        setAuditReportGenerated(true);
+      } else if (
+        !loading &&
+        resultCheckReportGeneration === false &&
+        userLatestReportId &&
+        selectedHubId
+      ) {
+        setAuditReportProgress(2);
+        pollAuditReport(userLatestReportId);
       }
 
       setLoading(false);
     };
 
     init();
-  }, [token, loading]);
+  }, [token, selectedHubId, loading]);
 
+  /************** When audit report is generated, trigger sales report polling **************/
   useEffect(() => {
-    if (auditReportGenerated && reportId) {
-      pollSalesReport(reportId);
+    if (auditReportGenerated && latestReportId) {
+      pollSalesReport(latestReportId);
     }
   }, [auditReportGenerated]);
 
-  /******************************* Rendering Loading Content *******************************/
-
+  /************** Loading UI **************/
   if (loading) {
     return (
       <div className="flex">
@@ -139,14 +147,12 @@ const Dashboard_v2 = () => {
     );
   }
 
-  /******************************* Rendering Main Content ************************************/
-
+  /************** Main Content UI **************/
   return (
     <div className="flex">
       <Sidebar />
       <main className="flex-1 overflow-auto h-screen">
         <Header />
-
         {!auditReportGenerated ? (
           <ReportGenerate progress={auditReportProgress} />
         ) : (
