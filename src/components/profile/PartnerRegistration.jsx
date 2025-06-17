@@ -27,8 +27,8 @@ export default function PartnerRegistration() {
     agency_name: "",
     agency_domain: "",
     logo: null,
-    theme_id: "",
-    font_id: "",
+    theme_id: "0",
+    font_id: "1",
     name: "",
     email: "",
   });
@@ -85,8 +85,8 @@ export default function PartnerRegistration() {
                     ? details.agency_domain
                     : "",
                 logo: null,
-                theme_id: details.theme_id || "",
-                font_id: details.font_id || "",
+                theme_id: details.theme_id || 0,
+                font_id: details.font_id || 1,
                 name: "",
                 email: "",
               });
