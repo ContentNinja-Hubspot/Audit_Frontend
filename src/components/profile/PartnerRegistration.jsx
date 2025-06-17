@@ -17,21 +17,29 @@ import PartnerProfileView from "./PartnerProfileView";
 import ApplyProgressAnimation from "../utils/ApplyProgressAnimation";
 import { useTheme } from "../../context/ThemeContext";
 
+const getInitialFormState = (details = {}) => ({
+  agency_name:
+    details.agency_name && details.agency_name !== "default"
+      ? details.agency_name
+      : "",
+  agency_domain:
+    details.agency_domain && details.agency_domain !== "default"
+      ? details.agency_domain
+      : "",
+  logo: null,
+  theme_id: details.theme_id != null ? String(details.theme_id) : "0",
+  font_id: details.font_id != null ? String(details.font_id) : "1",
+  name: "",
+  email: "",
+});
+
 export default function PartnerRegistration() {
   const [themes, setThemes] = useState([]);
   const [fonts, setFonts] = useState([]);
   const [userType, setUserType] = useState(null);
   const { updateTheme, userTheme } = useTheme();
   const [partnerRole, setPartnerRole] = useState(null);
-  const [form, setForm] = useState({
-    agency_name: "",
-    agency_domain: "",
-    logo: null,
-    theme_id: "0",
-    font_id: "1",
-    name: "",
-    email: "",
-  });
+  const [form, setForm] = useState(getInitialFormState());
   const [loading, setLoading] = useState(false);
 
   const { token } = useUser();
@@ -77,19 +85,7 @@ export default function PartnerRegistration() {
               setIsEditing(false);
             } else if (!details.is_profile_complete) {
               setIsEditing(true);
-              setForm({
-                agency_name:
-                  details.agency_name !== "default" ? details.agency_name : "",
-                agency_domain:
-                  details.agency_domain !== "default"
-                    ? details.agency_domain
-                    : "",
-                logo: null,
-                theme_id: details.theme_id || 0,
-                font_id: details.font_id || 1,
-                name: "",
-                email: "",
-              });
+              setForm(getInitialFormState(details));
             } else {
               setIsEditing(false);
             }
@@ -130,15 +126,7 @@ export default function PartnerRegistration() {
   };
 
   const handleSkip = () => {
-    setForm({
-      agency_name: "",
-      agency_domain: "",
-      logo: null,
-      theme_id: "",
-      font_id: "",
-      name: "",
-      email: "",
-    });
+    setForm(getInitialFormState(partnerDetails));
 
     setCroppedImageURL(null);
 
@@ -168,15 +156,7 @@ export default function PartnerRegistration() {
 
       try {
         await uploadPartnerData(formData, token);
-        setForm({
-          agency_name: "",
-          agency_domain: "",
-          logo: null,
-          theme_id: "",
-          font_id: "",
-          name: "",
-          email: "",
-        });
+        setForm(getInitialFormState(partnerDetails));
         setCroppedImageURL(null);
         setShowApplyAnimation(true);
       } catch (err) {
@@ -219,15 +199,13 @@ export default function PartnerRegistration() {
                       (f) => f.font_name === partnerDetails.font_name
                     );
 
-                    setForm({
-                      agency_name: partnerDetails.agency_name || "",
-                      agency_domain: partnerDetails.agency_domain || "",
-                      logo: null,
-                      theme_id: matchedTheme?.theme_id || "",
-                      font_id: matchedFont?.font_id || "",
-                      name: "",
-                      email: "",
-                    });
+                    setForm(
+                      getInitialFormState({
+                        ...partnerDetails,
+                        theme_id: matchedTheme?.theme_id,
+                        font_id: matchedFont?.font_id,
+                      })
+                    );
 
                     setCroppedImageURL(partnerDetails.logo_url || null);
                     setIsEditing(true);
