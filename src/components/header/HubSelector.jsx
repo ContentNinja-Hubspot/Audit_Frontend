@@ -5,9 +5,10 @@ import { useNotify } from "../../context/NotificationContext";
 import { addNewAccount } from "../../api";
 import Cookies from "js-cookie";
 import { useTheme } from "../../context/ThemeContext";
+import { fetchUserCredits } from "../../api";
 
 const HubSelector = ({ completeReportGenerated }) => {
-  const { user, token, userCredits } = useUser();
+  const { user, token } = useUser();
   const { themeId } = useTheme();
   const { selectedHub, setSelectedHub } = useAudit();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -28,22 +29,36 @@ const HubSelector = ({ completeReportGenerated }) => {
   };
 
   const handleAddNewAccount = async () => {
-    if (!userCredits || userCredits.remaining <= 10) {
-      warn("You do not have enough credits to add a new hub.");
-      return;
-    }
-    const result = await addNewAccount(token);
-    Cookies.set("state", result?.state, {
-      path: "/",
-      sameSite: "Lax",
-      secure: window.location.protocol === "https:",
-      expires: 1,
-    });
+    try {
+      if (!token) {
+        warn("Authentication failed. Please log in again.");
+        return;
+      }
 
-    success("Adding new account...");
-    setTimeout(() => {
-      window.location.href = result?.redirect_url;
-    }, 2000);
+      const creditData = await fetchUserCredits(token);
+
+      if (!creditData?.success || creditData.credits_remaining <= 10) {
+        warn("You do not have enough credits to add a new hub.");
+        return;
+      }
+       
+      const result = await addNewAccount(token);
+
+      Cookies.set("state", result?.state, {
+        path: "/",
+        sameSite: "Lax",
+        secure: window.location.protocol === "https:",
+        expires: 1,
+      });
+
+      success("Adding new account...");
+      setTimeout(() => {
+        window.location.href = result?.redirect_url;
+      }, 2000);
+    } catch (error) {
+      console.error("Error adding new account:", error);
+      warn("Failed to add new account. Please try again.");
+    }
   };
 
   useEffect(() => {

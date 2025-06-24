@@ -7,9 +7,10 @@ import UserDropdown from "./UserDropdown";
 import GenerateReportModal from "./GenerateReportModal";
 import { DisabledTooltip } from "../utils/Tooltip";
 import { useNotify } from "../../context/NotificationContext";
+import { fetchUserCredits } from "../../api/";
 
 const Header = ({ completeReportGenerated }) => {
-  const { user, logout, userCredits } = useUser();
+  const { user, logout, token } = useUser();
   const { selectedHub } = useAudit();
   const [showModal, setShowModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -32,13 +33,26 @@ const Header = ({ completeReportGenerated }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  const handleGenerateReport = async () => {
+    try {
+      if (!token) {
+        warn("Unable to verify your account. Please log in again.");
+        return;
+      }
 
-  const handleGenerateReport = () => {
-    if (!userCredits || userCredits.remaining <= 10) {
-      warn("You do not have enough credits to generate a report.");
-      return;
+      const creditResponse = await fetchUserCredits(token);
+
+      if (!creditResponse?.success || creditResponse.credits_remaining <= 10) {
+        warn("You do not have enough credits to generate a report.");
+        return;
+      }
+      setShowModal(true);
+    } catch (error) {
+      warn(
+        "Something went wrong while checking your credits. Please try again."
+      );
+      console.error("Error in handleGenerateReport:", error);
     }
-    setShowModal(true);
   };
 
   return (

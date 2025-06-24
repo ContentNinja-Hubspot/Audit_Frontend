@@ -7,9 +7,10 @@ import { useAudit } from "../../context/ReportContext";
 import { useNotify } from "../../context/NotificationContext";
 import { DisabledTooltip } from "../utils/Tooltip";
 import GenerateReportModal from "./GenerateReportModal";
+import { fetchUserCredits } from "../../api";
 
 const PastReportHeader = () => {
-  const { user, logout, userCredits } = useUser();
+  const { user, logout, token } = useUser();
   const { selectedHub, completeReportGenerated } = useAudit();
   const [searchParams] = useSearchParams();
   const [showModal, setShowModal] = useState(false);
@@ -19,12 +20,28 @@ const PastReportHeader = () => {
   const { warn } = useNotify();
 
   const handleLogout = () => logout();
-  const handleGenerateReport = () => {
-    if (!userCredits || userCredits.remaining <= 10) {
-      warn("You do not have enough credits to generate a report.");
-      return;
+  const handleGenerateReport = async () => {
+    try {
+      if (!token) {
+        warn("Authentication failed. Please log in again.");
+        return;
+      }
+
+      const creditData = await fetchUserCredits(token);
+
+      if (!creditData?.success || creditData.credits_remaining <= 10) {
+        warn("You do not have enough credits to generate a report.");
+        return;
+      }
+       console.log('Enough credits to generate report:', creditData.credits_remaining);
+
+      setShowModal(true);
+    } catch (error) {
+      console.error("Error fetching credits:", error);
+      warn(
+        "Something went wrong while checking your credits. Please try again."
+      );
     }
-    setShowModal(true);
   };
 
   return (

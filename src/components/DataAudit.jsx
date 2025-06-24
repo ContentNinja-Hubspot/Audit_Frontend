@@ -18,8 +18,6 @@ const DataAudit = ({
 
   const { themeId } = useTheme();
 
-  console.log("DataAudit Component Rendered with themeId:", themeId);
-
   const titleMap = {
     contacts: "Contacts",
     companies: "Companies",
