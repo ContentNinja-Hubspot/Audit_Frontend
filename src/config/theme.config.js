@@ -1,4 +1,11 @@
 export const THEME_COLORS = {
+  0: {
+    name: "Default Theme",
+    primary: "#000",
+    secondary: "rgba(54, 162, 235, 0.5)",
+    tertiary: "#F8F9FA",
+    tertiaryGradient: "linear-gradient(to right, #F8F9FA, #FFFFFF)",
+  },
   1: {
     name: "Trust & Stability",
     primary: "#1D4E89",

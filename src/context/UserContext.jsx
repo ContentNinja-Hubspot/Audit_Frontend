@@ -6,7 +6,7 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [userType, setUserType] = useState(null);
+  const [userType, setUserType] = useState("partner");
   const [token, setToken] = useState(Cookies.get("state") || null);
   const [userCredits, setUserCredits] = useState({
     total: null,

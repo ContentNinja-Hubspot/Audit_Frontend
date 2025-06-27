@@ -17,21 +17,29 @@ import PartnerProfileView from "./PartnerProfileView";
 import ApplyProgressAnimation from "../utils/ApplyProgressAnimation";
 import { useTheme } from "../../context/ThemeContext";
 
+const getInitialFormState = (details = {}) => ({
+  agency_name:
+    details.agency_name && details.agency_name !== "default"
+      ? details.agency_name
+      : "",
+  agency_domain:
+    details.agency_domain && details.agency_domain !== "default"
+      ? details.agency_domain
+      : "",
+  logo: null,
+  theme_id: details.theme_id != null ? String(details.theme_id) : "0",
+  font_id: details.font_id != null ? String(details.font_id) : "1",
+  name: "",
+  email: "",
+});
+
 export default function PartnerRegistration() {
   const [themes, setThemes] = useState([]);
   const [fonts, setFonts] = useState([]);
   const [userType, setUserType] = useState(null);
   const { updateTheme, userTheme } = useTheme();
   const [partnerRole, setPartnerRole] = useState(null);
-  const [form, setForm] = useState({
-    agency_name: "",
-    agency_domain: "",
-    logo: null,
-    theme_id: "",
-    font_id: "",
-    name: "",
-    email: "",
-  });
+  const [form, setForm] = useState(getInitialFormState());
   const [loading, setLoading] = useState(false);
 
   const { token } = useUser();
@@ -77,19 +85,7 @@ export default function PartnerRegistration() {
               setIsEditing(false);
             } else if (!details.is_profile_complete) {
               setIsEditing(true);
-              setForm({
-                agency_name:
-                  details.agency_name !== "default" ? details.agency_name : "",
-                agency_domain:
-                  details.agency_domain !== "default"
-                    ? details.agency_domain
-                    : "",
-                logo: null,
-                theme_id: details.theme_id || "",
-                font_id: details.font_id || "",
-                name: "",
-                email: "",
-              });
+              setForm(getInitialFormState(details));
             } else {
               setIsEditing(false);
             }
@@ -110,7 +106,15 @@ export default function PartnerRegistration() {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === "logo" && files && files[0]) {
-      const imageURL = URL.createObjectURL(files[0]);
+      const file = files[0];
+      const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+      if (!validTypes.includes(file.type)) {
+        error("Invalid file type. Please upload a JPG, JPEG or PNG image.");
+        return;
+      }
+
+      const imageURL = URL.createObjectURL(file);
       setSelectedImage(imageURL);
       setCropModalOpen(true);
     } else {
@@ -122,15 +126,7 @@ export default function PartnerRegistration() {
   };
 
   const handleSkip = () => {
-    setForm({
-      agency_name: "",
-      agency_domain: "",
-      logo: null,
-      theme_id: "",
-      font_id: "",
-      name: "",
-      email: "",
-    });
+    setForm(getInitialFormState(partnerDetails));
 
     setCroppedImageURL(null);
 
@@ -153,21 +149,14 @@ export default function PartnerRegistration() {
       const formData = new FormData();
       ["agency_name", "agency_domain", "logo", "theme_id", "font_id"].forEach(
         (key) => {
-          if (form[key]) formData.append(key, form[key]);
+          if (form[key] !== undefined && form[key] !== null)
+            formData.append(key, form[key]);
         }
       );
 
       try {
         await uploadPartnerData(formData, token);
-        setForm({
-          agency_name: "",
-          agency_domain: "",
-          logo: null,
-          theme_id: "",
-          font_id: "",
-          name: "",
-          email: "",
-        });
+        setForm(getInitialFormState(partnerDetails));
         setCroppedImageURL(null);
         setShowApplyAnimation(true);
       } catch (err) {
@@ -210,20 +199,19 @@ export default function PartnerRegistration() {
                       (f) => f.font_name === partnerDetails.font_name
                     );
 
-                    setForm({
-                      agency_name: partnerDetails.agency_name || "",
-                      agency_domain: partnerDetails.agency_domain || "",
-                      logo: null,
-                      theme_id: matchedTheme?.theme_id || "",
-                      font_id: matchedFont?.font_id || "",
-                      name: "",
-                      email: "",
-                    });
+                    setForm(
+                      getInitialFormState({
+                        ...partnerDetails,
+                        theme_id: matchedTheme?.theme_id,
+                        font_id: matchedFont?.font_id,
+                      })
+                    );
 
                     setCroppedImageURL(partnerDetails.logo_url || null);
                     setIsEditing(true);
                   }
-                : () => error("You do not have permission to edit this profile.")
+                : () =>
+                    error("You do not have permission to edit this profile.")
             }
           />
         )}
@@ -232,9 +220,7 @@ export default function PartnerRegistration() {
         {userType === "partner" && isEditing ? (
           <>
             <h1 className="text-xl font-semibold mb-4 text-center text-gray-900">
-              {userType === "partner"
-                ? "Agency Registration"
-                : "Your Settings"}
+              {userType === "partner" ? "Agency Registration" : "Your Settings"}
             </h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <FormRow label="Agency Name" required>
@@ -317,7 +303,7 @@ export default function PartnerRegistration() {
                         updateTheme(theme.theme_id);
                       }}
                       className={`w-8 h-8 rounded-full border-2 ${
-                        form.theme_id === theme.theme_id
+                        Number(form.theme_id) === Number(theme.theme_id)
                           ? "border-purple-500"
                           : "border-transparent"
                       }`}

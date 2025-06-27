@@ -18,11 +18,12 @@ import {
   fetchSalesGraphData,
   addNewAccount,
   checkReportProgressViaReportId,
+  fetchUserCredits,
 } from "../api";
 import Cookies from "js-cookie";
 
 const Dashboard = () => {
-  const { token, userCredits } = useUser();
+  const { token } = useUser();
   const { success, warn } = useNotify();
   const {
     selectedHub,
@@ -116,10 +117,15 @@ const Dashboard = () => {
         // Start polling for sales report
         pollSalesReportGeneration(data.report_details.report_id);
       } else if (data.generate_report && checkTriggerReportGeneration) {
-        if (!userCredits || userCredits.remaining <= 10) {
+        const creditData = await fetchUserCredits(token);
+        if (!creditData?.success || creditData.credits_remaining <= 10) {
           warn("You do not have enough credits to generate a report.");
           return;
         }
+        console.log(
+          "Enough credits to generate report:",
+          creditData.credits_remaining
+        );
         setReportProgress(2);
         if (!hasTriggeredReport.current) {
           hasTriggeredReport.current = true;
@@ -249,10 +255,15 @@ const Dashboard = () => {
         setLatestReportId(firstReportId);
 
         if (checkTriggerReportGeneration) {
-          if (!userCredits || userCredits.remaining <= 10) {
+          const creditData = await fetchUserCredits(token);
+          if (!creditData?.success || creditData.credits_remaining <= 10) {
             warn("You do not have enough credits to generate a report.");
             return;
           }
+          console.log(
+            "Enough credits to generate report:",
+            creditData.credits_remaining
+          );
           setReportProgress(2);
           if (!hasTriggeredReport.current) {
             hasTriggeredReport.current = true;

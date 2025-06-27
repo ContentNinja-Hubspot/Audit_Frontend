@@ -71,6 +71,7 @@ const AccountPage = () => {
     }
 
     try {
+      success("Adding Client...");
       const response = await addUsertoPartner(token, {
         email_id: newUser.email,
         name: newUser.name,
@@ -78,7 +79,7 @@ const AccountPage = () => {
       });
 
       if (response.success) {
-        success("User added successfully.");
+        success("Client added successfully.");
         const addedUser = {
           ...newUser,
           id: Date.now(),
@@ -86,11 +87,11 @@ const AccountPage = () => {
         };
         setUsers((prev) => [...prev, addedUser]);
       } else {
-        error(response.error || "Failed to add user.");
+        error(response.error || "Failed to add client.");
       }
     } catch (err) {
       console.error("Error adding user:", err);
-      error("An error occurred while adding the user.");
+      error("An error occurred while adding the client.");
     }
   };
 
@@ -109,6 +110,7 @@ const AccountPage = () => {
     }
 
     try {
+      success("Adding Agency Partner...");
       const response = await addPartnertoPartner(token, {
         email_id: newUser?.email,
         name: newUser?.name,
@@ -117,7 +119,7 @@ const AccountPage = () => {
       });
 
       if (response.success) {
-        success("Agency added successfully.");
+        success("Agency Partner added successfully.");
         const addedUser = {
           ...newUser,
           id: Date.now(),
@@ -125,11 +127,11 @@ const AccountPage = () => {
         };
         setUsers((prev) => [...prev, addedUser]);
       } else {
-        error(response.error || "Failed to add partner.");
+        error(response.error || "Failed to add agency partner.");
       }
     } catch (err) {
-      console.error("Error adding partner:", err);
-      error("An error occurred while adding the partner.");
+      console.error("Error adding agency partner:", err);
+      error("An error occurred while adding the agency partner.");
     }
   };
 
@@ -138,6 +140,7 @@ const AccountPage = () => {
       const email = user.email || user.email_id;
       const name = user.name || "User";
 
+      success("Resending invitation...");
       const response = await resendInvitation(token, email, name);
 
       if (response.success) {

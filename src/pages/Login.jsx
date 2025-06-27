@@ -28,8 +28,6 @@ const Login = () => {
       const resp = await requestOTP(emailLower);
       setIsOtpGenerated(true);
 
-      console.log("OTP response:", resp);
-
       if (resp?.data?.is_new) {
         setNewUser(true);
         setUserType("");
