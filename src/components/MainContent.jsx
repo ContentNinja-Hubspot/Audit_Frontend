@@ -6,12 +6,12 @@ import SalesAudit from "../components/SalesAudit";
 import { useUser } from "../context/UserContext";
 import HubSelector from "./header/HubSelector";
 import { useAudit } from "../context/ReportContext";
-import { ShareIcon } from "@heroicons/react/24/outline";
-import ShareReportModal from "../components/ShareReportModal";
-import { shareReport } from "../api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShare } from "@fortawesome/free-solid-svg-icons";
+import { faShare, faDownload } from "@fortawesome/free-solid-svg-icons";
+import ShareReportModal from "../components/ShareReportModal";
+import { shareReport, downloadPdfReport } from "../api";
 import CryptoJS from "crypto-js";
+import { useNotify } from "../context/NotificationContext";
 
 const CRYPTO_SECRET_KEY = import.meta.env.VITE_CRYPTO_SECRET_KEY;
 
@@ -28,11 +28,13 @@ const MainContent = ({
   completeReportGenerated,
 }) => {
   const [selectedBreakdown, setSelectedBreakdown] = useState("Data Quality");
-  const { user } = useUser();
   const [showShareModal, setShowShareModal] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const { user } = useUser();
+  const { salesInUse, latestReportId } = useAudit();
+  const { warn } = useNotify();
 
   if (!reportData) return <div>Loading report...</div>;
-  const { salesInUse, latestReportId } = useAudit();
 
   const { result, updated_at } = reportData;
   const { data_audit, object_scores, overall_audit_score, score_breakdown } =
@@ -76,7 +78,6 @@ const MainContent = ({
         auditScore,
         reportLink
       );
-
       return response;
     } catch (e) {
       console.error("Share report error:", e);
@@ -84,6 +85,36 @@ const MainContent = ({
         status: "error",
         message: "Something went wrong while sharing the report.",
       };
+    }
+  };
+
+  const handleDownload = async () => {
+    try {
+      setDownloading(true);
+      const pdfUrl = await downloadPdfReport(token, latestReportId);
+
+      const fileResponse = await fetch(pdfUrl);
+      if (!fileResponse.ok) {
+        throw new Error("Failed to fetch PDF file.");
+      }
+
+      const blob = await fileResponse.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const filename = url.split("/").pop();
+      a.href = url;
+      a.download = `hubspot-audit-report-${
+        filename || `hubspot-audit-report.pdf`
+      }`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      warn("Failed to download PDF. Please try again later.");
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -101,17 +132,36 @@ const MainContent = ({
           <HubSelector completeReportGenerated={completeReportGenerated} />
         </div>
       </div>
+
       <div className="flex justify-end items-center gap-2 ml-5 md:mr-10 text-xs">
         <p>Last Updated: {updated_at}</p>
         {page !== "past" && (
-          <button
-            onClick={() => setShowShareModal(true)}
-            disabled={!completeReportGenerated}
-            className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50"
-            title="Share Report"
-          >
-            Share <FontAwesomeIcon icon={faShare} className="h-5 w-5" />
-          </button>
+          <>
+            <button
+              onClick={() => setShowShareModal(true)}
+              disabled={!completeReportGenerated}
+              className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50"
+              title="Share Report"
+            >
+              Share <FontAwesomeIcon icon={faShare} className="h-5 w-5" />
+            </button>
+
+            <button
+              onClick={handleDownload}
+              disabled={!completeReportGenerated || downloading}
+              className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50"
+              title="Download Report PDF"
+            >
+              {downloading ? (
+                "Downloading..."
+              ) : (
+                <>
+                  Download{" "}
+                  <FontAwesomeIcon icon={faDownload} className="h-5 w-5" />
+                </>
+              )}
+            </button>
+          </>
         )}
       </div>
 
@@ -151,6 +201,7 @@ const MainContent = ({
           salesInUse={salesInUse}
         />
       )}
+
       <ShareReportModal
         visible={showShareModal}
         onClose={() => setShowShareModal(false)}
