@@ -140,16 +140,16 @@ const MainContent = ({
             <button
               onClick={() => setShowShareModal(true)}
               disabled={!completeReportGenerated}
-              className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50 text-xs"
+              className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50 text-xs p-0"
               title="Share Report"
             >
-              Share <FontAwesomeIcon icon={faShare} className="h-4 w-4" />
+              Share <FontAwesomeIcon icon={faShare} className="h-3 w-4" />
             </button>
 
             <button
               onClick={handleDownload}
               disabled={!completeReportGenerated || downloading}
-              className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50 text-xs"
+              className="bg-inherit text-black disabled:cursor-not-allowed disabled:opacity-50 text-xs p-0"
               title="Download Report PDF"
             >
               {downloading ? (
@@ -157,7 +157,7 @@ const MainContent = ({
               ) : (
                 <>
                   Download{" "}
-                  <FontAwesomeIcon icon={faDownload} className="h-4 w-4" />
+                  <FontAwesomeIcon icon={faDownload} className="h-3 w-4" />
                 </>
               )}
             </button>
