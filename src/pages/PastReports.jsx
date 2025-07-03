@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../components/SideBar";
 import { useNavigate } from "react-router-dom";
-import { fetchReportList, shareReport, fetchSharedReports } from "../api";
+import {
+  fetchReportList,
+  shareReport,
+  fetchSharedReports,
+  downloadPdfReport,
+} from "../api";
 import { useUser } from "../context/UserContext";
 import { useNotify } from "../context/NotificationContext";
 import CryptoJS from "crypto-js";
@@ -12,6 +17,7 @@ import {
   ShareIcon,
   EyeIcon,
   PaperAirplaneIcon,
+  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 
 const PastReports = () => {
@@ -19,7 +25,7 @@ const PastReports = () => {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { error, success } = useNotify();
+  const { error, success, warn } = useNotify();
   const { token } = useUser();
 
   const [activeTab, setActiveTab] = useState("past");
@@ -126,6 +132,32 @@ const PastReports = () => {
     }
   };
 
+  const handleDownloadReport = async (report) => {
+    try {
+      const pdfUrl = await downloadPdfReport(token, report.report_id);
+
+      const response = await fetch(pdfUrl);
+      if (!response.ok) throw new Error("Failed to fetch PDF");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      const filename = url.split("/").pop();
+      a.href = url;
+      a.download = `hubspot-audit-report-${
+        filename || `hubspot-audit-report.pdf`
+      }`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      warn("Failed to download PDF. Please try again later.");
+      console.error("Download error:", err);
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -177,6 +209,7 @@ const PastReports = () => {
                   {activeTab === "past" && (
                     <th className="text-center px-4 py-3 text-sm">Share</th>
                   )}
+                  <th className="text-center px-4 py-3 text-sm">Download</th>
                 </tr>
               </thead>
               <tbody>
@@ -223,6 +256,15 @@ const PastReports = () => {
                           </button>
                         </td>
                       )}
+                      <td className="px-4 py-3 text-sm">
+                        <button
+                          onClick={() => handleDownloadReport(report)}
+                          className="hover:text-blue-600 text-black bg-inherit transition"
+                          title="Download Report"
+                        >
+                          <ArrowDownTrayIcon className="h-5 w-5 inline" />
+                        </button>
+                      </td>
                     </tr>
                   )
                 )}

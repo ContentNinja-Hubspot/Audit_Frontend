@@ -987,3 +987,29 @@ export const resendInvitation = async (token, email, name) => {
     throw error;
   }
 };
+
+export const downloadPdfReport = async (token, report_id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/downloadpdfreport`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify({ report_id }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.error || "Failed to generate/download PDF report."
+      );
+    }
+
+    return result.data.report_url;
+  } catch (error) {
+    console.error("Error downloading PDF report:", error);
+    throw error;
+  }
+};

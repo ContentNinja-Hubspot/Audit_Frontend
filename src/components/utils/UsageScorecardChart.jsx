@@ -88,17 +88,15 @@ const UsageScorecardChart = ({ usageScorecardData, selectedMetric }) => {
       values = sorted.map((item) => item.overdue_percentage || 0);
     } else {
       const metricArray = usageScorecardData[dataArrayKey] || [];
-      const sorted = [...metricArray].sort((a, b) => {
-        const aDays = a.days === "None" ? 0 : Number(a.days || 0);
-        const bDays = b.days === "None" ? 0 : Number(b.days || 0);
-        return bDays - aDays;
-      });
+      const validItems = metricArray.filter(
+        (item) =>
+          item.days !== "None" && item.days !== null && item.days !== undefined
+      );
+
+      const sorted = validItems.sort((a, b) => Number(b.days) - Number(a.days));
 
       users = sorted.map((item) => item.user_email);
-      values = sorted.map((item) => {
-        if (item.days === "None") return 0;
-        return item.days ? Number(item.days) : 0;
-      });
+      values = sorted.map((item) => Number(item.days));
     }
 
     setChartData({
