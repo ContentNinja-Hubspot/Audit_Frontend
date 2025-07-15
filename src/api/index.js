@@ -1013,3 +1013,27 @@ export const downloadPdfReport = async (token, report_id) => {
     throw error;
   }
 };
+
+export const checkValidToken = async (token, hub_id) => {
+  try {
+    const response = await fetch(`${BASE_URL}/check_refresh_token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        state: token,
+      },
+      body: JSON.stringify({ hub_id }),
+    });
+
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.message || "Failed to check token");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error checking valid token:", error);
+    throw error;
+  }
+};
